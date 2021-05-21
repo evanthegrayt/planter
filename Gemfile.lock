@@ -1,0 +1,19 @@
+PATH
+  remote: .
+  specs:
+    planter (0.0.1)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    sqlite3 (1.4.2)
+
+PLATFORMS
+  x86_64-darwin-20
+
+DEPENDENCIES
+  planter!
+  sqlite3
+
+BUNDLED WITH
+   2.2.17
