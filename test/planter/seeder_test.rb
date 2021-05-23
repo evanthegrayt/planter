@@ -5,7 +5,7 @@ class Planter::SeederTest < ActiveSupport::TestCase
   setup do
     Planter.reset_config
     Planter.configure do |c|
-      c.tables = %i[users addresses bios roles]
+      c.seeders = %i[users addresses bios roles]
       c.quiet = true
     end
   end

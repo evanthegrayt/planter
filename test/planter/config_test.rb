@@ -8,7 +8,7 @@ class Planter::ConfigTest < ActiveSupport::TestCase
   test "sets default values" do
     assert_equal 'db/seeds', @config.seeders_directory
     assert_equal 'db/seed_files', @config.csv_files_directory
-    assert_nil @config.tables
+    assert_nil @config.seeders
     assert_equal(false, @config.quiet)
   end
 
@@ -19,8 +19,8 @@ class Planter::ConfigTest < ActiveSupport::TestCase
     @config.csv_files_directory = 'db/different_csv_files_directory'
     assert_equal 'db/different_csv_files_directory', @config.csv_files_directory
 
-    @config.tables = %i[users]
-    assert_equal %i[users], @config.tables
+    @config.seeders = %i[users]
+    assert_equal %i[users], @config.seeders
 
     @config.quiet = true
     assert_equal true, @config.quiet

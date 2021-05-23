@@ -93,7 +93,7 @@ module Planter
   #
   # @example
   #   Planter.configure do |app_seeder|
-  #     app_seeder.tables = %i[users]
+  #     app_seeder.seeders = %i[users]
   #     app_seeder.seeders_directory = 'db/seeds'
   #     app_seeder.csv_files_directory = 'db/seed_files'
   #   end
@@ -102,18 +102,18 @@ module Planter
   end
 
   ##
-  # This is the method to call from your +db/seeds.rb+. It seeds the tables
-  # listed in +Planter.config.tables+. To seed specific tables at
-  # runtime, you can set the +TABLES+ environmental variable to a
-  # comma-separated list of tables.
+  # This is the method to call from your +db/seeds.rb+. It callse the seeders
+  # listed in +Planter.config.seeders+. To call specific seeders at
+  # runtime, you can set the +SEEDERS+ environmental variable to a
+  # comma-separated list of seeders.
   #
   # @example
-  #   rails db:seed TABLES=users,accounts
+  #   rails db:seed SEEDERS=users,accounts
   def self.seed
-    tables = ENV['TABLES']&.split(',') || config.tables&.map(&:to_s)
-    raise RuntimeError, 'No tables specified; nothing to do' unless tables&.any?
+    seeders = ENV['SEEDERS']&.split(',') || config.seeders&.map(&:to_s)
+    raise RuntimeError, 'No seeders specified; nothing to do' unless seeders&.any?
 
-    tables.each do |table|
+    seeders.each do |table|
       require Rails.root.join(config.seeders_directory, "#{table}_seeder.rb").to_s
       puts "Seeding #{table}" unless config.quiet
       "#{table.camelize}Seeder".constantize.new.seed

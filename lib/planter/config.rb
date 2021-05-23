@@ -5,7 +5,7 @@ module Planter
   # Configure the application seeder.
   #
   # @example
-  #   Planter.configure { |seeder| seeder.tables = %i[users] }
+  #   Planter.configure { |seeder| seeder.seeders = %i[users] }
   class Config
     ##
     # Tell the application where the seeder classes are kept. Must be a path
@@ -26,13 +26,13 @@ module Planter
     attr_accessor :csv_files_directory
 
     ##
-    # Tell the application what tables to seed. Elements should be in the correct
-    # order, and can be strings or symbols.
+    # Tell the application what seeders exist. Elements should be in the correct
+    # order to seed the tables successfully, and can be strings or symbols.
     #
-    # @param [Array] tables
+    # @param [Array] seeders
     #
     # @return [Array]
-    attr_accessor :tables
+    attr_accessor :seeders
 
     ##
     # When true, don't print output when seeding.
