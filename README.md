@@ -13,7 +13,7 @@ db:seed` task.
 Features include:
 
 - Seed tables from CSV files, an array of hashes, or custom methods.
-- Seed specific tables with `rails db:seed TABLES=users,addresses`.
+- Call specific seeders with `rails db:seed SEEDERS=users,addresses`.
 - Control the number of records being created.
 - Seed associations.
 
@@ -42,14 +42,14 @@ $ gem install planter
 Let's assume you'd like to seed your `users` table.
 
 To get started, simply add the following to your `db/seeds.rb` file. Note that
-the `config.tables` should be an array of the tables to seed. They should be in
+the `config.seeders` should be an array of the seeders to use. They should be in
 the correct order to successfully seed the tables when considering associations.
 
 ```ruby
 require 'planter'
 
 Planter.configure do |config|
-  config.tables = %i[ users ]
+  config.seeders = %i[ users ]
 end
 
 Planter.seed
@@ -179,7 +179,7 @@ require 'planter'
 Planter.configure do |config|
   config.seeders_directory = 'db/seeder_classes'
   config.csv_files_directory = 'db/csvs'
-  config.tables = %i[
+  config.seeders = %i[
     users
     addresses
   ]

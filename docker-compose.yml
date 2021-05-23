@@ -3,7 +3,7 @@ services:
   app:
     build: .
     image: planter
-    command: bash -c "bundle && tail -f Gemfile"
+    command: bash -c "bundle && tail -f Gemfile && cd test/dummy && bin/rails db:migrate"
     volumes:
       - .:/home/planter_user/app
     tty: true
