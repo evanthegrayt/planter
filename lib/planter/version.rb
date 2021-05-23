@@ -3,5 +3,5 @@
 module Planter
   ##
   # Gem version, semantic.
-  VERSION = '0.0.4'.freeze
+  VERSION = '0.0.5'.freeze
 end

@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = spec.homepage
   spec.metadata['documentation_uri'] =
-    'https://evanthegrayt.github.io/standup_md/'
+    'https://evanthegrayt.github.io/planter/'
 
   spec.files = Dir["{app,config,db,lib}/**/*", "LICENSE", "Rakefile", "README.md"]
   spec.add_dependency "rails", "~> 6.1.3", ">= 6.1.3.1"
