@@ -1,4 +1,8 @@
 # Planter
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fevanthegrayt%2Fplanter%2Fbadge%3Fref%3Dmaster&style=flat)](https://actions-badge.atrox.dev/evanthegrayt/planter/goto?ref=master)
+[![Gem Version](https://badge.fury.io/rb/planter.svg)](https://badge.fury.io/rb/planter)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 > Pre-release version! Anything is subject to change in the near future!
 
 Seeds for Rails applications can get complicated fast, and Rails doesn't provide
@@ -143,9 +147,7 @@ end
 Note that specifying `number_of_records` in this instance will create that many
 records *for each record of the parent model*. You can also specify the
 association if it's different from the table name, using the `assocation:`
-option. Currently, associations are assumed to be as `has_many`, so the
-association is plural by default. Any help with making this more heuristically
-complete would be welcome.
+option.
 
 ### Custom seeds
 To write your own custom seeds, just overload the `seed` method and do whatever
@@ -154,7 +156,7 @@ you need to do.
 ```ruby
 class UsersSeeder < Planter::Seeder
   USERS = {
-    'test1@example.com' => { username: 'John Smith' }
+    'test1@example.com' => { username: 'John Smith' },
     'test2@example.com' => { username: 'Jane Smith' }
   }
 
