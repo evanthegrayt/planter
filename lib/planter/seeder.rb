@@ -1,9 +1,30 @@
+# frozen_string_literal: true
+
 module Planter
+  ##
+  # The class your seeder files should inherit from.
   class Seeder
     ##
-    # If your class is going to use the inherited +seed+ method, you must tell it
-    # which +seeding_method+ to use. The argument to this method must be included
-    # in the +SEEDING_METHODS+ array.
+    # The allowed seeding methods.
+    #
+    # @return [Array]
+    SEEDING_METHODS = %i[standard_csv data_array].freeze
+
+    ##
+    # Array of hashes used to create records. Your class must set this
+    # attribute when using +data_hash+ seeding method, although it's probably
+    # more likely that you'll want to define a method that returns a new set of
+    # data each time (via +Faker+, +Array#sample+, etc.). When using
+    # +standard_csv+, +data+ will be set to the data within the csv. You can
+    # override this.
+    #
+    # @return [Array]
+    attr_reader :data
+
+    ##
+    # If your class is going to use the inherited +seed+ method, you must tell
+    # it which +seeding_method+ to use. The argument to this method must be
+    # included in the +SEEDING_METHODS+ array.
     #
     # @param [Symbol] seeding_method
     #
@@ -19,38 +40,47 @@ module Planter
     #       number_of_records: 2
     #   end
     def self.seeding_method(method, **options)
-      if !SEEDING_METHODS.include?(method.to_sym)
+      if !SEEDING_METHODS.include?(method.intern)
         raise ArgumentError, "Method must be one of #{SEEDING_METHODS.join(', ')}"
       elsif options[:association] && !options[:parent_model]
-        raise ArgumentError, "Must specify 'parent_model' with 'association'"
+        raise ArgumentError, "Must specify :parent_model with :association"
       end
 
       @seeding_method = method
       @number_of_records = options.fetch(:number_of_records, 1)
       @model = options.fetch(:model, to_s.delete_suffix('Seeder').singularize)
       @parent_model = options[:parent_model]
-      @association = options.fetch(
-        :association,
-        @parent_model && to_s.delete_suffix('Seeder').underscore.to_sym
-      )
+      @association = @parent_model && options.fetch(:association) do
+        determine_association(options)
+      end
       return unless @seeding_method == :standard_csv
 
-      @csv_file = options.fetch(
-        :csv_file,
-        File.join(
-          seed_files_directory,
-          "#{to_s.delete_suffix('Seeder').underscore}.csv"
-        )
-      )
+      @csv_file = options.fetch(:csv_file, Rails.root.join(
+        Planter.config.csv_files_directory,
+        "#{to_s.delete_suffix('Seeder').underscore}.csv"
+      ).to_s)
     end
+
+    def self.determine_association(options) # :nodoc:
+      associations =
+        @parent_model.constantize.reflect_on_all_associations.map(&:name)
+      table = to_s.delete_suffix('Seeder').underscore.split('/').last
+
+      [table, table.singularize].map(&:intern).each do |t|
+        return t if associations.include?(t)
+      end
+
+      raise ArgumentError, 'Could not determine association name'
+    end
+    private_class_method :determine_association
 
     ##
     # The default seed method. To use this method, your class must provide a
-    # valid seeding_method, and not implement its own +seed+ method.
+    # valid +seeding_method+, and not implement its own +seed+ method.
     def seed
       validate_attributes
 
-      parent_model ? create_child_records : create_records
+      parent_model ? create_records_from_parent : create_records
     end
 
     protected
@@ -60,7 +90,7 @@ module Planter
     #
     # @return [Symbol]
     def seeding_method
-      @seeding_method ||= config.seeding_method
+      @seeding_method ||= self.class.instance_variable_get('@seeding_method')
     end
 
     ##
@@ -69,7 +99,7 @@ module Planter
     #
     # @return [String]
     def model
-      @model ||= config.model
+      @model ||= self.class.instance_variable_get('@model')
     end
 
     ##
@@ -79,16 +109,16 @@ module Planter
     #
     # @return [String]
     def parent_model
-      @parent_model ||= config.parent_model
+      @parent_model ||= self.class.instance_variable_get('@parent_model')
     end
 
     ##
-    # When using +parent_model+, the association name. Your class must set this
+    # When using +parent_model+, the association name. Your class can set this
     # attribute via +seeding_method+.
     #
     # @return [Symbol]
     def association
-      @association ||= config.association
+      @association ||= self.class.instance_variable_get('@association')
     end
 
     ##
@@ -98,7 +128,8 @@ module Planter
     #
     # @return [Integer]
     def number_of_records
-      @number_of_records ||= config.number_of_records
+      @number_of_records ||=
+        self.class.instance_variable_get('@number_of_records')
     end
 
     ##
@@ -106,7 +137,7 @@ module Planter
     #
     # @return [String]
     def csv_file
-      @csv_file ||= config.csv_file
+      @csv_file ||= self.class.instance_variable_get('@csv_file')
     end
 
     ##
@@ -124,26 +155,34 @@ module Planter
     ##
     # Create records from the +data+ attribute for each record in the
     # +parent_table+, via the specified +association+.
-    def create_child_records
-      parent_model.constantize.all.each do |associated_record|
+    def create_records_from_parent
+      parent_model.constantize.all.each do |assoc_rec|
         number_of_records.times do
-          data.each do |rec|
-            associated_record.public_send(association).where(rec).first_or_create!
-          end
+          data.each { |rec| send(create_method, assoc_rec, association, rec) }
         end
       end
     end
 
     private
 
-    def config # :nodoc:
-      @config ||= self.class.config
+    def create_method
+      parent_model.constantize.reflect_on_association(
+        association
+      ).macro.to_s.include?('many') ? :create_has_many : :create_has_one
+    end
+
+    def create_has_many(assoc_rec, association, rec)
+      assoc_rec.public_send(association).where(rec).first_or_create!
+    end
+
+    def create_has_one(assoc_rec, association, rec)
+      assoc_rec.public_send("create_#{association}", rec)
     end
 
     def validate_attributes # :nodoc:
-      case seeding_method.to_sym
+      case seeding_method.intern
       when :standard_csv
-        raise "#{csv_file} does not exist" unless File.file?(csv_file)
+        raise "#{csv_file} does not exist" unless ::File.file?(csv_file)
 
         @data ||= ::CSV.table(csv_file).map(&:to_hash)
       when :data_array

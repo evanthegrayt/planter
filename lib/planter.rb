@@ -1,6 +1,8 @@
-require "planter/version"
-require "planter/railtie"
+# frozen_string_literal: true
+
 require 'csv'
+require 'planter/version'
+require 'planter/railtie'
 require 'planter/config'
 require 'planter/seeder'
 
@@ -20,7 +22,7 @@ require 'planter/seeder'
 #   # db/seeds/users_seeder.rb
 #   require 'planter'
 #   class UsersSeeder < Planter::Seeder
-#     seeding_method :standard_csv, csv_file: 'db/seed_files/users.csv'
+#     seeding_method :standard_csv, csv_file: '/home/me/users.csv'
 #   end
 #
 # Another way to seed is to create records from a data array. To do this, your
@@ -69,27 +71,19 @@ require 'planter/seeder'
 # your seeder class and do whatever needs to be done.
 module Planter
   ##
-  # The allowed seeding methods.
-  #
-  # @return [Array]
-  SEEDING_METHODS = %i[standard_csv data_array].freeze
-
-  ##
-  # Array of hashes used to create records. Your class must set this attribute
-  # when using +data_hash+ seeding method, although it's probably more likely
-  # that you'll want to define a method that returns a new set of data each
-  # time (via +Faker+, +Array#sample+, etc.). When using +standard_csv+, +data+
-  # will be set to the data within the csv. You can override this.
-  #
-  # @return [Array]
-  attr_reader :data
-
-  ##
   # The seeder configuration.
   #
   # @return [Planter::Config]
   def self.config
     @config ||= Planter::Config.new
+  end
+
+  ##
+  # Resets the config back to its initial state.
+  #
+  # @return [Planter::Config]
+  def self.reset_config
+    @config = Planter::Config.new
   end
 
   ##
@@ -100,12 +94,11 @@ module Planter
   # @example
   #   Planter.configure do |app_seeder|
   #     app_seeder.tables = %i[users]
-  #     app_seeder.seeds_directory = 'db/seeds'
-  #     app_seeder.seed_files_directory = 'db/seed_files'
+  #     app_seeder.seeders_directory = 'db/seeds'
+  #     app_seeder.csv_files_directory = 'db/seed_files'
   #   end
   def self.configure
-    yield config
-    self
+    config.tap { |c| yield c }
   end
 
   ##
@@ -116,13 +109,13 @@ module Planter
   #
   # @example
   #   rails db:seed TABLES=users,accounts
-  def self.execute
+  def self.seed
     tables = ENV['TABLES']&.split(',') || config.tables&.map(&:to_s)
     raise RuntimeError, 'No tables specified; nothing to do' unless tables&.any?
 
     tables.each do |table|
-      require File.join(config.seeds_directory, "#{table}_seeder.rb")
-      puts "Seeding #{table}"
+      require Rails.root.join(config.seeders_directory, "#{table}_seeder.rb").to_s
+      puts "Seeding #{table}" unless config.quiet
       "#{table.camelize}Seeder".constantize.new.seed
     end
   end
