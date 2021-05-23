@@ -1,6 +1,6 @@
 /.bundle/
 /log/*.log
-/doc/
+/docs/
 /pkg/
 /tmp/
 /test/dummy/db/*.sqlite3
