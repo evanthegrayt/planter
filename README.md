@@ -17,6 +17,8 @@ Features include:
 - Control the number of records being created.
 - Seed associations.
 
+You can view the documentation [here](https://evanthegrayt.github.io/planter/).
+
 ## Installation
 Add this line to your application's Gemfile:
 
