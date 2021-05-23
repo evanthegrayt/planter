@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>RDoc Documentation</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+  var index_rel_prefix = "./";
+</script>
+
+<script src="./js/navigation.js" defer></script>
+<script src="./js/search.js" defer></script>
+<script src="./js/search_index.js" defer></script>
+<script src="./js/searcher.js" defer></script>
+<script src="./js/darkfish.js" defer></script>
+
+<link href="./css/fonts.css" rel="stylesheet">
+<link href="./css/rdoc.css" rel="stylesheet">
+
+
+<body id="top" role="document" class="file">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="./index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="./table_of_contents.html#pages">Pages</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  <div id="project-metadata">
+    
+<div id="fileindex-section" class="nav-section">
+  <h3>Pages</h3>
+
+  <ul class="link-list">
+    <li><a href="./README_md.html">README</a>
+  </ul>
+</div>
+
+    <div id="classindex-section" class="nav-section">
+  <h3>Class and Module Index</h3>
+
+  <ul class="link-list">
+    <li><a href="./Planter.html">Planter</a>
+    <li><a href="./Planter/Config.html">Planter::Config</a>
+    <li><a href="./Planter/Seeder.html">Planter::Seeder</a>
+    <li><a href="./Planter/Version.html">Planter::Version</a>
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main">
+
+
+<h1 id="label-Planter"><a href="Planter.html"><code>Planter</code></a><span><a href="#label-Planter">&para;</a> <a href="#top">&uarr;</a></span></h1>
+
+<p><a href="https://actions-badge.atrox.dev/evanthegrayt/planter/goto?ref=master"><img src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fevanthegrayt%2Fplanter%2Fbadge%3Fref%3Dmaster&style=flat"></a> <a href="https://badge.fury.io/rb/planter"><img src="https://badge.fury.io/rb/planter.svg"></a> <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg"></a></p>
+
+<blockquote>
+<p>Pre-release version! Anything is subject to change in the near future!</p>
+</blockquote>
+
+<p>Seeds for Rails applications can get complicated fast, and Rails doesn&#39;t provide much for assisting with this process. This plugin seeks to rectify that by providing easy ways to seed specific tables by hooking into the existing <code>rails db:seed</code> task.</p>
+
+<p>Features include:</p>
+<ul><li>
+<p>Seed tables from CSV files, an array of hashes, or custom methods.</p>
+</li><li>
+<p>Call specific seeders with <code>rails db:seed SEEDERS=users,addresses</code>.</p>
+</li><li>
+<p>Control the number of records being created.</p>
+</li><li>
+<p>Seed associations.</p>
+</li></ul>
+
+<p>You can view the documentation <a href="https://evanthegrayt.github.io/planter/">here</a>.</p>
+
+<h2 id="label-Installation">Installation<span><a href="#label-Installation">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>Add this line to your application&#39;s Gemfile:</p>
+
+<pre class="ruby"><span class="ruby-identifier">gem</span> <span class="ruby-string">&#39;planter&#39;</span>
+</pre>
+
+<p>And then execute:</p>
+
+<pre>$ bundle</pre>
+
+<p>Or install it yourself as:</p>
+
+<pre>$ gem install planter</pre>
+
+<h2 id="label-Usage">Usage<span><a href="#label-Usage">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>Let&#39;s assume you&#39;d like to seed your <code>users</code> table.</p>
+
+<p>To get started, simply add the following to your <code>db/seeds.rb</code> file. Note that the <code>config.seeders</code> should be an array of the seeders to use. They should be in the correct order to successfully seed the tables when considering associations.</p>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;planter&#39;</span>
+
+<span class="ruby-constant">Planter</span>.<span class="ruby-identifier">configure</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">config</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">seeders</span> = <span class="ruby-node">%i[ users ]</span>
+<span class="ruby-keyword">end</span>
+
+<span class="ruby-comment"># You could put the above lines in an initializer if you&#39;re feeling squirrelly</span>
+
+<span class="ruby-constant">Planter</span>.<span class="ruby-identifier">seed</span>
+</pre>
+
+<p>Then, create a directory called <code>db/seeds</code>, and create a file called <code>db/seeds/users_seeder.rb</code>. In that file, create the following class. Note the name of the seeder is the name of the table, plus <code>Seeder</code>, and it inherits from <code>Planter::Seeder</code>.</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>You then need to choose a seeding method, of which there are currently three.</p>
+
+<h3 id="label-Seeding+from+CSV">Seeding from CSV<span><a href="#label-Seeding+from+CSV">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>To seed from CSV, you simply need to add the following to your seeder class.</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
+  <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:csv</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>Then, create a directory called <code>db/seed_files</code>, and create a csv file called <code>db/seed_files/users.csv</code>. In this file, the header should be the field names, and the rest of the rows should be the corresponding data.</p>
+
+<pre>email,username
+test1@example.com,test1
+test2@example.com,test2</pre>
+
+<p>If the CSV file is named differently than the seeder, you can specify the <code>:csv_name</code> option. Note that the value should not include the file extension.</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
+  <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:csv</span>, <span class="ruby-value">csv_name:</span> <span class="ruby-value">:people</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p><code>ERB</code> can be used in the CSV files if you name it with <code>.erb</code> at the end of the file name. For example, <code>users.csv.erb</code>. Note that lines starting with <code>&lt;%</code> and ending with <code>%&gt;</code> will not be considered rows, so you can use <code>ERB</code> rows to set values. For example:</p>
+
+<pre>email,login_attempts
+&lt;% count = 1 %&gt;
+test2@example.com,&lt;%= count += 1 %&gt;
+test2@example.com,&lt;%= count += 1 %&gt;</pre>
+
+<p>Running <code>rails db:seed</code> will now seed your <code>users</code> table.</p>
+
+<h2 id="label-Seeding+from+a+data+array">Seeding from a data array<span><a href="#label-Seeding+from+a+data+array">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>If you need dynamic seeds, you can add something similar to the following to your seeder class. In this example, we&#39;ll use <a href="https://github.com/faker-ruby/faker">faker</a>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;faker&#39;</span> <span class="ruby-comment"># You could just require this in `db/seeds.rb`.</span>
+
+<span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
+  <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:data_array</span>, <span class="ruby-value">number_of_records:</span> <span class="ruby-value">10</span>
+
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data</span>
+    [{
+      <span class="ruby-value">email:</span> <span class="ruby-constant">Faker</span><span class="ruby-operator">::</span><span class="ruby-constant">Internet</span>.<span class="ruby-identifier">email</span>,
+      <span class="ruby-value">username:</span> <span class="ruby-constant">Faker</span><span class="ruby-operator">::</span><span class="ruby-constant">Name</span>.<span class="ruby-identifier">name</span>
+    }]
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>The <code>number_of_records</code> option allows you to only create one array element, but create ten records. If you leave this option off, you&#39;ll need your array to have ten elements to create ten records. It&#39;s also worth noting that setting an instance variable called <code>@data</code> from an <code>initialize</code> method would also work, as the <code>Planter::Seeder</code> parent class automatically provides <code>attr_reader :data</code>.</p>
+
+<p>Running <code>rails db:seed</code> should now seed your <code>users</code> table.</p>
+
+<p>You can also seed children records for every existing record of a parent model. For example, to seed an address for every user, you&#39;d need to create an <code>AddressesSeeder</code> that uses the <code>parent_model</code> option, as seen below.</p>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;faker&#39;</span>
+
+<span class="ruby-keyword">class</span> <span class="ruby-constant">AddressesSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
+  <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:data_array</span>, <span class="ruby-value">parent_model:</span> <span class="ruby-string">&#39;User&#39;</span>
+
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data</span>
+    [{
+      <span class="ruby-value">street:</span> <span class="ruby-constant">Faker</span><span class="ruby-operator">::</span><span class="ruby-constant">Address</span>.<span class="ruby-identifier">street_address</span>,
+      <span class="ruby-value">city:</span> <span class="ruby-constant">Faker</span><span class="ruby-operator">::</span><span class="ruby-constant">Address</span>.<span class="ruby-identifier">city</span>,
+      <span class="ruby-value">state:</span> <span class="ruby-constant">Faker</span><span class="ruby-operator">::</span><span class="ruby-constant">Address</span>.<span class="ruby-identifier">state_abbr</span>,
+      <span class="ruby-value">zip:</span> <span class="ruby-constant">Faker</span><span class="ruby-operator">::</span><span class="ruby-constant">Address</span>.<span class="ruby-identifier">zip</span>
+    }]
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>Note that specifying <code>number_of_records</code> in this instance will create that many records <em>for each record of the parent model</em>. You can also specify the association if it&#39;s different from the table name, using the <code>:assocation</code> option.</p>
+
+<h3 id="label-Custom+seeds">Custom seeds<span><a href="#label-Custom+seeds">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>To write your own custom seeds, just overload the <code>seed</code> method and do whatever you need to do.</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
+  <span class="ruby-constant">USERS</span> = {
+    <span class="ruby-string">&#39;test1@example.com&#39;</span> <span class="ruby-operator">=&gt;</span> { <span class="ruby-value">username:</span> <span class="ruby-string">&#39;John Smith&#39;</span> },
+    <span class="ruby-string">&#39;test2@example.com&#39;</span> <span class="ruby-operator">=&gt;</span> { <span class="ruby-value">username:</span> <span class="ruby-string">&#39;Jane Smith&#39;</span> }
+  }
+
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">seed</span>
+    <span class="ruby-constant">USERS</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">email</span>, <span class="ruby-identifier">attrs</span><span class="ruby-operator">|</span> <span class="ruby-constant">User</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">email</span>).<span class="ruby-identifier">first_or_create!</span>(<span class="ruby-identifier">attrs</span>) }
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<h2 id="label-Customization">Customization<span><a href="#label-Customization">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>You can change the directories of both the seeder files and the CSV files. In your <code>configure</code> block in <code>db/seeds.rb</code>, you can add the following. Note that, in both instances, the path should be relative to <code>Rails.root</code>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;planter&#39;</span>
+
+<span class="ruby-constant">Planter</span>.<span class="ruby-identifier">configure</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">config</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">seeders_directory</span> = <span class="ruby-string">&#39;db/seeder_classes&#39;</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">csv_files_directory</span> = <span class="ruby-string">&#39;db/csvs&#39;</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">seeders</span> = <span class="ruby-node">%i[
+    users
+    addresses
+  ]</span>
+<span class="ruby-keyword">end</span>
+
+<span class="ruby-constant">Planter</span>.<span class="ruby-identifier">seed</span>
+</pre>
+
+<h2 id="label-License">License<span><a href="#label-License">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>The gem is available as open source under the terms of the <a href="https://opensource.org/licenses/MIT">MIT License</a>.</p>
+
+<h2 id="label-Reporting+Bugs+and+Requesting+Features">Reporting Bugs and Requesting Features<span><a href="#label-Reporting+Bugs+and+Requesting+Features">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>If you have an idea or find a bug, please <a href="https://github.com/evanthegrayt/planter/issues/new">create an issue</a>. Just make sure the topic doesn&#39;t already exist. Better yet, you can always submit a Pull Request.</p>
+
+<h2 id="label-Self-Promotion">Self-Promotion<span><a href="#label-Self-Promotion">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>I do these projects for fun, and I enjoy knowing that they&#39;re helpful to people. Consider starring <a href="https://github.com/evanthegrayt/planter">the repository</a> if you like it! If you love it, follow me <a href="https://github.com/evanthegrayt">on Github</a>!</p>
+
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="https://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="https://ruby.github.io/rdoc/">RDoc</a> 6.3.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+

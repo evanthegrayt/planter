@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>module Planter - RDoc Documentation</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+  var index_rel_prefix = "./";
+</script>
+
+<script src="./js/navigation.js" defer></script>
+<script src="./js/search.js" defer></script>
+<script src="./js/search_index.js" defer></script>
+<script src="./js/searcher.js" defer></script>
+<script src="./js/darkfish.js" defer></script>
+
+<link href="./css/fonts.css" rel="stylesheet">
+<link href="./css/rdoc.css" rel="stylesheet">
+
+
+<body id="top" role="document" class="module">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="./index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="./table_of_contents.html#pages">Pages</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    
+    
+    
+    
+<!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    <li ><a href="#method-c-config">::config</a>
+    <li ><a href="#method-c-configure">::configure</a>
+    <li ><a href="#method-c-reset_config">::reset_config</a>
+    <li ><a href="#method-c-seed">::seed</a>
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="module-Planter">
+  <h1 id="module-Planter" class="module">
+    module Planter
+  </h1>
+
+  <section class="description">
+    
+<p>The main module for the plugin. It nicely wraps the <code>Planter::Config</code> class so that you can customize the plugin via an initializer or in the <code>db/seeds.rb</code> file. This is how you&#39;ll specify your list of seeders to use, along with customizing the <code>seeders_directory</code> and <code>csv_files_directory</code>.</p>
+
+<pre class="ruby"><span class="ruby-constant">Planter</span>.<span class="ruby-identifier">configure</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">config</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">seeders</span> = <span class="ruby-node">%i[users]</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">seeders_directory</span> = <span class="ruby-string">&#39;db/seeds&#39;</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">csv_files_directory</span> = <span class="ruby-string">&#39;db/seed_files&#39;</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>To then seed your application, simply call the <code>seed</code> method from your <code>db/seeds.rb</code> file (or wherever you need to call it from).</p>
+
+<pre class="ruby"><span class="ruby-constant">Planter</span>.<span class="ruby-identifier">seed</span>
+</pre>
+
+  </section>
+
+  <section id="5Buntitled-5D" class="documentation-section">
+
+
+    <section class="constants-list">
+      <header>
+        <h3>Constants</h3>
+      </header>
+      <dl>
+        <dt id="VERSION">VERSION
+        <dd><p>Gem version, semantic.</p>
+      </dl>
+    </section>
+
+
+
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Class Methods</h3>
+       </header>
+
+      <div id="method-c-config" class="method-detail ">
+        <div class="method-heading">
+          <span class="method-name">config</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+
+        <div class="method-description">
+          <p>The seeder configuration.</p>
+
+<p>@return [Planter::Config]</p>
+
+          <div class="method-source-code" id="config-source">
+            <pre><span class="ruby-comment"># File lib/planter.rb, line 31</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">config</span>
+  <span class="ruby-ivar">@config</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Config</span>.<span class="ruby-identifier">new</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-c-configure" class="method-detail ">
+        <div class="method-heading">
+          <span class="method-name">configure</span><span
+            class="method-args">() { |c| ... }</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+
+        <div class="method-description">
+          <p>Quick way of configuring the directories via an initializer.</p>
+
+<p>@return [Planter::Config]</p>
+
+<p>@example</p>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;planter&#39;</span>
+<span class="ruby-constant">Planter</span>.<span class="ruby-identifier">configure</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">config</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">seeders</span> = <span class="ruby-node">%i[users]</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">seeders_directory</span> = <span class="ruby-string">&#39;db/seeds&#39;</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">csv_files_directory</span> = <span class="ruby-string">&#39;db/seed_files&#39;</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+          <div class="method-source-code" id="configure-source">
+            <pre><span class="ruby-comment"># File lib/planter.rb, line 55</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">tap</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> <span class="ruby-keyword">yield</span> <span class="ruby-identifier">c</span> }
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-c-reset_config" class="method-detail ">
+        <div class="method-heading">
+          <span class="method-name">reset_config</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+
+        <div class="method-description">
+          <p>Resets the config back to its initial state.</p>
+
+<p>@return [Planter::Config]</p>
+
+          <div class="method-source-code" id="reset_config-source">
+            <pre><span class="ruby-comment"># File lib/planter.rb, line 39</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">reset_config</span>
+  <span class="ruby-ivar">@config</span> = <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Config</span>.<span class="ruby-identifier">new</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-c-seed" class="method-detail ">
+        <div class="method-heading">
+          <span class="method-name">seed</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+
+        <div class="method-description">
+          <p>This is the method to call from your <code>db/seeds.rb</code>. It callse the seeders listed in <code>Planter.config.seeders</code>. To call specific seeders at runtime, you can set the <code>SEEDERS</code> environmental variable to a comma-separated list of seeders, like +rails db:seed SEEDERS=users,accounts+.</p>
+
+<p>@example</p>
+
+<pre class="ruby"><span class="ruby-comment"># db/seeds.rb, assuming your +configure+ block is in an initializer.</span>
+<span class="ruby-constant">Planter</span>.<span class="ruby-identifier">seed</span>
+</pre>
+
+          <div class="method-source-code" id="seed-source">
+            <pre><span class="ruby-comment"># File lib/planter.rb, line 68</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">seed</span>
+  <span class="ruby-identifier">seeders</span> = <span class="ruby-constant">ENV</span>[<span class="ruby-string">&#39;SEEDERS&#39;</span>]&amp;.<span class="ruby-identifier">split</span>(<span class="ruby-string">&#39;,&#39;</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">config</span>.<span class="ruby-identifier">seeders</span>&amp;.<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:to_s</span>)
+  <span class="ruby-identifier">raise</span> <span class="ruby-constant">RuntimeError</span>, <span class="ruby-string">&#39;No seeders specified&#39;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">seeders</span>&amp;.<span class="ruby-identifier">any?</span>
+
+  <span class="ruby-identifier">seeders</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">s</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">require</span> <span class="ruby-constant">Rails</span>.<span class="ruby-identifier">root</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">config</span>.<span class="ruby-identifier">seeders_directory</span>, <span class="ruby-node">&quot;#{s}_seeder.rb&quot;</span>).<span class="ruby-identifier">to_s</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Seeding #{s}&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">config</span>.<span class="ruby-identifier">quiet</span>
+    <span class="ruby-node">&quot;#{s.camelize}Seeder&quot;</span>.<span class="ruby-identifier">constantize</span>.<span class="ruby-identifier">new</span>.<span class="ruby-identifier">seed</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+    </section>
+
+  </section>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="https://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="https://ruby.github.io/rdoc/">RDoc</a> 6.3.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+
