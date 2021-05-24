@@ -8,68 +8,21 @@ require 'planter/config'
 require 'planter/seeder'
 
 ##
-# Class that seeders should inherit from. Seeder files should be in +db/seeds+,
-# and named +TABLE_seeder.rb+, where +TABLE+ is the name of the table being
-# seeded (I.E. +users_seeder.rb+). The seeder's class name should be the same
-# as the file name, but camelized. So, +UsersSeeder+. The directory where the
-# seeder files are located can be changed via an initializer.
+# The main module for the plugin. It nicely wraps the +Planter::Config+ class
+# so that you can customize the plugin via an initializer or in the
+# +db/seeds.rb+ file. This is how you'll specify your list of seeders to use,
+# along with customizing the +seeders_directory+ and +csv_files_directory+.
 #
-# The most basic way to seed is to have a CSV file with the same name as the
-# table in +db/seed_files/+. So, +users.csv+. This CSV should have the table's
-# column names as header. To seed using this method, your class should look
-# like the following. Note that +:csv_name+ is not required; it defaults to the
-# table name with a +csv+ file extension. The directory where the seed files
-# are kept can be changed via an initializer.
-#   # db/seeds/users_seeder.rb
-#   require 'planter'
-#   class UsersSeeder < Planter::Seeder
-#     seeding_method :csv, csv_name: '/home/me/users.csv'
+#   Planter.configure do |config|
+#     config.seeders = %i[users]
+#     config.seeders_directory = 'db/seeds'
+#     config.csv_files_directory = 'db/seed_files'
 #   end
 #
-# Another way to seed is to create records from a data array. To do this, your
-# class must implement a +data+ attribute or method, which is an array of
-# hashes. Note that this class already provides the +attr_reader+ for this
-# attribute, so the most you have to do it create instance variables in your
-# constructor. If if you want your data to be different for each new record
-# (via Faker, +Array#sample+, etc.), you'll probably want to supply a method
-# called data that returns an array of new data each time.
-#   require 'planter'
-#   class UsersSeeder < Planter::Seeder
-#     seeding_method :data_array
-#     def data
-#       [{foo: 'bar', baz: 'bar'}]
-#     end
-#   end
+# To then seed your application, simply call the +seed+ method from your
+# +db/seeds.rb+ file (or wherever you need to call it from).
 #
-# In both of the above methods, you can specify +parent_model+ and
-# +association+. If specified, records will be created via that parent model's
-# association. If +association+ is not provided, it will be assumed to be the
-# model name, pluralized and snake-cased (implying a +has_many+ relationship).
-# For example, if we're seeding the users table, and the model is +User+, the
-# association will default to +users+.
-#   require 'planter'
-#   class UsersSeeder < Planter::Seeder
-#     seeding_method :data_array, parent_model: 'Person', association: :users
-#     def data
-#       [{foo: 'bar', baz: 'bar'}]
-#     end
-#   end
-#
-# You can also set +number_of_records+ to determine how many times each record
-# in the +data+ array will get created. The default is 1. Note that if this
-# attribute is set alongside +parent_model+ and +association+,
-# +number_of_records+ will be how many records will be created for each record
-# in the parent table.
-#   require 'planter'
-#   class UsersSeeder < Planter::Seeder
-#     seeding_method :data_array, number_of_records: 5
-#     def data
-#       [{foo: 'bar', baz: 'bar'}]
-#     end
-#   end
-#
-# If you need to seed a different way, put your own custom +seed+ method in
-# your seeder class and do whatever needs to be done.
+#   Planter.seed
 module Planter
   ##
   # The seeder configuration.
@@ -90,13 +43,14 @@ module Planter
   ##
   # Quick way of configuring the directories via an initializer.
   #
-  # @return [self]
+  # @return [Planter::Config]
   #
   # @example
-  #   Planter.configure do |app_seeder|
-  #     app_seeder.seeders = %i[users]
-  #     app_seeder.seeders_directory = 'db/seeds'
-  #     app_seeder.csv_files_directory = 'db/seed_files'
+  #   require 'planter'
+  #   Planter.configure do |config|
+  #     config.seeders = %i[users]
+  #     config.seeders_directory = 'db/seeds'
+  #     config.csv_files_directory = 'db/seed_files'
   #   end
   def self.configure
     config.tap { |c| yield c }
@@ -104,20 +58,21 @@ module Planter
 
   ##
   # This is the method to call from your +db/seeds.rb+. It callse the seeders
-  # listed in +Planter.config.seeders+. To call specific seeders at
-  # runtime, you can set the +SEEDERS+ environmental variable to a
-  # comma-separated list of seeders.
+  # listed in +Planter.config.seeders+. To call specific seeders at runtime,
+  # you can set the +SEEDERS+ environmental variable to a comma-separated list
+  # of seeders, like +rails db:seed SEEDERS=users,accounts+.
   #
   # @example
-  #   rails db:seed SEEDERS=users,accounts
+  #   # db/seeds.rb, assuming your +configure+ block is in an initializer.
+  #   Planter.seed
   def self.seed
     seeders = ENV['SEEDERS']&.split(',') || config.seeders&.map(&:to_s)
-    raise RuntimeError, 'No seeders specified; nothing to do' unless seeders&.any?
+    raise RuntimeError, 'No seeders specified' unless seeders&.any?
 
-    seeders.each do |table|
-      require Rails.root.join(config.seeders_directory, "#{table}_seeder.rb").to_s
-      puts "Seeding #{table}" unless config.quiet
-      "#{table.camelize}Seeder".constantize.new.seed
+    seeders.each do |s|
+      require Rails.root.join(config.seeders_directory, "#{s}_seeder.rb").to_s
+      puts "Seeding #{s}" unless config.quiet
+      "#{s.camelize}Seeder".constantize.new.seed
     end
   end
 end

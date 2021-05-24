@@ -52,6 +52,8 @@ Planter.configure do |config|
   config.seeders = %i[ users ]
 end
 
+# You could put the above lines in an initializer if you're feeling squirrelly
+
 Planter.seed
 ```
 
@@ -115,7 +117,7 @@ your seeder class. In this example, we'll use
 [faker](https://github.com/faker-ruby/faker).
 
 ```ruby
-require 'faker' # You should really just require this in `db/seeds.rb`.
+require 'faker' # You could just require this in `db/seeds.rb`.
 
 class UsersSeeder < Planter::Seeder
   seeding_method :data_array, number_of_records: 10
