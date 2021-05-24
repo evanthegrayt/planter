@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'csv'
+require 'erb'
 require 'planter/version'
 require 'planter/railtie'
 require 'planter/config'
@@ -16,13 +17,13 @@ require 'planter/seeder'
 # The most basic way to seed is to have a CSV file with the same name as the
 # table in +db/seed_files/+. So, +users.csv+. This CSV should have the table's
 # column names as header. To seed using this method, your class should look
-# like the following. Note that +:csv_file+ is not required; it defaults to the
+# like the following. Note that +:csv_name+ is not required; it defaults to the
 # table name with a +csv+ file extension. The directory where the seed files
 # are kept can be changed via an initializer.
 #   # db/seeds/users_seeder.rb
 #   require 'planter'
 #   class UsersSeeder < Planter::Seeder
-#     seeding_method :standard_csv, csv_file: '/home/me/users.csv'
+#     seeding_method :csv, csv_name: '/home/me/users.csv'
 #   end
 #
 # Another way to seed is to create records from a data array. To do this, your
