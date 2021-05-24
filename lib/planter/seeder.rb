@@ -8,14 +8,14 @@ module Planter
     # The allowed seeding methods.
     #
     # @return [Array]
-    SEEDING_METHODS = %i[standard_csv data_array].freeze
+    SEEDING_METHODS = %i[csv data_array].freeze
 
     ##
     # Array of hashes used to create records. Your class must set this
     # attribute when using +data_hash+ seeding method, although it's probably
     # more likely that you'll want to define a method that returns a new set of
     # data each time (via +Faker+, +Array#sample+, etc.). When using
-    # +standard_csv+, +data+ will be set to the data within the csv. You can
+    # +csv+, +data+ will be set to the data within the csv. You can
     # override this.
     #
     # @return [Array]
@@ -28,40 +28,49 @@ module Planter
     #
     # @param [Symbol] seeding_method
     #
-    # @param [Hash] options
+    # @kwarg [Integer] number_of_records
+    #
+    # @kwarg [String] model
+    #
+    # @kwarg [String] parent_model
+    #
+    # @kwarg [Symbol, String] association
+    #
+    # @kwarg [Symbol, String] csv_name
     #
     # @example
     #   require 'planter'
     #   class UsersSeeder < Planter::Seeder
-    #     seeding_method :data_array,
+    #     seeding_method :csv,
+    #       number_of_records: 2,
     #       model: 'User'
     #       parent_model: 'Person',
     #       association: :users,
-    #       number_of_records: 2
+    #       csv_name: :awesome_users
     #   end
-    def self.seeding_method(method, **options)
+    def self.seeding_method(
+      method,
+      number_of_records: 1,
+      model: to_s.delete_suffix('Seeder').singularize,
+      parent_model: nil,
+      association: nil,
+      csv_name: nil
+    )
       if !SEEDING_METHODS.include?(method.intern)
         raise ArgumentError, "Method must be one of #{SEEDING_METHODS.join(', ')}"
-      elsif options[:association] && !options[:parent_model]
+      elsif association && !parent_model
         raise ArgumentError, "Must specify :parent_model with :association"
       end
 
       @seeding_method = method
-      @number_of_records = options.fetch(:number_of_records, 1)
-      @model = options.fetch(:model, to_s.delete_suffix('Seeder').singularize)
-      @parent_model = options[:parent_model]
-      @association = @parent_model && options.fetch(:association) do
-        determine_association(options)
-      end
-      return unless @seeding_method == :standard_csv
-
-      @csv_file = options.fetch(:csv_file, Rails.root.join(
-        Planter.config.csv_files_directory,
-        "#{to_s.delete_suffix('Seeder').underscore}.csv"
-      ).to_s)
+      @number_of_records = number_of_records
+      @model = model
+      @parent_model = parent_model
+      @association = @parent_model && (association || determine_association)
+      @csv_file = determine_csv_filename(csv_name) if @seeding_method == :csv
     end
 
-    def self.determine_association(options) # :nodoc:
+    def self.determine_association # :nodoc:
       associations =
         @parent_model.constantize.reflect_on_all_associations.map(&:name)
       table = to_s.delete_suffix('Seeder').underscore.split('/').last
@@ -70,9 +79,22 @@ module Planter
         return t if associations.include?(t)
       end
 
-      raise ArgumentError, 'Could not determine association name'
+      raise ArgumentError, "Couldn't determine association name"
     end
     private_class_method :determine_association
+
+    def self.determine_csv_filename(csv_name) # :nodoc:
+      file = (
+        csv_name || "#{to_s.delete_suffix('Seeder').underscore}"
+      ).to_s + '.csv'
+      [file, "#{file}.erb"].each do |f|
+        fname = Rails.root.join(Planter.config.csv_files_directory, f).to_s
+        return fname if File.file?(fname)
+      end
+
+      raise ArgumentError, "Couldn't find csv for #{@model}"
+    end
+    private_class_method :determine_csv_filename
 
     ##
     # The default seed method. To use this method, your class must provide a
@@ -181,10 +203,13 @@ module Planter
 
     def validate_attributes # :nodoc:
       case seeding_method.intern
-      when :standard_csv
-        raise "#{csv_file} does not exist" unless ::File.file?(csv_file)
+      when :csv
+        contents = File.read(csv_file)
+        if csv_file.end_with?('.erb')
+          contents = ERB.new(contents, trim_mode: '<>').result(binding)
+        end
 
-        @data ||= ::CSV.table(csv_file).map(&:to_hash)
+        @data ||= ::CSV.parse(contents, headers: true).map(&:to_hash)
       when :data_array
         raise "Must define '@data'" if public_send(:data).nil?
       else

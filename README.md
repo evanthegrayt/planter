@@ -72,7 +72,7 @@ To seed from CSV, you simply need to add the following to your seeder class.
 
 ```ruby
 class UsersSeeder < Planter::Seeder
-  seeding_method :standard_csv
+  seeding_method :csv
 end
 ```
 
@@ -86,13 +86,25 @@ test1@example.com,test1
 test2@example.com,test2
 ```
 
-If the CSV files are not located in the project, you can specify a `:csv_file`
-option. Note that the value must be a full path.
+If the CSV file is named differently than the seeder, you can specify the
+`:csv_name` option. Note that the value should not include the file extension.
 
 ```ruby
 class UsersSeeder < Planter::Seeder
-  seeding_method :standard_csv, csv_file: '/home/me/users.csv'
+  seeding_method :csv, csv_name: :people
 end
+```
+
+`ERB` can be used in the CSV files if you name it with `.erb` at the end of the
+file name. For example, `users.csv.erb`. Note that lines starting with `<%` and
+ending with `%>` will not be considered rows, so you can use `ERB` rows to set
+values. For example:
+
+```csv.erb
+email,login_attempts
+<% count = 1 %>
+test2@example.com,<%= count += 1 %>
+test2@example.com,<%= count += 1 %>
 ```
 
 Running `rails db:seed` will now seed your `users` table.
@@ -148,7 +160,7 @@ end
 
 Note that specifying `number_of_records` in this instance will create that many
 records *for each record of the parent model*. You can also specify the
-association if it's different from the table name, using the `assocation:`
+association if it's different from the table name, using the `:assocation`
 option.
 
 ### Custom seeds
@@ -169,7 +181,7 @@ end
 ```
 
 ## Customization
-You can change the directories of both the seeder files and the csv files. In
+You can change the directories of both the seeder files and the CSV files. In
 your `configure` block in `db/seeds.rb`, you can add the following. Note that,
 in both instances, the path should be relative to `Rails.root`.
 
