@@ -1,16 +1,13 @@
-version: '3'
-
-volumes:
-  planter:
-
-services:
-  app:
-    build: .
-    image: planter
-    command: bash -c "bundle && tail -f Gemfile"
-    volumes:
-      - planter:/app
-    tty: true
-    stdin_open: true
-    tmpfs:
-      - /tmp
+app:
+  container_name: planter_app
+  build: .
+  dockerfile: Dockerfile
+  volumes:
+    - .:/srv/app
+  volumes_from:
+    - bundle_cache
+bundle_cache:
+  container_name: planter_bundle_cache
+  image: busybox
+  volumes:
+    - /bundle_cache

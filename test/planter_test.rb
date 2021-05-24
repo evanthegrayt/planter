@@ -1,4 +1,4 @@
-require "test_helper"
+require 'test_helper'
 
 class PlanterTest < ActiveSupport::TestCase
   setup do
@@ -9,7 +9,7 @@ class PlanterTest < ActiveSupport::TestCase
     Planter.reset_config
   end
 
-  test "it is configurable" do
+  test 'it is configurable' do
     assert_instance_of Planter::Config, Planter.config
 
     assert_equal 'db/seeds', Planter.config.seeders_directory
@@ -17,11 +17,11 @@ class PlanterTest < ActiveSupport::TestCase
     assert_nil Planter.config.seeders
     refute Planter.config.quiet
 
-    config = Planter.configure do |config|
-      config.seeders_directory = "db/different_seeders_directory"
-      config.csv_files_directory = "db/different_csv_files_directory"
-      config.seeders = %i[users]
-      config.quiet = true
+    config = Planter.configure do |c|
+      c.seeders_directory = 'db/different_seeders_directory'
+      c.csv_files_directory = 'db/different_csv_files_directory'
+      c.seeders = %i[users]
+      c.quiet = true
     end
 
     assert_instance_of Planter::Config, config
@@ -32,7 +32,7 @@ class PlanterTest < ActiveSupport::TestCase
     assert Planter.config.quiet
   end
 
-  test "it should seed" do
+  test 'it should seed' do
     Planter.configure do |config|
       config.seeders = %i[users addresses]
       config.quiet = true
@@ -40,6 +40,6 @@ class PlanterTest < ActiveSupport::TestCase
     Planter.seed
 
     assert_equal 2, User.count
-    assert_equal 4, Address.count
+    assert_equal 2, Address.count
   end
 end
