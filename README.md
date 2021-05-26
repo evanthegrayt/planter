@@ -7,13 +7,12 @@
 
 Seeds for Rails applications can get complicated fast, and Rails doesn't provide
 much for assisting with this process. This plugin seeks to rectify that by
-providing easy ways to seed specific tables by hooking into the existing `rails
-db:seed` task.
+providing easy ways to seed specific tables.
 
 Features include:
 
 - Seed tables from CSV files, an array of hashes, or custom methods.
-- Call specific seeders with `rails db:seed SEEDERS=users,addresses`.
+- Call specific seeders with `rails planter:seed SEEDERS=users,addresses`.
 - Control the number of records being created.
 - Seed associations.
 
@@ -41,31 +40,68 @@ $ gem install planter
 ## Usage
 Let's assume you'd like to seed your `users` table.
 
-To get started, simply add the following to your `db/seeds.rb` file. Note that
-the `config.seeders` should be an array of the seeders to use. They should be in
-the correct order to successfully seed the tables when considering associations.
+To get started, run `rails generate planter:initializer`, which will create
+`config/initializers/planter.rb` with the following contents.
 
 ```ruby
 require 'planter'
 
 Planter.configure do |config|
-  config.seeders = %i[ users ]
+  ##
+  # The list of seeders. These files are stored in the
+  # config.seeders_directory, which can be changed below. When a new
+  # seeeder is generated, it will be appended to the bottom of this
+  # list. If the order is incorrect, you'll need to adjust the it.
+  # Just be sure to keep the ending bracket on its own line, or the
+  # generator won't know where to put new elements.
+  config.seeders = %i[
+  ]
+
+  ##
+  # The directory where the seeder files are kept.
+  # config.seeders_directory = 'db/seeds'
+
+  ##
+  # The directory where CSVs are kept.
+  # config.csv_files_directory = 'db/seed_files'
 end
+```
 
-# You could put the above lines in an initializer if you're feeling squirrelly
+By default, a `planter:seed` task is provided for seeding your application. This
+allows you to use `db:seed` for other purposes. If you want Planter to hook
+into the existing `db:seed` task, simply add the following to `db/seeds.rb`.
 
+```ruby
 Planter.seed
 ```
 
-Then, create a directory called `db/seeds`, and create a file called
-`db/seeds/users_seeder.rb`. In that file, create the following class. Note the
-name of the seeder is the name of the table, plus `Seeder`, and it inherits from
-`Planter::Seeder`.
+To create a users seeder, run `rails generate planter:seeder users`. Usually,
+seeders seed a specific table, so it's recommended to name your seeders after
+the table. If you don't, you'll need to manually specify a few things. More on
+that later. This will create a file named `db/seeds/users_seeder.rb` (the
+directory will be created if it doesn't exist) with the following contents.
 
 ```ruby
 class UsersSeeder < Planter::Seeder
+  # TODO: Choose a seeding_method. For example:
+  # seeding_method :csv
+
+  # For now, we overload the seed method so no exception will be raised.
+  def seed
+  end
 end
 ```
+
+This also adds `users` to the `config.seeders` array in our initializer. A few
+things to note.
+
+- The seeder will always be appended at the end of the array. If this is not the
+correct order, you'll need to adjust the array manually.
+- When adjusting the array, always keep the closing bracket on its own line, or
+the generator won't know where to put the new seeders.
+
+If you want to generate a seeder for every table currently in your database, run
+`rails generate planter:seeder ALL`.
 
 You then need to choose a seeding method, of which there are currently three.
 
@@ -109,7 +145,7 @@ test2@example.com,<%= count += 1 %>
 test2@example.com,<%= count += 1 %>
 ```
 
-Running `rails db:seed` will now seed your `users` table.
+Running `rails planter:seed` will now seed your `users` table.
 
 ## Seeding from a data array
 If you need dynamic seeds, you can add something similar to the following to
@@ -137,7 +173,7 @@ ten elements to create ten records. It's also worth noting that setting an
 instance variable called `@data` from an `initialize` method would also work, as
 the `Planter::Seeder` parent class automatically provides `attr_reader :data`.
 
-Running `rails db:seed` should now seed your `users` table.
+Running `rails planter:seed` should now seed your `users` table.
 
 You can also seed children records for every existing record of a parent model.
 For example, to seed an address for every user, you'd need to create an
@@ -180,26 +216,6 @@ class UsersSeeder < Planter::Seeder
     USERS.each { |email, attrs| User.where(email).first_or_create!(attrs) }
   end
 end
-```
-
-## Customization
-You can change the directories of both the seeder files and the CSV files. In
-your `configure` block in `db/seeds.rb`, you can add the following. Note that,
-in both instances, the path should be relative to `Rails.root`.
-
-```ruby
-require 'planter'
-
-Planter.configure do |config|
-  config.seeders_directory = 'db/seeder_classes'
-  config.csv_files_directory = 'db/csvs'
-  config.seeders = %i[
-    users
-    addresses
-  ]
-end
-
-Planter.seed
 ```
 
 ## License
