@@ -65,6 +65,23 @@ module Planter
   #     end
   #   end
   #
+  # By default, all fields are used to look up the record. If it already
+  # exists, it is not re-created. If you have specific fields that a record
+  # should be looked-up by, you can pass the +unique_columns+ option. This will
+  # attempt to look up the record by those fields only, and if one doesn't
+  # exist, one will be created with the rest of the attributes. An example of
+  # when this would be useful is with Devise; you can't pass +password+ in the
+  # create method, so specifying +unique_columns+ on everything except
+  # +password+ allows it to be passed as an attribute to the +first_or_create+
+  # call.
+  #   require 'planter'
+  #   class UsersSeeder < Planter::Seeder
+  #     seeding_method :data_array, unique_columns: %i[username email]
+  #     def data
+  #       [{username: 'foo', email: 'bar', password: 'Example'}]
+  #     end
+  #   end
+  #
   # If you need to seed a different way, put your own custom +seed+ method in
   # your seeder class and do whatever needs to be done.
   class Seeder
@@ -101,6 +118,8 @@ module Planter
     #
     # @kwarg [Symbol, String] csv_name
     #
+    # @kwarg [Symbol, String] unique_columns
+    #
     # @example
     #   require 'planter'
     #   class UsersSeeder < Planter::Seeder
@@ -109,7 +128,8 @@ module Planter
     #       model: 'User'
     #       parent_model: 'Person',
     #       association: :users,
-    #       csv_name: :awesome_users
+    #       csv_name: :awesome_users,
+    #       unique_columns %i[username email]
     #   end
     def self.seeding_method(
       method,
@@ -117,7 +137,8 @@ module Planter
       model: to_s.delete_suffix('Seeder').singularize,
       parent_model: nil,
       association: nil,
-      csv_name: nil
+      csv_name: nil,
+      unique_columns: nil
     )
       if !SEEDING_METHODS.include?(method.intern)
         raise ArgumentError, "Method must be one of #{SEEDING_METHODS.join(', ')}"
@@ -131,6 +152,11 @@ module Planter
       @parent_model = parent_model
       @association = @parent_model && (association || determine_association)
       @csv_file = determine_csv_filename(csv_name) if @seeding_method == :csv
+      @unique_columns =
+        case unique_columns
+        when String, Symbol then [unique_columns.intern]
+        when Array then unique_columns.map(&:intern)
+        end
     end
 
     def self.determine_association # :nodoc:
@@ -152,7 +178,7 @@ module Planter
       ).to_s + '.csv'
       [file, "#{file}.erb"].each do |f|
         fname = Rails.root.join(Planter.config.csv_files_directory, f).to_s
-        return fname if File.file?(fname)
+        return fname if ::File.file?(fname)
       end
 
       raise ArgumentError, "Couldn't find csv for #{@model}"
@@ -226,13 +252,22 @@ module Planter
     end
 
     ##
+    # When creating a record, the fields that will be used to look up the
+    # record. If it already exists, a new one will not be created.
+    #
+    # @return [Array]
+    def unique_columns
+      @unique_columns ||= self.class.instance_variable_get('@unique_columns')
+    end
+
+    ##
     # Creates records from the +data+ attribute.
     def create_records
       data.each do |rec|
         number_of_records.times do
-          model.constantize.where(
-            rec.transform_values { |value| value == 'NULL' ? nil : value }
-          ).first_or_create!
+          rec.transform_values { |value| value == 'NULL' ? nil : value }
+          unique, attrs = split_record(rec)
+          model.constantize.where(unique).first_or_create!(attrs)
         end
       end
     end
@@ -250,34 +285,47 @@ module Planter
 
     private
 
-    def create_method
+    def create_method # :nodoc:
       parent_model.constantize.reflect_on_association(
         association
       ).macro.to_s.include?('many') ? :create_has_many : :create_has_one
     end
 
-    def create_has_many(assoc_rec, association, rec)
-      assoc_rec.public_send(association).where(rec).first_or_create!
+    def create_has_many(assoc_rec, association, rec) # :nodoc:
+      unique, attrs = split_record(rec)
+      assoc_rec.public_send(association).where(unique).first_or_create!(attrs)
     end
 
-    def create_has_one(assoc_rec, association, rec)
-      assoc_rec.public_send("create_#{association}", rec)
+    def create_has_one(assoc_rec, association, rec) # :nodoc:
+      if assoc_rec.public_send(association)
+        assoc_rec.public_send(association).update_attributes(rec)
+      else
+        assoc_rec.public_send("create_#{association}", rec)
+      end
     end
 
     def validate_attributes # :nodoc:
       case seeding_method.intern
       when :csv
-        contents = File.read(csv_file)
+        contents = ::File.read(csv_file)
         if csv_file.end_with?('.erb')
           contents = ERB.new(contents, trim_mode: '<>').result(binding)
         end
 
-        @data ||= ::CSV.parse(contents, headers: true).map(&:to_hash)
+        @data ||= ::CSV.parse(
+          contents, headers: true, header_converters: :symbol
+        ).map(&:to_hash)
       when :data_array
         raise "Must define '@data'" if public_send(:data).nil?
       else
         raise("Must set 'seeding_method'")
       end
+    end
+
+    def split_record(rec) # :nodoc:
+      return [rec, {}] unless unique_columns
+      u = unique_columns.each_with_object({}) { |c, h| h[c] = rec.delete(c) }
+      [u, rec]
     end
   end
 end

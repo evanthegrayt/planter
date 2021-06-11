@@ -1,4 +1,3 @@
-require 'rake'
 require 'test_helper'
 
 class Planter::SeederTest < ActiveSupport::TestCase
@@ -22,7 +21,7 @@ class Planter::SeederTest < ActiveSupport::TestCase
     assert_raise(NameError) { seeder.seeding_method }
   end
 
-  test 'csv' do
+  test 'csv with unique columns' do
     Planter.seed
     assert_equal 2, User.count
     assert_equal 'test1@example.com', User.first.email
@@ -31,7 +30,7 @@ class Planter::SeederTest < ActiveSupport::TestCase
 
   test 'csv erb with parent_model' do
     Planter.seed
-    # assert_equal 4, Comment.count
+    assert_equal 4, Comment.count
     assert_equal 20, Comment.last.upvotes
     assert_equal 'This is a test 1', Comment.first.message
   end
@@ -41,9 +40,9 @@ class Planter::SeederTest < ActiveSupport::TestCase
     assert_equal 2, Profile.count
   end
 
-  test 'has_many data_array with parent_model and number_of_records' do
+  test 'has_many data_array with unique parent_model and number_of_records' do
     Planter.seed
-    assert_equal 4, Address.count
+    assert_equal 2, Address.count
   end
 
   test 'custom seed method' do

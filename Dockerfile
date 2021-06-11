@@ -1,15 +1,12 @@
-FROM ruby:3.0.1
-RUN apt-get update -qq && \
-    apt-get install -y build-essential sqlite3 libsqlite3-dev vim
-ENV EDITOR vim
-RUN mkdir /app
-WORKDIR /app
+FROM ruby:3.0
 
-RUN gem install bundler
+RUN apt-get update && apt-get install -y \
+  vim sqlite3
 
-COPY planter.gemspec /app
-COPY Gemfile /app
-COPY Gemfile.lock /app
-COPY lib/planter/version.rb /app/lib/planter/version.rb
-RUN bundle check || bundle install
-COPY . /app
+ENV APP_HOME /srv/app
+
+ENV BUNDLE_GEMFILE=$APP_HOME/Gemfile \
+    BUNDLE_JOBS=8 \
+    BUNDLE_PATH=/bundle_cache
+
+WORKDIR $APP_HOME
