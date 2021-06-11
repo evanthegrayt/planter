@@ -1,13 +1,15 @@
-FROM ruby:3.0.0
-ENV APP_USER planter_user
+FROM ruby:3.0.1
 RUN apt-get update -qq && \
-    apt-get install -y build-essential sqlite3 libsqlite3-dev
-RUN useradd -ms /bin/bash $APP_USER
-USER $APP_USER
-WORKDIR /home/$APP_USER/app
+    apt-get install -y build-essential sqlite3 libsqlite3-dev vim
+ENV EDITOR vim
+RUN mkdir /app
+WORKDIR /app
 
 RUN gem install bundler
 
-COPY . .
+COPY planter.gemspec /app
+COPY Gemfile /app
+COPY Gemfile.lock /app
+COPY lib/planter/version.rb /app/lib/planter/version.rb
 RUN bundle check || bundle install
-COPY . .
+COPY . /app

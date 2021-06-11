@@ -1,11 +1,15 @@
 version: '3'
+
+volumes:
+  planter:
+
 services:
   app:
     build: .
     image: planter
     command: bash -c "bundle && tail -f Gemfile"
     volumes:
-      - .:/home/planter_user/app
+      - planter:/app
     tty: true
     stdin_open: true
     tmpfs:
