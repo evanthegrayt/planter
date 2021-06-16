@@ -19,10 +19,12 @@ Features include:
 You can view the documentation [here](https://evanthegrayt.github.io/planter/).
 
 ## Installation
-Add this line to your application's Gemfile:
+Add the following line to your application's Gemfile. Because this plugin is
+currently a pre-release version, it's recommended to lock it to a specific
+version, as breaking changes may occur, even at the patch level.
 
 ```ruby
-gem 'planter'
+gem 'planter', '0.0.9'
 ```
 
 And then execute:
@@ -51,7 +53,7 @@ Planter.configure do |config|
   # The list of seeders. These files are stored in the
   # config.seeders_directory, which can be changed below. When a new
   # seeder is generated, it will be appended to the bottom of this
-  # list. If the order is incorrect, you'll need to adjust the it.
+  # list. If the order is incorrect, you'll need to adjust it.
   # Just be sure to keep the ending bracket on its own line, or the
   # generator won't know where to put new elements.
   config.seeders = %i[
@@ -138,7 +140,7 @@ file name. For example, `users.csv.erb`. Note that lines starting with `<%` and
 ending with `%>` will not be considered rows, so you can use `ERB` rows to set
 values. For example:
 
-```csv.erb
+```
 email,login_attempts
 <% count = 1 %>
 test2@example.com,<%= count += 1 %>
