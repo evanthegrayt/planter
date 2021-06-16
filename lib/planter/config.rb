@@ -43,9 +43,18 @@ module Planter
     attr_accessor :quiet
 
     ##
+    # When false, don't print the progress bar.
+    #
+    # @param [Boolean] progress_bar
+    #
+    # @return [Boolean]
+    attr_accessor :progress_bar
+
+    ##
     # Create a new instance of the config.
     def initialize
       @quiet = false
+      @progress_bar = true
       @seeders_directory = ::File.join('db', 'seeds')
       @csv_files_directory = ::File.join('db', 'seed_files')
     end
