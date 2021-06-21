@@ -1,13 +1,16 @@
-app:
-  container_name: planter_app
-  build: .
-  dockerfile: Dockerfile
-  volumes:
-    - .:/srv/app
-  volumes_from:
-    - bundle_cache
-bundle_cache:
-  container_name: planter_bundle_cache
-  image: busybox
-  volumes:
-    - /bundle_cache
+version: '3'
+
+volumes:
+  bundle_cache:
+
+services:
+  app:
+    container_name: planter_app
+    build:
+      context: .
+    command: >  
+      bash -c "bin/rails db:create &&
+               bin/rails db:migrate"
+    volumes:
+      - .:/srv/app
+      - bundle_cache:/usr/local/lib
