@@ -14,7 +14,7 @@ module Planter
       def generate(seeder)
         empty_directory ::Planter.config.seeders_directory
 
-        create_file "#{::Planter.config.seeders_directory}/#{seeder}_seeder.rb", <<~EOF
+        create_file "#{::Planter.config.seeders_directory}/#{seeder}_seeder.rb", <<~RUBY
           class #{seeder.camelize}Seeder < Planter::Seeder
             # TODO: Choose a seeding_method. For example:
             # seeding_method :csv
@@ -23,11 +23,13 @@ module Planter
             def seed
             end
           end
-        EOF
+        RUBY
 
-        inject_into_file 'config/initializers/planter.rb',
+        inject_into_file(
+          'config/initializers/planter.rb',
           "    #{seeder}\n",
           before: /^\s*\]\s*$/
+        )
       end
 
       def tables

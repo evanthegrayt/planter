@@ -151,7 +151,10 @@ module Planter
       @model = model
       @parent_model = parent_model
       @association = @parent_model && (association || determine_association)
-      @csv_file = determine_csv_filename(csv_name) if @seeding_method == :csv
+      if @seeding_method == :csv
+        @csv_file = determine_csv_filename(csv_name)
+        raise ArgumentError, "Couldn't find csv for #{@model}" unless @csv_file
+      end
       @unique_columns =
         case unique_columns
         when String, Symbol then [unique_columns.intern]
@@ -173,15 +176,12 @@ module Planter
     private_class_method :determine_association
 
     def self.determine_csv_filename(csv_name) # :nodoc:
-      file = (
-        csv_name || "#{to_s.delete_suffix('Seeder').underscore}"
-      ).to_s + '.csv'
-      [file, "#{file}.erb"].each do |f|
-        fname = Rails.root.join(Planter.config.csv_files_directory, f).to_s
-        return fname if ::File.file?(fname)
+      file = csv_name || to_s.delete_suffix('Seeder').underscore
+      Dir.glob(
+        Rails.root.join(Planter.config.csv_files_directory, '*').to_s
+      ).find do |d|
+        d.match?(/#{::File::SEPARATOR}#{file}(?:\.erb)?\.csv(?:\.erb)?$/i)
       end
-
-      raise ArgumentError, "Couldn't find csv for #{@model}"
     end
     private_class_method :determine_csv_filename
 
@@ -263,7 +263,7 @@ module Planter
     ##
     # Creates records from the +data+ attribute.
     def create_records
-      data.each do |rec|
+      RecordList.new(data).public_send(data_each_method) do |rec|
         number_of_records.times do
           rec.transform_values { |value| value == 'NULL' ? nil : value }
           unique, attrs = split_record(rec)
@@ -278,7 +278,9 @@ module Planter
     def create_records_from_parent
       parent_model.constantize.all.each do |assoc_rec|
         number_of_records.times do
-          data.each { |rec| send(create_method, assoc_rec, association, rec) }
+          RecordList.new(data).public_send(data_each_method) do |rec|
+            send(create_method, assoc_rec, association, rec)
+          end
         end
       end
     end
@@ -298,7 +300,7 @@ module Planter
 
     def create_has_one(assoc_rec, association, rec) # :nodoc:
       if assoc_rec.public_send(association)
-        assoc_rec.public_send(association).update_attributes(rec)
+        assoc_rec.public_send(association).update!(rec)
       else
         assoc_rec.public_send("create_#{association}", rec)
       end
@@ -308,7 +310,7 @@ module Planter
       case seeding_method.intern
       when :csv
         contents = ::File.read(csv_file)
-        if csv_file.end_with?('.erb')
+        if csv_file.match?(/\.erb(?:.csv)?$/)
           contents = ERB.new(contents, trim_mode: '<>').result(binding)
         end
 
@@ -324,8 +326,14 @@ module Planter
 
     def split_record(rec) # :nodoc:
       return [rec, {}] unless unique_columns
+
       u = unique_columns.each_with_object({}) { |c, h| h[c] = rec.delete(c) }
       [u, rec]
+    end
+
+    def data_each_method # :nodoc:
+      config = Planter.config
+      config.progress_bar && !config.quiet ? :each_with_progress : :each
     end
   end
 end

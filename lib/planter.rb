@@ -6,6 +6,8 @@ require 'planter/version'
 require 'planter/railtie'
 require 'planter/config'
 require 'planter/seeder'
+require 'planter/progress_bar'
+require 'planter/seeder/record_list'
 
 ##
 # The main module for the plugin. It nicely wraps the +Planter::Config+ class
