@@ -8,9 +8,8 @@ services:
     container_name: planter_app
     build:
       context: .
-    command: >  
-      bash -c "bin/rails db:create &&
-               bin/rails db:migrate"
+    command: >
+      bash -c "test/dummy/bin/rails db:create && test/dummy/bin/rails db:migrate"
     volumes:
       - .:/srv/app
       - bundle_cache:/usr/local/lib

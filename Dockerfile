@@ -17,3 +17,5 @@ RUN bundle check || bundle install
 
 WORKDIR $APP_HOME/test/dummy
 RUN rails db:create db:migrate
+
+WORKDIR $APP_HOME
