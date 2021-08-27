@@ -73,15 +73,14 @@
 
   <ul class="link-list" role="directory">
     <li ><a href="#method-c-seeding_method">::seeding_method</a>
-    <li ><a href="#method-i-association">#association</a>
-    <li ><a href="#method-i-create_records">#create_records</a>
-    <li ><a href="#method-i-create_records_from_parent">#create_records_from_parent</a>
-    <li ><a href="#method-i-csv_file">#csv_file</a>
+    <li ><a href="#method-i-csv_name">#csv_name</a>
+    <li ><a href="#method-i-erb_trim_mode">#erb_trim_mode</a>
     <li ><a href="#method-i-model">#model</a>
     <li ><a href="#method-i-number_of_records">#number_of_records</a>
-    <li ><a href="#method-i-parent_model">#parent_model</a>
+    <li ><a href="#method-i-parent">#parent</a>
     <li ><a href="#method-i-seed">#seed</a>
-    <li ><a href="#method-i-seeding_method">#seeding_method</a>
+    <li ><a href="#method-i-seed_method">#seed_method</a>
+    <li ><a href="#method-i-unique_columns">#unique_columns</a>
   </ul>
 </div>
 
@@ -95,7 +94,7 @@
 
   <section class="description">
     
-<p>Class that seeders should inherit from. <a href="Seeder.html"><code>Seeder</code></a> files should be in <code>db/seeds</code>, and named <code>TABLE_seeder.rb</code>, where <code>TABLE</code> is the name of the table being seeded (I.E. <code>users_seeder.rb</code>). If your seeder is named differently than the table, you&#39;ll need to specify the table with the <code>model</code> option. The seeder&#39;s class name should be the same as the file name, but camelized. So, <code>UsersSeeder</code>. The directory where the seeder files are located can be changed via an initializer.</p>
+<p>Class that seeders should inherit from. Seeders should be in <code>db/seeds</code>, and named <code>TABLE_seeder.rb</code>, where <code>TABLE</code> is the name of the table being seeded (I.E. <code>users_seeder.rb</code>). If your seeder is named differently than the table, you&#39;ll need to specify the table with the <code>model</code> option. The seeder&#39;s class name should be the same as the file name, but camelized. So, <code>UsersSeeder</code>. The directory where the seeder files are located can be changed via an initializer.</p>
 
 <p>The most basic way to seed is to have a CSV file with the same name as the table in <code>db/seed_files/</code>. So, <code>users.csv</code>. This CSV should have the table&#39;s column names as header. To seed using this method, your class should look like the following. Note that <code>:csv_name</code> and <code>:model</code> are only required if your seeder or csv are named differently than the table being seeded. The directory where the seed files are kept can be changed via an initializer.</p>
 
@@ -106,7 +105,7 @@
 <span class="ruby-keyword">end</span>
 </pre>
 
-<p>Another way to seed is to create records from a data array. To do this, your class must implement a <code>data</code> attribute or method, which is an array of hashes. Note that this class already provides the <code>attr_reader</code> for this attribute, so the most you have to do it create instance variables in your constructor. If if you want your data to be different for each new record (via Faker, +Array#sample+, etc.), you&#39;ll probably want to supply a method called data that returns an array of new data each time.</p>
+<p>Another way to seed is to create records from a data array. To do this, your class must implement a <code>data</code> attribute or method, which is an array of hashes. Note that this class already provides the <code>attr_reader</code> for this attribute, so the most you have to do is create instance variables in your constructor. If if you want your data to be different for each new record (via Faker, +Array#sample+, etc.), you&#39;ll probably want to supply a method called data that returns an array of new data each time.</p>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;planter&#39;</span>
 <span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
@@ -117,24 +116,35 @@
 <span class="ruby-keyword">end</span>
 </pre>
 
-<p>In both of the above methods, you can specify <code>parent_model</code> and <code>association</code>. If specified, records will be created via that parent model&#39;s association. If <code>association</code> is not provided, it will be assumed to be the model name, pluralized and snake-cased (implying a <code>has_many</code> relationship).  For example, if we&#39;re seeding the users table, and the model is <code>User</code>, the association will default to <code>users</code>.</p>
+<p>In both of the above methods, you can specify a <code>parent</code> association, which is the <code>belongs_to</code> association name in your model, which, when specified, records will be created for each record in the parent table. For example, if we&#39;re seeding the users table, and the model is <code>User</code>, which belongs to <code>Person</code>, then doing the following will create a user record for each record in the Person table. Note that nothing is automatically done to prevent any validation errors; you must do this on your own, mostly likely using <code>Faker</code> or a similar library.</p>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;planter&#39;</span>
 <span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
-  <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:data_array</span>, <span class="ruby-value">parent_model:</span> <span class="ruby-string">&#39;Person&#39;</span>, <span class="ruby-value">association:</span> <span class="ruby-value">:users</span>
+  <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:data_array</span>, <span class="ruby-value">parent:</span> <span class="ruby-value">:person</span>
   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data</span>
     [{<span class="ruby-value">foo:</span> <span class="ruby-string">&#39;bar&#39;</span>, <span class="ruby-value">baz:</span> <span class="ruby-string">&#39;bar&#39;</span>}]
   <span class="ruby-keyword">end</span>
 <span class="ruby-keyword">end</span>
 </pre>
 
-<p>You can also set <code>number_of_records</code> to determine how many times each record in the <code>data</code> array will get created. The default is 1. Note that if this attribute is set alongside <code>parent_model</code> and <code>association</code>, <code>number_of_records</code> will be how many records will be created for each record in the parent table.</p>
+<p>You can also set <code>number_of_records</code> to determine how many times each record in the <code>data</code> array will get created. The default is 1. Note that if this attribute is set alongside <code>parent</code>, <code>number_of_records</code> will be how many records will be created for each record in the parent table.</p>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;planter&#39;</span>
 <span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
   <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:data_array</span>, <span class="ruby-value">number_of_records:</span> <span class="ruby-value">5</span>
   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data</span>
     [{<span class="ruby-value">foo:</span> <span class="ruby-string">&#39;bar&#39;</span>, <span class="ruby-value">baz:</span> <span class="ruby-string">&#39;bar&#39;</span>}]
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>By default, all fields are used to look up the record. If it already exists, it is not re-created. If you have specific fields that a record should be looked-up by, you can pass the <code>unique_columns</code> option. This will attempt to look up the record by those fields only, and if one doesn&#39;t exist, one will be created with the rest of the attributes. An example of when this would be useful is with Devise; you can&#39;t pass <code>password</code> in the create method, so specifying <code>unique_columns</code> on everything except <code>password</code> allows it to be passed as an attribute to the <code>first_or_create</code> call.</p>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;planter&#39;</span>
+<span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
+  <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:data_array</span>, <span class="ruby-value">unique_columns:</span> <span class="ruby-node">%i[username email]</span>
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data</span>
+    [{<span class="ruby-value">username:</span> <span class="ruby-string">&#39;foo&#39;</span>, <span class="ruby-value">email:</span> <span class="ruby-string">&#39;bar&#39;</span>, <span class="ruby-value">password:</span> <span class="ruby-string">&#39;Example&#39;</span>}]
   <span class="ruby-keyword">end</span>
 <span class="ruby-keyword">end</span>
 </pre>
@@ -175,6 +185,40 @@
 <p>@return [Array]</p>
         </div>
       </div>
+      <div id="attribute-i-transformations" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">transformations</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        <p>A hash of user-defined column names and procs to be run on values. This is most useful for when seeding from csv, and you need to transform, say, &#39;true&#39; (String) into true (Boolean). The user may define this as an instance variable, or define a method that returns the hash.</p>
+
+<p>When defining a Proc/Lambda, you can make it accept 0, 1, or 2 arguments.</p>
+<ul><li>
+<p>When 0, the value is replaced by the result of the Lambda.</p>
+</li><li>
+<p>When 1, the value is passed to the Lambda, and is subsequently replaced by the result of the Lambda.</p>
+</li><li>
+<p>When 2, the value is the first argument, and the entire row, as a Hash, is the second argument. This allows for more complicated transformations that can be dependent on other fields and values in the record.</p>
+</li></ul>
+
+<p>@return [Hash, nil]</p>
+
+<p>@example</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
+  <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:csv</span>
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">transformations</span>
+    {
+      <span class="ruby-value">admin:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">v</span>) { <span class="ruby-identifier">v</span> <span class="ruby-operator">==</span> <span class="ruby-string">&#39;true&#39;</span> },
+      <span class="ruby-value">last_name:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">value</span>, <span class="ruby-identifier">row</span>) { <span class="ruby-node">&quot;#{value} #{row[:suffix]}&quot;</span>.<span class="ruby-identifier">squish</span> }
+    }
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+        </div>
+      </div>
     </section>
 
 
@@ -186,24 +230,26 @@
       <div id="method-c-seeding_method" class="method-detail ">
         <div class="method-heading">
           <span class="method-name">seeding_method</span><span
-            class="method-args">( method, number_of_records: 1, model: to_s.delete_suffix(&#39;Seeder&#39;).singularize, parent_model: nil, association: nil, csv_name: nil )</span>
+            class="method-args">( seed_method, number_of_records: 1, model: nil, parent: nil, csv_name: nil, unique_columns: nil, erb_trim_mode: nil )</span>
           <span class="method-click-advice">click to toggle source</span>
         </div>
 
         <div class="method-description">
           <p>If your class is going to use the inherited <code>seed</code> method, you must tell it which <code>seeding_method</code> to use. The argument to this method must be included in the <code>SEEDING_METHODS</code> array.</p>
 
-<p>@param [Symbol] <a href="Seeder.html#method-c-seeding_method"><code>seeding_method</code></a></p>
+<p>@param [Symbol] <a href="Seeder.html#method-i-seed_method"><code>seed_method</code></a></p>
 
 <p>@kwarg [Integer] <a href="Seeder.html#method-i-number_of_records"><code>number_of_records</code></a></p>
 
 <p>@kwarg [String] model</p>
 
-<p>@kwarg [String] <a href="Seeder.html#method-i-parent_model"><code>parent_model</code></a></p>
+<p>@kwarg [Symbol, String] parent</p>
 
-<p>@kwarg [Symbol, String] association</p>
+<p>@kwarg [Symbol, String] <a href="Seeder.html#method-i-csv_name"><code>csv_name</code></a></p>
 
-<p>@kwarg [Symbol, String] csv_name</p>
+<p>@kwarg [Symbol, String] <a href="Seeder.html#method-i-unique_columns"><code>unique_columns</code></a></p>
+
+<p>@kwarg [String] <a href="Seeder.html#method-i-erb_trim_mode"><code>erb_trim_mode</code></a></p>
 
 <p>@example</p>
 
@@ -212,33 +258,38 @@ class UsersSeeder &lt; Planter::Seeder
   seeding_method :csv,
     number_of_records: 2,
     model: &#39;User&#39;
-    parent_model: &#39;Person&#39;,
-    association: :users,
-    csv_name: :awesome_users
+    parent: :person,
+    csv_name: :awesome_users,
+    unique_columns %i[username email],
+    erb_trim_mode: &#39;&lt;&gt;&#39;
 end</pre>
 
           <div class="method-source-code" id="seeding_method-source">
-            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 114</span>
+            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 212</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">seeding_method</span>(
-  <span class="ruby-identifier">method</span>,
+  <span class="ruby-identifier">seed_method</span>,
   <span class="ruby-value">number_of_records:</span> <span class="ruby-value">1</span>,
-  <span class="ruby-value">model:</span> <span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">delete_suffix</span>(<span class="ruby-string">&#39;Seeder&#39;</span>).<span class="ruby-identifier">singularize</span>,
-  <span class="ruby-value">parent_model:</span> <span class="ruby-keyword">nil</span>,
-  <span class="ruby-value">association:</span> <span class="ruby-keyword">nil</span>,
-  <span class="ruby-value">csv_name:</span> <span class="ruby-keyword">nil</span>
+  <span class="ruby-value">model:</span> <span class="ruby-keyword">nil</span>,
+  <span class="ruby-value">parent:</span> <span class="ruby-keyword">nil</span>,
+  <span class="ruby-value">csv_name:</span> <span class="ruby-keyword">nil</span>,
+  <span class="ruby-value">unique_columns:</span> <span class="ruby-keyword">nil</span>,
+  <span class="ruby-value">erb_trim_mode:</span> <span class="ruby-keyword">nil</span>
 )
-  <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-constant">SEEDING_METHODS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">method</span>.<span class="ruby-identifier">intern</span>)
-    <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;Method must be one of #{SEEDING_METHODS.join(&#39;, &#39;)}&quot;</span>
-  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">association</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">parent_model</span>
-    <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-string">&quot;Must specify :parent_model with :association&quot;</span>
+  <span class="ruby-keyword">unless</span> <span class="ruby-constant">SEEDING_METHODS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">seed_method</span>.<span class="ruby-identifier">intern</span>)
+    <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;Method must be: #{SEEDING_METHODS.join(&#39;, &#39;)}&quot;</span>
   <span class="ruby-keyword">end</span>
 
-  <span class="ruby-ivar">@seeding_method</span> = <span class="ruby-identifier">method</span>
-  <span class="ruby-ivar">@number_of_records</span> = <span class="ruby-identifier">number_of_records</span>
-  <span class="ruby-ivar">@model</span> = <span class="ruby-identifier">model</span>
-  <span class="ruby-ivar">@parent_model</span> = <span class="ruby-identifier">parent_model</span>
-  <span class="ruby-ivar">@association</span> = <span class="ruby-ivar">@parent_model</span> <span class="ruby-operator">&amp;&amp;</span> (<span class="ruby-identifier">association</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">determine_association</span>)
-  <span class="ruby-ivar">@csv_file</span> = <span class="ruby-identifier">determine_csv_filename</span>(<span class="ruby-identifier">csv_name</span>) <span class="ruby-keyword">if</span> <span class="ruby-ivar">@seeding_method</span> <span class="ruby-operator">==</span> <span class="ruby-value">:csv</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">seed_method</span> = <span class="ruby-identifier">seed_method</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">number_of_records</span> = <span class="ruby-identifier">number_of_records</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">model</span> = <span class="ruby-identifier">model</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">delete_suffix</span>(<span class="ruby-string">&#39;Seeder&#39;</span>).<span class="ruby-identifier">singularize</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">parent</span> = <span class="ruby-identifier">parent</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">csv_name</span> = <span class="ruby-identifier">csv_name</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">delete_suffix</span>(<span class="ruby-string">&#39;Seeder&#39;</span>).<span class="ruby-identifier">underscore</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">erb_trim_mode</span> = <span class="ruby-identifier">erb_trim_mode</span> <span class="ruby-operator">||</span> <span class="ruby-constant">Planter</span>.<span class="ruby-identifier">config</span>.<span class="ruby-identifier">erb_trim_mode</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">unique_columns</span> =
+    <span class="ruby-keyword">case</span> <span class="ruby-identifier">unique_columns</span>
+    <span class="ruby-keyword">when</span> <span class="ruby-constant">String</span>, <span class="ruby-constant">Symbol</span> <span class="ruby-keyword">then</span> [<span class="ruby-identifier">unique_columns</span>.<span class="ruby-identifier">intern</span>]
+    <span class="ruby-keyword">when</span> <span class="ruby-constant">Array</span> <span class="ruby-keyword">then</span> <span class="ruby-identifier">unique_columns</span>.<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:intern</span>)
+    <span class="ruby-keyword">end</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
         </div>
@@ -253,114 +304,9 @@ end</pre>
          <h3>Public Instance Methods</h3>
        </header>
 
-      <div id="method-i-seed" class="method-detail ">
+      <div id="method-i-csv_name" class="method-detail ">
         <div class="method-heading">
-          <span class="method-name">seed</span><span
-            class="method-args">()</span>
-          <span class="method-click-advice">click to toggle source</span>
-        </div>
-
-        <div class="method-description">
-          <p>The default seed method. To use this method, your class must provide a valid <code>seeding_method</code>, and not implement its own <code>seed</code> method.</p>
-
-          <div class="method-source-code" id="seed-source">
-            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 165</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">seed</span>
-  <span class="ruby-identifier">validate_attributes</span>
-
-  <span class="ruby-identifier">parent_model</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">create_records_from_parent</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">create_records</span>
-<span class="ruby-keyword">end</span></pre>
-          </div>
-        </div>
-
-
-      </div>
-
-    </section>
-
-     <section id="protected-instance-5Buntitled-5D-method-details" class="method-section">
-       <header>
-         <h3>Protected Instance Methods</h3>
-       </header>
-
-      <div id="method-i-association" class="method-detail ">
-        <div class="method-heading">
-          <span class="method-name">association</span><span
-            class="method-args">()</span>
-          <span class="method-click-advice">click to toggle source</span>
-        </div>
-
-        <div class="method-description">
-          <p>When using <code>parent_model</code>, the association name. Your class can set this attribute via <code>seeding_method</code>.</p>
-
-<p>@return [Symbol]</p>
-
-          <div class="method-source-code" id="association-source">
-            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 205</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">association</span>
-  <span class="ruby-ivar">@association</span> <span class="ruby-operator">||=</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">instance_variable_get</span>(<span class="ruby-string">&#39;@association&#39;</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-        </div>
-
-
-      </div>
-
-      <div id="method-i-create_records" class="method-detail ">
-        <div class="method-heading">
-          <span class="method-name">create_records</span><span
-            class="method-args">()</span>
-          <span class="method-click-advice">click to toggle source</span>
-        </div>
-
-        <div class="method-description">
-          <p>Creates records from the <code>data</code> attribute.</p>
-
-          <div class="method-source-code" id="create_records-source">
-            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 230</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">create_records</span>
-  <span class="ruby-identifier">data</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">rec</span><span class="ruby-operator">|</span>
-    <span class="ruby-identifier">number_of_records</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword">do</span>
-      <span class="ruby-identifier">model</span>.<span class="ruby-identifier">constantize</span>.<span class="ruby-identifier">where</span>(
-        <span class="ruby-identifier">rec</span>.<span class="ruby-identifier">transform_values</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">value</span><span class="ruby-operator">|</span> <span class="ruby-identifier">value</span> <span class="ruby-operator">==</span> <span class="ruby-string">&#39;NULL&#39;</span> <span class="ruby-operator">?</span> <span class="ruby-keyword">nil</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">value</span> }
-      ).<span class="ruby-identifier">first_or_create!</span>
-    <span class="ruby-keyword">end</span>
-  <span class="ruby-keyword">end</span>
-<span class="ruby-keyword">end</span></pre>
-          </div>
-        </div>
-
-
-      </div>
-
-      <div id="method-i-create_records_from_parent" class="method-detail ">
-        <div class="method-heading">
-          <span class="method-name">create_records_from_parent</span><span
-            class="method-args">()</span>
-          <span class="method-click-advice">click to toggle source</span>
-        </div>
-
-        <div class="method-description">
-          <p>Create records from the <code>data</code> attribute for each record in the <code>parent_table</code>, via the specified <code>association</code>.</p>
-
-          <div class="method-source-code" id="create_records_from_parent-source">
-            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 243</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">create_records_from_parent</span>
-  <span class="ruby-identifier">parent_model</span>.<span class="ruby-identifier">constantize</span>.<span class="ruby-identifier">all</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">assoc_rec</span><span class="ruby-operator">|</span>
-    <span class="ruby-identifier">number_of_records</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword">do</span>
-      <span class="ruby-identifier">data</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">rec</span><span class="ruby-operator">|</span> <span class="ruby-identifier">send</span>(<span class="ruby-identifier">create_method</span>, <span class="ruby-identifier">assoc_rec</span>, <span class="ruby-identifier">association</span>, <span class="ruby-identifier">rec</span>) }
-    <span class="ruby-keyword">end</span>
-  <span class="ruby-keyword">end</span>
-<span class="ruby-keyword">end</span></pre>
-          </div>
-        </div>
-
-
-      </div>
-
-      <div id="method-i-csv_file" class="method-detail ">
-        <div class="method-heading">
-          <span class="method-name">csv_file</span><span
+          <span class="method-name">csv_name</span><span
             class="method-args">()</span>
           <span class="method-click-advice">click to toggle source</span>
         </div>
@@ -370,11 +316,32 @@ end</pre>
 
 <p>@return [String]</p>
 
-          <div class="method-source-code" id="csv_file-source">
-            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 224</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">csv_file</span>
-  <span class="ruby-ivar">@csv_file</span> <span class="ruby-operator">||=</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">instance_variable_get</span>(<span class="ruby-string">&#39;@csv_file&#39;</span>)
-<span class="ruby-keyword">end</span></pre>
+          <div class="method-source-code" id="csv_name-source">
+            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 174</span>
+<span class="ruby-identifier">class_attribute</span> <span class="ruby-value">:csv_name</span>
+</pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-erb_trim_mode" class="method-detail ">
+        <div class="method-heading">
+          <span class="method-name">erb_trim_mode</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+
+        <div class="method-description">
+          <p>What trim mode should ERB use?</p>
+
+<p>@return [String]</p>
+
+          <div class="method-source-code" id="erb_trim_mode-source">
+            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 138</span>
+<span class="ruby-identifier">class_attribute</span> <span class="ruby-value">:erb_trim_mode</span>
+</pre>
           </div>
         </div>
 
@@ -394,10 +361,9 @@ end</pre>
 <p>@return [String]</p>
 
           <div class="method-source-code" id="model-source">
-            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 186</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">model</span>
-  <span class="ruby-ivar">@model</span> <span class="ruby-operator">||=</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">instance_variable_get</span>(<span class="ruby-string">&#39;@model&#39;</span>)
-<span class="ruby-keyword">end</span></pre>
+            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 152</span>
+<span class="ruby-identifier">class_attribute</span> <span class="ruby-value">:model</span>
+</pre>
           </div>
         </div>
 
@@ -417,20 +383,18 @@ end</pre>
 <p>@return [Integer]</p>
 
           <div class="method-source-code" id="number_of_records-source">
-            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 215</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">number_of_records</span>
-  <span class="ruby-ivar">@number_of_records</span> <span class="ruby-operator">||=</span>
-    <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">instance_variable_get</span>(<span class="ruby-string">&#39;@number_of_records&#39;</span>)
-<span class="ruby-keyword">end</span></pre>
+            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 168</span>
+<span class="ruby-identifier">class_attribute</span> <span class="ruby-value">:number_of_records</span>
+</pre>
           </div>
         </div>
 
 
       </div>
 
-      <div id="method-i-parent_model" class="method-detail ">
+      <div id="method-i-parent" class="method-detail ">
         <div class="method-heading">
-          <span class="method-name">parent_model</span><span
+          <span class="method-name">parent</span><span
             class="method-args">()</span>
           <span class="method-click-advice">click to toggle source</span>
         </div>
@@ -440,10 +404,33 @@ end</pre>
 
 <p>@return [String]</p>
 
-          <div class="method-source-code" id="parent_model-source">
-            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 196</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">parent_model</span>
-  <span class="ruby-ivar">@parent_model</span> <span class="ruby-operator">||=</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">instance_variable_get</span>(<span class="ruby-string">&#39;@parent_model&#39;</span>)
+          <div class="method-source-code" id="parent-source">
+            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 160</span>
+<span class="ruby-identifier">class_attribute</span> <span class="ruby-value">:parent</span>
+</pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-seed" class="method-detail ">
+        <div class="method-heading">
+          <span class="method-name">seed</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+
+        <div class="method-description">
+          <p>The default seed method. To use this method, your class must provide a valid <code>seeding_method</code>, and not implement its own <code>seed</code> method.</p>
+
+          <div class="method-source-code" id="seed-source">
+            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 241</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">seed</span>
+  <span class="ruby-identifier">validate_attributes</span>
+  <span class="ruby-identifier">extract_data_from_csv</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">seed_method</span> <span class="ruby-operator">==</span> <span class="ruby-value">:csv</span>
+
+  <span class="ruby-identifier">parent</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">create_records_from_parent</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">create_records</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
         </div>
@@ -451,9 +438,9 @@ end</pre>
 
       </div>
 
-      <div id="method-i-seeding_method" class="method-detail ">
+      <div id="method-i-seed_method" class="method-detail ">
         <div class="method-heading">
-          <span class="method-name">seeding_method</span><span
+          <span class="method-name">seed_method</span><span
             class="method-args">()</span>
           <span class="method-click-advice">click to toggle source</span>
         </div>
@@ -463,11 +450,32 @@ end</pre>
 
 <p>@return [Symbol]</p>
 
-          <div class="method-source-code" id="seeding_method-source">
-            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 177</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">seeding_method</span>
-  <span class="ruby-ivar">@seeding_method</span> <span class="ruby-operator">||=</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">instance_variable_get</span>(<span class="ruby-string">&#39;@seeding_method&#39;</span>)
-<span class="ruby-keyword">end</span></pre>
+          <div class="method-source-code" id="seed_method-source">
+            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 180</span>
+<span class="ruby-identifier">class_attribute</span> <span class="ruby-value">:seed_method</span>
+</pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-unique_columns" class="method-detail ">
+        <div class="method-heading">
+          <span class="method-name">unique_columns</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+
+        <div class="method-description">
+          <p>When creating a record, the fields that will be used to look up the record. If it already exists, a new one will not be created.</p>
+
+<p>@return [Array]</p>
+
+          <div class="method-source-code" id="unique_columns-source">
+            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 145</span>
+<span class="ruby-identifier">class_attribute</span> <span class="ruby-value">:unique_columns</span>
+</pre>
           </div>
         </div>
 
@@ -482,7 +490,7 @@ end</pre>
 
 <footer id="validator-badges" role="contentinfo">
   <p><a href="https://validator.w3.org/check/referer">Validate</a>
-  <p>Generated by <a href="https://ruby.github.io/rdoc/">RDoc</a> 6.3.0.
+  <p>Generated by <a href="https://ruby.github.io/rdoc/">RDoc</a> 6.3.1.
   <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
 </footer>
 

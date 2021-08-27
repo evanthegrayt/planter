@@ -64,7 +64,6 @@
     <li><a href="#label-Seeding+from+CSV">Seeding from CSV</a>
     <li><a href="#label-Seeding+from+a+data+array">Seeding from a data array</a>
     <li><a href="#label-Custom+seeds">Custom seeds</a>
-    <li><a href="#label-Customization">Customization</a>
     <li><a href="#label-License">License</a>
     <li><a href="#label-Reporting+Bugs+and+Requesting+Features">Reporting Bugs and Requesting Features</a>
     <li><a href="#label-Self-Promotion">Self-Promotion</a>
@@ -95,13 +94,13 @@
 <p>Pre-release version! Anything is subject to change in the near future!</p>
 </blockquote>
 
-<p>Seeds for Rails applications can get complicated fast, and Rails doesn&#39;t provide much for assisting with this process. This plugin seeks to rectify that by providing easy ways to seed specific tables by hooking into the existing <code>rails db:seed</code> task.</p>
+<p>Seeds for Rails applications can get complicated fast, and Rails doesn&#39;t provide much for assisting with this process. This plugin seeks to rectify that by providing easy ways to seed specific tables.</p>
 
 <p>Features include:</p>
 <ul><li>
 <p>Seed tables from CSV files, an array of hashes, or custom methods.</p>
 </li><li>
-<p>Call specific seeders with <code>rails db:seed SEEDERS=users,addresses</code>.</p>
+<p>Call specific seeders with <code>rails planter:seed SEEDERS=users,addresses</code>.</p>
 </li><li>
 <p>Control the number of records being created.</p>
 </li><li>
@@ -112,9 +111,9 @@
 
 <h2 id="label-Installation">Installation<span><a href="#label-Installation">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>Add this line to your application&#39;s Gemfile:</p>
+<p>Add the following line to your application&#39;s Gemfile. Because this plugin is currently a pre-release version, it&#39;s recommended to lock it to a specific version, as breaking changes may occur, even at the minor level.</p>
 
-<pre class="ruby"><span class="ruby-identifier">gem</span> <span class="ruby-string">&#39;planter&#39;</span>
+<pre class="ruby"><span class="ruby-identifier">gem</span> <span class="ruby-string">&#39;planter&#39;</span>, <span class="ruby-string">&#39;0.1.3&#39;</span>
 </pre>
 
 <p>And then execute:</p>
@@ -129,24 +128,66 @@
 
 <p>Let&#39;s assume you&#39;d like to seed your <code>users</code> table.</p>
 
-<p>To get started, simply add the following to your <code>db/seeds.rb</code> file. Note that the <code>config.seeders</code> should be an array of the seeders to use. They should be in the correct order to successfully seed the tables when considering associations.</p>
+<p>To get started, run <code>rails generate planter:initializer</code>, which will create <code>config/initializers/planter.rb</code> with the following contents.</p>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;planter&#39;</span>
 
 <span class="ruby-constant">Planter</span>.<span class="ruby-identifier">configure</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">config</span><span class="ruby-operator">|</span>
-  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">seeders</span> = <span class="ruby-node">%i[ users ]</span>
+  <span class="ruby-comment">##</span>
+  <span class="ruby-comment"># The list of seeders. These files are stored in the</span>
+  <span class="ruby-comment"># config.seeders_directory, which can be changed below. When a new</span>
+  <span class="ruby-comment"># seeder is generated, it will be appended to the bottom of this</span>
+  <span class="ruby-comment"># list. If the order is incorrect, you&#39;ll need to adjust it.</span>
+  <span class="ruby-comment"># Just be sure to keep the ending bracket on its own line, or the</span>
+  <span class="ruby-comment"># generator won&#39;t know where to put new elements.</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">seeders</span> = <span class="ruby-node">%i[
+  ]</span>
+
+  <span class="ruby-comment">##</span>
+  <span class="ruby-comment"># The directory where the seeders are kept.</span>
+  <span class="ruby-comment"># config.seeders_directory = &#39;db/seeds&#39;</span>
+
+  <span class="ruby-comment">##</span>
+  <span class="ruby-comment"># The directory where CSVs are kept.</span>
+  <span class="ruby-comment"># config.csv_files_directory = &#39;db/seed_files&#39;</span>
+
+  <span class="ruby-comment">##</span>
+  <span class="ruby-comment"># The default trim mode for ERB. Valid modes are:</span>
+  <span class="ruby-comment"># &#39;%&#39;  enables Ruby code processing for lines beginning with %</span>
+  <span class="ruby-comment"># &#39;&lt;&gt;&#39; omit newline for lines starting with &lt;% and ending in %&gt;</span>
+  <span class="ruby-comment"># &#39;&gt;&#39;  omit newline for lines ending in %&gt;</span>
+  <span class="ruby-comment"># &#39;-&#39;  omit blank lines ending in -%&gt;</span>
+  <span class="ruby-comment"># I recommend reading the help documentation for ERB::new()</span>
+  <span class="ruby-comment"># config.erb_trim_mode = nil</span>
 <span class="ruby-keyword">end</span>
+</pre>
 
-<span class="ruby-comment"># You could put the above lines in an initializer if you&#39;re feeling squirrelly</span>
+<p>By default, a <code>planter:seed</code> task is provided for seeding your application. This allows you to use <code>db:seed</code> for other purposes. If you want <a href="Planter.html"><code>Planter</code></a> to hook into the existing <code>db:seed</code> task, simply add the following to <code>db/seeds.rb</code>.</p>
 
+<pre class="ruby"><span class="ruby-comment"># db/seeds.rb</span>
 <span class="ruby-constant">Planter</span>.<span class="ruby-identifier">seed</span>
 </pre>
 
-<p>Then, create a directory called <code>db/seeds</code>, and create a file called <code>db/seeds/users_seeder.rb</code>. In that file, create the following class. Note the name of the seeder is the name of the table, plus <code>Seeder</code>, and it inherits from <code>Planter::Seeder</code>.</p>
+<p>To create a users seeder, run <code>rails generate planter:seeder users</code>. Usually, seeders seed a specific table, so it&#39;s recommended to name your seeders after the table. If you don&#39;t, you&#39;ll need to manually specify a few things. More on that later. This will create a file named <code>db/seeds/users_seeder.rb</code> (the directory will be created if it doesn&#39;t exist) with the following contents.</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
+  <span class="ruby-comment"># TODO: Choose a seeding_method. For example:</span>
+  <span class="ruby-comment"># seeding_method :csv</span>
+
+  <span class="ruby-comment"># For now, we overload the seed method so no exception will be raised.</span>
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">seed</span>
+  <span class="ruby-keyword">end</span>
 <span class="ruby-keyword">end</span>
 </pre>
+
+<p>This also adds <code>users</code> to the <code>config.seeders</code> array in our initializer. A few things to note.</p>
+<ul><li>
+<p>The seeder will always be appended at the end of the array. If this is not the correct order, you&#39;ll need to adjust the array manually.</p>
+</li><li>
+<p>When adjusting the array, always keep the closing bracket on its own line, or the generator won&#39;t know where to put the new seeders.</p>
+</li></ul>
+
+<p>If you want to generate a seeder for every table currently in your database, run <code>rails generate planter:seeder ALL</code>.</p>
 
 <p>You then need to choose a seeding method, of which there are currently three.</p>
 
@@ -172,14 +213,59 @@ test2@example.com,test2</pre>
 <span class="ruby-keyword">end</span>
 </pre>
 
-<p><code>ERB</code> can be used in the CSV files if you name it with <code>.erb</code> at the end of the file name. For example, <code>users.csv.erb</code>. Note that lines starting with <code>&lt;%</code> and ending with <code>%&gt;</code> will not be considered rows, so you can use <code>ERB</code> rows to set values. For example:</p>
+<p><code>ERB</code> can be used in the CSV files if you end the file name with <code>.csv.erb</code> or <code>.erb.csv</code>. For example, <code>users.csv.erb</code>. When using ERB, instance variables set in the seeder can be used in the CSV.</p>
 
-<pre>email,login_attempts
-&lt;% count = 1 %&gt;
-test2@example.com,&lt;%= count += 1 %&gt;
-test2@example.com,&lt;%= count += 1 %&gt;</pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
+  <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:csv</span>, <span class="ruby-value">csv_name:</span> <span class="ruby-value">:people</span>
 
-<p>Running <code>rails db:seed</code> will now seed your <code>users</code> table.</p>
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>
+    <span class="ruby-ivar">@name_prefix</span> = <span class="ruby-string">&#39;Test User&#39;</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<pre>participant_id,name
+&lt;%= Participant.find_by(email: &#39;test1@example.com&#39;).id %&gt;,&lt;%= @name_prefix %&gt; 1
+&lt;%= Participant.find_by(email: &#39;test2@example.com&#39;).id %&gt;,&lt;%= @name_prefix %&gt; 2</pre>
+
+<p>Note that, if you need to change the trim mode for ERB, you can set a default in the initializer.</p>
+
+<pre class="ruby"><span class="ruby-constant">Planter</span>.<span class="ruby-identifier">configure</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">config</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">seeders</span> = <span class="ruby-node">%i[
+    users
+  ]</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">erb_trim_mode</span> = <span class="ruby-string">&#39;&lt;&gt;&#39;</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>…or, for individual seeders, via <code>seeding_method</code>.</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
+  <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:csv</span>, <span class="ruby-value">erb_trim_mode:</span> <span class="ruby-string">&#39;&lt;&gt;&#39;</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>For help with <code>erb_trim_mode</code>, see the help documentation for <code>ERB::new</code>.</p>
+
+<p>Lastly, it&#39;s worth mentioning <code>transformations</code> under the CSV section, as that&#39;s usually the pace where they&#39;re needed most, but it will work with any method.</p>
+
+<p>If you&#39;re seeding with a CSV, and it contains values that need to have code executed on them before it&#39;s imported into the database, you can define an instance variable called <code>@transformations</code>, or a method called <code>transformations</code>, that returns a Hash of field names, and Procs to run on the value. For example, if you have an <code>admin</code> column, and the CSV contains “true”, it will come through as a String, but you probably want it to be a Boolean. This can be solved with the following.</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
+  <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:csv</span>
+
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">transformations</span>
+    {
+      <span class="ruby-value">admin:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">value</span>) { <span class="ruby-identifier">value</span> <span class="ruby-operator">==</span> <span class="ruby-string">&#39;true&#39;</span> },
+      <span class="ruby-value">last_name:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">value</span>, <span class="ruby-identifier">row</span>) { <span class="ruby-node">&quot;#{value} #{row[:suffix]}&quot;</span>.<span class="ruby-identifier">squish</span> }
+    }
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>When defining a Proc/Lambda, you can make it accept 0, 1, or 2 arguments. - When <code>0</code>, the value is replaced by the result of the Lambda - When <code>1</code>, the value is passed to the Lambda, and is subsequently replaced by  the result of the Lambda - When <code>2</code>, the value is the first argument, and the entire row, as a Hash, is  the second argument. This allows for more complicated transformations that can  be dependent on other fields and values in the record.</p>
+
+<p>Running <code>rails planter:seed</code> will now seed your <code>users</code> table.</p>
 
 <h2 id="label-Seeding+from+a+data+array">Seeding from a data array<span><a href="#label-Seeding+from+a+data+array">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -201,14 +287,14 @@ test2@example.com,&lt;%= count += 1 %&gt;</pre>
 
 <p>The <code>number_of_records</code> option allows you to only create one array element, but create ten records. If you leave this option off, you&#39;ll need your array to have ten elements to create ten records. It&#39;s also worth noting that setting an instance variable called <code>@data</code> from an <code>initialize</code> method would also work, as the <code>Planter::Seeder</code> parent class automatically provides <code>attr_reader :data</code>.</p>
 
-<p>Running <code>rails db:seed</code> should now seed your <code>users</code> table.</p>
+<p>Running <code>rails planter:seed</code> should now seed your <code>users</code> table.</p>
 
-<p>You can also seed children records for every existing record of a parent model. For example, to seed an address for every user, you&#39;d need to create an <code>AddressesSeeder</code> that uses the <code>parent_model</code> option, as seen below.</p>
+<p>You can also seed children records for every existing record of a parent model. For example, to seed an address for every user, you&#39;d need to create an <code>AddressesSeeder</code> that uses the <code>parent</code> option, as seen below. This option should be the name of the <code>belongs_to</code> association in your model. The primary key, foreign key, and model name of the parent will all be determined by reflecting on the association.</p>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;faker&#39;</span>
 
 <span class="ruby-keyword">class</span> <span class="ruby-constant">AddressesSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
-  <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:data_array</span>, <span class="ruby-value">parent_model:</span> <span class="ruby-string">&#39;User&#39;</span>
+  <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:data_array</span>, <span class="ruby-value">parent:</span> <span class="ruby-value">:user</span>
 
   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data</span>
     [{
@@ -221,7 +307,7 @@ test2@example.com,&lt;%= count += 1 %&gt;</pre>
 <span class="ruby-keyword">end</span>
 </pre>
 
-<p>Note that specifying <code>number_of_records</code> in this instance will create that many records <em>for each record of the parent model</em>. You can also specify the association if it&#39;s different from the table name, using the <code>:assocation</code> option.</p>
+<p>Note that specifying <code>number_of_records</code> in this instance will create that many records <em>for each record of the parent model</em>.</p>
 
 <h3 id="label-Custom+seeds">Custom seeds<span><a href="#label-Custom+seeds">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
@@ -234,27 +320,9 @@ test2@example.com,&lt;%= count += 1 %&gt;</pre>
   }
 
   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">seed</span>
-    <span class="ruby-constant">USERS</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">email</span>, <span class="ruby-identifier">attrs</span><span class="ruby-operator">|</span> <span class="ruby-constant">User</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">email</span>).<span class="ruby-identifier">first_or_create!</span>(<span class="ruby-identifier">attrs</span>) }
+    <span class="ruby-constant">USERS</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">email</span>, <span class="ruby-identifier">attrs</span><span class="ruby-operator">|</span> <span class="ruby-constant">User</span>.<span class="ruby-identifier">where</span>(<span class="ruby-value">email:</span> <span class="ruby-identifier">email</span>).<span class="ruby-identifier">first_or_create!</span>(<span class="ruby-identifier">attrs</span>) }
   <span class="ruby-keyword">end</span>
 <span class="ruby-keyword">end</span>
-</pre>
-
-<h2 id="label-Customization">Customization<span><a href="#label-Customization">&para;</a> <a href="#top">&uarr;</a></span></h2>
-
-<p>You can change the directories of both the seeder files and the CSV files. In your <code>configure</code> block in <code>db/seeds.rb</code>, you can add the following. Note that, in both instances, the path should be relative to <code>Rails.root</code>.</p>
-
-<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;planter&#39;</span>
-
-<span class="ruby-constant">Planter</span>.<span class="ruby-identifier">configure</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">config</span><span class="ruby-operator">|</span>
-  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">seeders_directory</span> = <span class="ruby-string">&#39;db/seeder_classes&#39;</span>
-  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">csv_files_directory</span> = <span class="ruby-string">&#39;db/csvs&#39;</span>
-  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">seeders</span> = <span class="ruby-node">%i[
-    users
-    addresses
-  ]</span>
-<span class="ruby-keyword">end</span>
-
-<span class="ruby-constant">Planter</span>.<span class="ruby-identifier">seed</span>
 </pre>
 
 <h2 id="label-License">License<span><a href="#label-License">&para;</a> <a href="#top">&uarr;</a></span></h2>
@@ -267,7 +335,7 @@ test2@example.com,&lt;%= count += 1 %&gt;</pre>
 
 <h2 id="label-Self-Promotion">Self-Promotion<span><a href="#label-Self-Promotion">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>I do these projects for fun, and I enjoy knowing that they&#39;re helpful to people. Consider starring <a href="https://github.com/evanthegrayt/planter">the repository</a> if you like it! If you love it, follow me <a href="https://github.com/evanthegrayt">on Github</a>!</p>
+<p>I do these projects for fun, and I enjoy knowing that they&#39;re helpful to people. Consider starring <a href="https://github.com/evanthegrayt/planter">the repository</a> if you like it! If you love it, follow me <a href="https://github.com/evanthegrayt">on GitHub</a>!</p>
 
 </main>
 
@@ -275,7 +343,7 @@ test2@example.com,&lt;%= count += 1 %&gt;</pre>
 
 <footer id="validator-badges" role="contentinfo">
   <p><a href="https://validator.w3.org/check/referer">Validate</a>
-  <p>Generated by <a href="https://ruby.github.io/rdoc/">RDoc</a> 6.3.0.
+  <p>Generated by <a href="https://ruby.github.io/rdoc/">RDoc</a> 6.3.1.
   <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
 </footer>
 
