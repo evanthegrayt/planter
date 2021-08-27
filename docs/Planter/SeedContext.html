@@ -5,17 +5,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>class Planter::Config - RDoc Documentation</title>
+<title>class Planter::SeedContext - RDoc Documentation</title>
 
 
   <meta
     name="keywords"
-    content="ruby,class,Planter::Config"
+    content="ruby,class,Planter::SeedContext"
   >
 
     <meta
       name="description"
-      content="class Planter::Config: Configure the application seeder. example Planter."
+      content="class Planter::SeedContext: Parameter object carrying normalized seeder configuration into adapters."
     >
 
 
@@ -24,11 +24,11 @@
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="class Planter::Config - RDoc Documentation">
+<meta property="og:title" content="class Planter::SeedContext - RDoc Documentation">
 
 
 
-    <meta property="og:description" content="Configure the application seeder. example Planter.">
+    <meta property="og:description" content="Parameter object carrying normalized seeder configuration into adapters.">
 
 
 
@@ -36,11 +36,11 @@
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="class Planter::Config - RDoc Documentation">
+<meta name="twitter:title" content="class Planter::SeedContext - RDoc Documentation">
 
 
 
-    <meta name="twitter:description" content="Configure the application seeder. example Planter.">
+    <meta name="twitter:description" content="Parameter object carrying normalized seeder configuration into adapters.">
 
 
 
@@ -455,25 +455,6 @@
 
 
 
-  <div class="nav-section">
-    <details class="nav-section-collapsible" open>
-      <summary class="nav-section-header">
-        <span class="nav-section-icon">
-          <svg><use href="#icon-instance-methods"></use></svg>
-        </span>
-        <span class="nav-section-title">Instance Methods</span>
-        <span class="nav-section-chevron">
-          <svg><use href="#icon-chevron"></use></svg>
-        </span>
-      </summary>
-      <ul class="nav-list" role="directory">
-
-        <li ><a href="#method-i-adapter">adapter</a></li>
-
-      </ul>
-    </details>
-  </div>
-
 
   <div id="classindex-section" class="nav-section">
   <details class="nav-section-collapsible" open>
@@ -493,7 +474,7 @@
 
 </nav>
 
-<main role="main" aria-labelledby="class-planter-config">
+<main role="main" aria-labelledby="class-planter-seedcontext">
   
   
     <ol role="navigation" aria-label="Breadcrumb navigation" class="breadcrumb">
@@ -506,26 +487,21 @@
       
       <li>
         
-        <span>Config</span>
+        <span>SeedContext</span>
         
       </li>
       
     </ol>
   
 
-  <span id="class-Planter::Config" class="legacy-anchor"></span>
-  <h1 id="class-planter-config" class="anchor-link class">
-    class Planter::Config
+  <span id="class-Planter::SeedContext" class="legacy-anchor"></span>
+  <h1 id="class-planter-seedcontext" class="anchor-link class">
+    class Planter::SeedContext
   </h1>
 
   <section class="description">
     
-<p>Configure the application seeder.</p>
-
-<p>@example</p>
-
-<pre class="ruby"><span class="ruby-constant">Planter</span>.<span class="ruby-identifier">configure</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">seeder</span><span class="ruby-operator">|</span> <span class="ruby-identifier">seeder</span>.<span class="ruby-identifier">seeders</span> = <span class="ruby-node">%i[users]</span> }
-</pre>
+<p>Parameter object carrying normalized seeder configuration into adapters.</p>
 
   </section>
 
@@ -545,38 +521,38 @@
       </header>
 
 
-      <div id="attribute-i-adapter" class="method-detail anchor-link">
+      <div id="attribute-i-adapter_options" class="method-detail anchor-link">
         <div class="method-heading attribute-method-heading">
-          <a href="#attribute-i-adapter" title="Link to this attribute">
-            <span class="method-name">adapter</span>
-            <span class="attribute-access-type">[W]</span>
+          <a href="#attribute-i-adapter_options" title="Link to this attribute">
+            <span class="method-name">adapter_options</span>
+            <span class="attribute-access-type">[R]</span>
           </a>
         </div>
 
         <div class="method-description">
 
 
-        <p>The adapter used to create records, discover parent records, and inspect database table names. Custom adapters should implement the table-oriented public API documented by <a href="Adapters/ActiveRecord.html"><code>Planter::Adapters::ActiveRecord</code></a>.</p>
+        <p>Adapter-specific options collected from the seeder.</p>
 
-<p>@return [Object]</p>
+<p><a href="Adapters.html"><code>Adapters</code></a> may ignore any options they do not support.</p>
+
+<p>@return [Hash]</p>
 
         </div>
       </div>
 
-      <div id="attribute-i-csv_files_directory" class="method-detail anchor-link">
+      <div id="attribute-i-csv_name" class="method-detail anchor-link">
         <div class="method-heading attribute-method-heading">
-          <a href="#attribute-i-csv_files_directory" title="Link to this attribute">
-            <span class="method-name">csv_files_directory</span>
-            <span class="attribute-access-type">[RW]</span>
+          <a href="#attribute-i-csv_name" title="Link to this attribute">
+            <span class="method-name">csv_name</span>
+            <span class="attribute-access-type">[R]</span>
           </a>
         </div>
 
         <div class="method-description">
 
 
-        <p>Tell the application where the CSV seed files are kept. Must be a path relative to <code>Rails.root</code>.</p>
-
-<p>@param [String] directory</p>
+        <p>The CSV seed file name without an extension.</p>
 
 <p>@return [String]</p>
 
@@ -587,98 +563,106 @@
         <div class="method-heading attribute-method-heading">
           <a href="#attribute-i-erb_trim_mode" title="Link to this attribute">
             <span class="method-name">erb_trim_mode</span>
-            <span class="attribute-access-type">[RW]</span>
+            <span class="attribute-access-type">[R]</span>
           </a>
         </div>
 
         <div class="method-description">
 
 
-        <p>The default trim mode for ERB. Must be “%”, “&lt;&gt;”, “&gt;”, or “-”. For more information, see documentation for <code>ERB::new</code>.</p>
+        <p>The ERB trim mode used for CSV templates.</p>
 
-<p>@param [String] <a href="Config.html#attribute-i-erb_trim_mode"><code>erb_trim_mode</code></a></p>
+<p>@return [String, nil]</p>
+
+        </div>
+      </div>
+
+      <div id="attribute-i-number_of_records" class="method-detail anchor-link">
+        <div class="method-heading attribute-method-heading">
+          <a href="#attribute-i-number_of_records" title="Link to this attribute">
+            <span class="method-name">number_of_records</span>
+            <span class="attribute-access-type">[R]</span>
+          </a>
+        </div>
+
+        <div class="method-description">
+
+
+        <p>How many times to create each data record.</p>
+
+<p>@return [Integer]</p>
+
+        </div>
+      </div>
+
+      <div id="attribute-i-parent" class="method-detail anchor-link">
+        <div class="method-heading attribute-method-heading">
+          <a href="#attribute-i-parent" title="Link to this attribute">
+            <span class="method-name">parent</span>
+            <span class="attribute-access-type">[R]</span>
+          </a>
+        </div>
+
+        <div class="method-description">
+
+
+        <p>The adapter-defined parent relation.</p>
+
+<p>@return [String, Symbol, nil]</p>
+
+        </div>
+      </div>
+
+      <div id="attribute-i-seed_method" class="method-detail anchor-link">
+        <div class="method-heading attribute-method-heading">
+          <a href="#attribute-i-seed_method" title="Link to this attribute">
+            <span class="method-name">seed_method</span>
+            <span class="attribute-access-type">[R]</span>
+          </a>
+        </div>
+
+        <div class="method-description">
+
+
+        <p>The configured seeding method.</p>
+
+<p>@return [Symbol, nil]</p>
+
+        </div>
+      </div>
+
+      <div id="attribute-i-table_name" class="method-detail anchor-link">
+        <div class="method-heading attribute-method-heading">
+          <a href="#attribute-i-table_name" title="Link to this attribute">
+            <span class="method-name">table_name</span>
+            <span class="attribute-access-type">[R]</span>
+          </a>
+        </div>
+
+        <div class="method-description">
+
+
+        <p>The table being seeded.</p>
 
 <p>@return [String]</p>
 
         </div>
       </div>
 
-      <div id="attribute-i-progress_bar" class="method-detail anchor-link">
+      <div id="attribute-i-unique_columns" class="method-detail anchor-link">
         <div class="method-heading attribute-method-heading">
-          <a href="#attribute-i-progress_bar" title="Link to this attribute">
-            <span class="method-name">progress_bar</span>
-            <span class="attribute-access-type">[RW]</span>
+          <a href="#attribute-i-unique_columns" title="Link to this attribute">
+            <span class="method-name">unique_columns</span>
+            <span class="attribute-access-type">[R]</span>
           </a>
         </div>
 
         <div class="method-description">
 
 
-        <p>When false, don’t print progress bars while seeding.</p>
+        <p>Columns used to look up existing records.</p>
 
-<p>@param [Boolean] <a href="Config.html#attribute-i-progress_bar"><code>progress_bar</code></a></p>
-
-<p>@return [Boolean]</p>
-
-        </div>
-      </div>
-
-      <div id="attribute-i-quiet" class="method-detail anchor-link">
-        <div class="method-heading attribute-method-heading">
-          <a href="#attribute-i-quiet" title="Link to this attribute">
-            <span class="method-name">quiet</span>
-            <span class="attribute-access-type">[RW]</span>
-          </a>
-        </div>
-
-        <div class="method-description">
-
-
-        <p>When true, don’t print output when seeding.</p>
-
-<p>@param [Boolean] quiet</p>
-
-<p>@return [Boolean]</p>
-
-        </div>
-      </div>
-
-      <div id="attribute-i-seeders" class="method-detail anchor-link">
-        <div class="method-heading attribute-method-heading">
-          <a href="#attribute-i-seeders" title="Link to this attribute">
-            <span class="method-name">seeders</span>
-            <span class="attribute-access-type">[RW]</span>
-          </a>
-        </div>
-
-        <div class="method-description">
-
-
-        <p>Tell the application what seeders exist. Elements should be in the correct order to seed the tables successfully, and can be strings or symbols.</p>
-
-<p>@param [Array] seeders</p>
-
-<p>@return [Array]</p>
-
-        </div>
-      </div>
-
-      <div id="attribute-i-seeders_directory" class="method-detail anchor-link">
-        <div class="method-heading attribute-method-heading">
-          <a href="#attribute-i-seeders_directory" title="Link to this attribute">
-            <span class="method-name">seeders_directory</span>
-            <span class="attribute-access-type">[RW]</span>
-          </a>
-        </div>
-
-        <div class="method-description">
-
-
-        <p>Tell the application where the seeder classes are kept. Must be a path relative to <code>Rails.root</code>.</p>
-
-<p>@param [String] directory</p>
-
-<p>@return [String]</p>
+<p>@return [Array&lt;Symbol&gt;, nil]</p>
 
         </div>
       </div>
@@ -702,7 +686,7 @@
             <div class="method-heading">
               <a href="#method-c-new" title="Link to this method">
                 <span class="method-name">new</span>
-                <span class="method-args">()</span>
+                <span class="method-args">( table_name:, seed_method:, csv_name:, parent:, number_of_records:, unique_columns:, erb_trim_mode:, adapter_options: {} )</span>
               </a>
             </div>
 
@@ -715,12 +699,25 @@
             </details>
           </div>
           <div class="method-source-code" id="new-source">
-            <pre class="ruby"><span class="ruby-comment"># File lib/planter/config.rb, line 81</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>
-  <span class="ruby-ivar">@quiet</span> = <span class="ruby-keyword">false</span>
-  <span class="ruby-ivar">@progress_bar</span> = <span class="ruby-keyword">true</span>
-  <span class="ruby-ivar">@seeders_directory</span> = <span class="ruby-operator">::</span><span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;db&quot;</span>, <span class="ruby-string">&quot;seeds&quot;</span>)
-  <span class="ruby-ivar">@csv_files_directory</span> = <span class="ruby-operator">::</span><span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;db&quot;</span>, <span class="ruby-string">&quot;seed_files&quot;</span>)
+            <pre class="ruby"><span class="ruby-comment"># File lib/planter/seed_context.rb, line 75</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(
+  <span class="ruby-value">table_name:</span>,
+  <span class="ruby-value">seed_method:</span>,
+  <span class="ruby-value">csv_name:</span>,
+  <span class="ruby-value">parent:</span>,
+  <span class="ruby-value">number_of_records:</span>,
+  <span class="ruby-value">unique_columns:</span>,
+  <span class="ruby-value">erb_trim_mode:</span>,
+  <span class="ruby-value">adapter_options:</span> {}
+)
+  <span class="ruby-ivar">@table_name</span> = <span class="ruby-identifier">table_name</span>.<span class="ruby-identifier">to_s</span>
+  <span class="ruby-ivar">@seed_method</span> = <span class="ruby-identifier">seed_method</span>&amp;.<span class="ruby-identifier">intern</span>
+  <span class="ruby-ivar">@csv_name</span> = <span class="ruby-identifier">csv_name</span>.<span class="ruby-identifier">to_s</span>
+  <span class="ruby-ivar">@parent</span> = <span class="ruby-identifier">parent</span>
+  <span class="ruby-ivar">@number_of_records</span> = <span class="ruby-identifier">number_of_records</span>
+  <span class="ruby-ivar">@unique_columns</span> = <span class="ruby-identifier">unique_columns</span>
+  <span class="ruby-ivar">@erb_trim_mode</span> = <span class="ruby-identifier">erb_trim_mode</span>
+  <span class="ruby-ivar">@adapter_options</span> = <span class="ruby-identifier">adapter_options</span>.<span class="ruby-identifier">to_h</span>.<span class="ruby-identifier">transform_keys</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:to_sym</span>)
 <span class="ruby-keyword">end</span></pre>
           </div>
 
@@ -729,7 +726,23 @@
         <div class="method-description">
 
 
-          <p>Create a new instance of the config.</p>
+          <p>Create a new seed context.</p>
+
+<p>@param [String, Symbol] <a href="SeedContext.html#attribute-i-table_name"><code>table_name</code></a></p>
+
+<p>@param [String, Symbol, nil] <a href="SeedContext.html#attribute-i-seed_method"><code>seed_method</code></a></p>
+
+<p>@param [String, Symbol] <a href="SeedContext.html#attribute-i-csv_name"><code>csv_name</code></a></p>
+
+<p>@param [String, Symbol, nil] parent</p>
+
+<p>@param [Integer] <a href="SeedContext.html#attribute-i-number_of_records"><code>number_of_records</code></a></p>
+
+<p>@param [Array&lt;Symbol&gt;, nil] <a href="SeedContext.html#attribute-i-unique_columns"><code>unique_columns</code></a></p>
+
+<p>@param [String, nil] <a href="SeedContext.html#attribute-i-erb_trim_mode"><code>erb_trim_mode</code></a></p>
+
+<p>@param [Hash] <a href="SeedContext.html#attribute-i-adapter_options"><code>adapter_options</code></a> adapter-specific per-seeder options</p>
 
 
         </div>
@@ -748,58 +761,6 @@
 
 
 
-
-     <section id="public-instance-untitled-method-details" class="method-section anchor-link">
-       <header>
-         <h3 id="public-instance-untitled-methods"><a href="#public-instance-untitled-methods">Public Instance Methods</a></h3>
-       </header>
-
-
-      <div id="method-i-adapter" class="method-detail anchor-link ">
-        <div class="method-header">
-
-            <div class="method-heading">
-              <a href="#method-i-adapter" title="Link to this method">
-                <span class="method-name">adapter</span>
-                <span class="method-args">()</span>
-              </a>
-            </div>
-
-        </div>
-
-
-          <div class="method-controls">
-            <details class="method-source-toggle">
-              <summary>Source</summary>
-            </details>
-          </div>
-          <div class="method-source-code" id="adapter-source">
-            <pre class="ruby"><span class="ruby-comment"># File lib/planter/config.rb, line 75</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">adapter</span>
-  <span class="ruby-ivar">@adapter</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">default_adapter</span>
-<span class="ruby-keyword">end</span></pre>
-          </div>
-
-
-
-        <div class="method-description">
-
-
-          <p>Return the configured adapter, or lazily load the default Active Record adapter.</p>
-
-<p>@return [Object]</p>
-
-
-        </div>
-
-
-
-
-
-      </div>
-
-
-    </section>
 
 
 
