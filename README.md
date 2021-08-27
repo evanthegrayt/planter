@@ -24,7 +24,7 @@ currently a pre-release version, it's recommended to lock it to a specific
 version, as breaking changes may occur, even at the patch level.
 
 ```ruby
-gem 'planter', '0.0.9'
+gem 'planter', '0.0.10'
 ```
 
 And then execute:
