@@ -1,107 +1,444 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>README - RDoc Documentation</title>
+
+
+  <meta name="keywords" content="ruby,documentation,README">
+  <meta
+    name="description"
+    content="README: img. shields."
+  >
+
+
+
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="README - RDoc Documentation">
+
+
+
+    <meta property="og:description" content="img. shields.">
+
+
+
+
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="README - RDoc Documentation">
+
+
+
+    <meta name="twitter:description" content="img. shields.">
+
+
 
 <script type="text/javascript">
   var rdoc_rel_prefix = "./";
   var index_rel_prefix = "./";
 </script>
 
-<script src="./js/navigation.js" defer></script>
-<script src="./js/search.js" defer></script>
-<script src="./js/search_index.js" defer></script>
-<script src="./js/searcher.js" defer></script>
-<script src="./js/darkfish.js" defer></script>
+<script
+  src="./js/theme-toggle.js?v=7.2.0"
+></script>
 
-<link href="./css/fonts.css" rel="stylesheet">
-<link href="./css/rdoc.css" rel="stylesheet">
+<script
+  src="./js/search_navigation.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="./js/search_data.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="./js/search_ranker.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="./js/search_controller.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="./js/c_highlighter.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="./js/bash_highlighter.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="./js/aliki.js?v=7.2.0"
+  defer
+></script>
+
+<link
+  href="./css/rdoc.css?v=7.2.0"
+  rel="stylesheet"
+>
 
 
-<body id="top" role="document" class="file">
-<nav role="navigation">
-  <div id="project-navigation">
-    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
-  <h2>
-    <a href="./index.html" rel="home">Home</a>
-  </h2>
 
-  <div id="table-of-contents-navigation">
-    <a href="./table_of_contents.html#pages">Pages</a>
-    <a href="./table_of_contents.html#classes">Classes</a>
-    <a href="./table_of_contents.html#methods">Methods</a>
-  </div>
-</div>
 
-    <div id="search-section" role="search" class="project-section initially-hidden">
-  <form action="#" method="get" accept-charset="utf-8">
-    <div id="search-field-wrapper">
+<body role="document" class="file has-toc">
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <!-- Chevron (right arrow) - used for expand/collapse -->
+  <symbol
+    id="icon-chevron"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </symbol>
+
+  <!-- File/Document - Pages section -->
+  <symbol
+    id="icon-file"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path
+      d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
+    ></path>
+
+    <polyline points="14 2 14 8 20 8"></polyline>
+  </symbol>
+
+  <!-- Layers/Stack - Classes and Modules section -->
+  <symbol
+    id="icon-layers"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+    <polyline points="2 17 12 22 22 17"></polyline>
+    <polyline points="2 12 12 17 22 12"></polyline>
+  </symbol>
+
+  <!-- Curly braces with C - Class Methods section -->
+  <symbol
+    id="icon-class-methods"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M6 3C3.5 3 2 4.5 2 7v3c0 1.5-1 2-1 2s1 .5 1 2v5c0 2.5 1.5 4 4 4"></path>
+    <path d="M18 3c2.5 0 4 1.5 4 4v3c0 1.5 1 2 1 2s-1 .5-1 2v5c0 2.5-1.5 4-4 4"></path>
+
+    <text
+      x="12"
+      y="17"
+      text-anchor="middle"
+      font-size="13"
+      font-weight="bold"
+      fill="currentColor"
+      stroke="none"
+    >
+      C
+    </text>
+  </symbol>
+
+  <!-- Curly braces with I - Instance Methods section -->
+  <symbol
+    id="icon-instance-methods"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M6 3C3.5 3 2 4.5 2 7v3c0 1.5-1 2-1 2s1 .5 1 2v5c0 2.5 1.5 4 4 4"></path>
+    <path d="M18 3c2.5 0 4 1.5 4 4v3c0 1.5 1 2 1 2s-1 .5-1 2v5c0 2.5-1.5 4-4 4"></path>
+
+    <text
+      x="12"
+      y="17"
+      text-anchor="middle"
+      font-size="13"
+      font-weight="bold"
+      fill="currentColor"
+      stroke="none"
+    >
+      I
+    </text>
+  </symbol>
+
+  <!-- Double chevrons up - Ancestors section -->
+  <symbol
+    id="icon-ancestors"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polyline points="17 11 12 6 7 11"></polyline>
+    <polyline points="17 18 12 13 7 18"></polyline>
+  </symbol>
+
+  <!-- User with plus - Included Modules section -->
+  <symbol
+    id="icon-includes"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+    <circle cx="8.5" cy="7" r="4"></circle>
+
+    <line
+      x1="20"
+      y1="8"
+      x2="20"
+      y2="14"
+    ></line>
+
+    <line
+      x1="23"
+      y1="11"
+      x2="17"
+      y2="11"
+    ></line>
+  </symbol>
+
+  <!-- User with check - Extended Modules section -->
+  <symbol
+    id="icon-extends"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+    <circle cx="8.5" cy="7" r="4"></circle>
+    <polyline points="17 11 19 13 23 9"></polyline>
+  </symbol>
+
+  <!-- List - Sections section -->
+  <symbol
+    id="icon-list"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <line
+      x1="8"
+      y1="6"
+      x2="21"
+      y2="6"
+    ></line>
+
+    <line
+      x1="8"
+      y1="12"
+      x2="21"
+      y2="12"
+    ></line>
+
+    <line
+      x1="8"
+      y1="18"
+      x2="21"
+      y2="18"
+    ></line>
+
+    <line
+      x1="3"
+      y1="6"
+      x2="3.01"
+      y2="6"
+    ></line>
+
+    <line
+      x1="3"
+      y1="12"
+      x2="3.01"
+      y2="12"
+    ></line>
+
+    <line
+      x1="3"
+      y1="18"
+      x2="3.01"
+      y2="18"
+    ></line>
+  </symbol>
+</svg>
+
+<header class="top-navbar">
+  <a href="./index.html" class="navbar-brand">
+    RDoc Documentation
+  </a>
+
+  <!-- Desktop search bar -->
+  <div class="navbar-search navbar-search-desktop" role="search">
+    <form action="#" method="get" accept-charset="utf-8">
       <input id="search-field" role="combobox" aria-label="Search"
-             aria-autocomplete="list" aria-controls="search-results"
-             type="text" name="search" placeholder="Search" spellcheck="false"
+             aria-autocomplete="list" aria-controls="search-results-desktop"
+             type="text" name="search" placeholder="Search (/) for a class, method..."
+             spellcheck="false" autocomplete="off"
              title="Type to search, Up and Down to navigate, Enter to load">
+      <ul id="search-results-desktop" aria-label="Search Results"
+          aria-busy="false" aria-expanded="false"
+          aria-atomic="false" class="initially-hidden search-results"></ul>
+    </form>
+  </div>
+
+  <!-- Mobile search icon button -->
+  <button id="search-toggle" class="navbar-search-mobile" aria-label="Open search" type="button">
+    <span aria-hidden="true">🔍</span>
+  </button>
+
+  <!-- Theme toggle button -->
+  <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" type="button">
+    <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
+  </button>
+</header>
+
+<!-- Search Modal (Mobile) -->
+<div id="search-modal" class="search-modal" hidden aria-modal="true" role="dialog" aria-label="Search">
+  <div class="search-modal-backdrop"></div>
+  <div class="search-modal-content">
+    <div class="search-modal-header">
+      <form class="search-modal-form" action="#" method="get" accept-charset="utf-8">
+        <span class="search-modal-icon" aria-hidden="true">🔍</span>
+        <input id="search-field-mobile" role="combobox" aria-label="Search"
+               aria-autocomplete="list" aria-controls="search-results-mobile"
+               type="text" name="search" placeholder="Search documentation"
+               spellcheck="false" autocomplete="off">
+        <button type="button" class="search-modal-close" aria-label="Close search" id="search-modal-close">
+          <span aria-hidden="true">esc</span>
+        </button>
+      </form>
     </div>
-
-    <ul id="search-results" aria-label="Search Results"
-        aria-busy="false" aria-expanded="false"
-        aria-atomic="false" class="initially-hidden"></ul>
-  </form>
+    <div class="search-modal-body">
+      <ul id="search-results-mobile" aria-label="Search Results"
+          aria-busy="false" aria-expanded="false"
+          aria-atomic="false" class="search-results search-modal-results initially-hidden"></ul>
+      <div class="search-modal-empty">
+        <p>No recent searches</p>
+      </div>
+    </div>
+  </div>
 </div>
 
-  </div>
+<div id="navigation-toggle" role="button" tabindex="0" aria-label="Toggle sidebar" aria-expanded="true" aria-controls="navigation">
+  <span aria-hidden="true">&#9776;</span>
+</div>
 
+
+<nav id="navigation" role="navigation" hidden>
   
-<div class="nav-section">
-  <h3>Table of Contents</h3>
-
-  <ul class="link-list" role="directory">
-    <li><a href="#label-Planter">Planter</a>
-    <li><a href="#label-Installation">Installation</a>
-    <li><a href="#label-Usage">Usage</a>
-    <li><a href="#label-Seeding+from+CSV">Seeding from CSV</a>
-    <li><a href="#label-Seeding+from+a+data+array">Seeding from a data array</a>
-    <li><a href="#label-Custom+seeds">Custom seeds</a>
-    <li><a href="#label-Customization">Customization</a>
-    <li><a href="#label-License">License</a>
-    <li><a href="#label-Reporting+Bugs+and+Requesting+Features">Reporting Bugs and Requesting Features</a>
-    <li><a href="#label-Self-Promotion">Self-Promotion</a>
-  </ul>
-</div>
 
 
-  <div id="project-metadata">
-    
-<div id="fileindex-section" class="nav-section">
-  <h3>Pages</h3>
 
-  <ul class="link-list">
-    <li><a href="./README_md.html">README</a>
-  </ul>
-</div>
 
+
+
+  <div id="fileindex-section" class="nav-section">
+    <details class="nav-section-collapsible" open>
+      <summary class="nav-section-header">
+        <span class="nav-section-icon">
+          <svg>
+            <use href="#icon-file"></use>
+          </svg>
+        </span>
+
+        <span class="nav-section-title">Pages</span>
+
+        <span class="nav-section-chevron">
+          <svg>
+            <use href="#icon-chevron"></use>
+          </svg>
+        </span>
+      </summary>
+
+      <ul class="nav-list">
+
+
+
+
+
+
+            <li>
+              <a href="./README_md.html">
+                README
+              </a>
+            </li>
+
+      </ul>
+    </details>
   </div>
+
+
+  <div id="classindex-section" class="nav-section">
+  <details class="nav-section-collapsible" open>
+    <summary class="nav-section-header">
+      <span class="nav-section-icon">
+        <svg><use href="#icon-layers"></use></svg>
+      </span>
+      <span class="nav-section-title">Classes and Modules</span>
+      <span class="nav-section-chevron">
+        <svg><use href="#icon-chevron"></use></svg>
+      </span>
+    </summary>
+
+    <ul class="link-list nav-list"><li><details open><summary><code><a href="./Planter.html">Planter</a></code></summary><ul class="link-list nav-list"><li><details><summary><code><a href="./Planter/Adapters.html">Adapters</a></code></summary><ul class="link-list nav-list"><li><code><a href="./Planter/Adapters/ActiveRecord.html">ActiveRecord</a></code></li></ul></details></li><li><code><a href="./Planter/Config.html">Config</a></code></li><li><details><summary><code><a href="./Planter/Generators.html">Generators</a></code></summary><ul class="link-list nav-list"><li><code><a href="./Planter/Generators/AdapterGenerator.html">AdapterGenerator</a></code></li><li><code><a href="./Planter/Generators/InitializerGenerator.html">InitializerGenerator</a></code></li><li><code><a href="./Planter/Generators/SeederGenerator.html">SeederGenerator</a></code></li></ul></details></li><li><code><a href="./Planter/Seeder.html">Seeder</a></code></li><li><code><a href="./Planter/Version.html">Version</a></code></li></ul></details></li></ul>
+  </details>
+</div>
+
 </nav>
 
 <main role="main" aria-label="Page README.md">
 
-<h1 id="label-Planter"><a href="Planter.html"><code>Planter</code></a><span><a href="#label-Planter">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<span id="label-Planter" class="legacy-anchor"></span>
+<h1 id="planter"><a href="#planter"><a href="Planter.html"><code>Planter</code></a></a></h1>
 
-<p><a href="https://actions-badge.atrox.dev/evanthegrayt/planter/goto?ref=master"><img src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fevanthegrayt%2Fplanter%2Fbadge%3Fref%3Dmaster&style=flat"></a> <a href="https://badge.fury.io/rb/planter"><img src="https://badge.fury.io/rb/planter.svg"></a> <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg"></a></p>
+<p><a href="https://actions-badge.atrox.dev/evanthegrayt/planter/goto?ref=master"><img src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fevanthegrayt%2Fplanter%2Fbadge%3Fref%3Dmaster&amp;style=flat" alt="Build Status"></a> <a href="https://www.ruby-lang.org/"><img src="https://img.shields.io/static/v1?label=language&amp;message=Ruby&amp;color=CC342D&amp;style=flat&amp;logo=ruby&amp;logoColor=CC342D" alt="Language: Ruby"></a> <a href="https://rubygems.org/gems/planter"><img src="https://img.shields.io/gem/v/planter.svg" alt="Gem Version"></a> <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a></p>
 
-<blockquote>
-<p>Pre-release version! Anything is subject to change in the near future!</p>
-</blockquote>
-
-<p>Seeds for Rails applications can get complicated fast, and Rails doesn&#39;t provide much for assisting with this process. This plugin seeks to rectify that by providing easy ways to seed specific tables by hooking into the existing <code>rails db:seed</code> task.</p>
+<p>Seeds for Rails applications can get complicated fast, and Rails doesn’t provide much for assisting with this process. This plugin seeks to rectify that by providing easy ways to seed specific tables.</p>
 
 <p>Features include:</p>
 <ul><li>
 <p>Seed tables from CSV files, an array of hashes, or custom methods.</p>
 </li><li>
-<p>Call specific seeders with <code>rails db:seed SEEDERS=users,addresses</code>.</p>
+<p>Call specific seeders with <code>rails planter:seed SEEDERS=users,addresses</code>.</p>
 </li><li>
 <p>Control the number of records being created.</p>
 </li><li>
@@ -110,47 +447,105 @@
 
 <p>You can view the documentation <a href="https://evanthegrayt.github.io/planter/">here</a>.</p>
 
-<h2 id="label-Installation">Installation<span><a href="#label-Installation">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Installation" class="legacy-anchor"></span>
+<h2 id="installation"><a href="#installation">Installation</a></h2>
 
-<p>Add this line to your application&#39;s Gemfile:</p>
+<p>Add the following line to your application’s Gemfile. Because this plugin is currently a pre-release version, it’s recommended to lock it to a specific version, as breaking changes may occur, even at the minor level.</p>
 
-<pre class="ruby"><span class="ruby-identifier">gem</span> <span class="ruby-string">&#39;planter&#39;</span>
+<pre class="ruby"><span class="ruby-identifier">gem</span> <span class="ruby-string">&#39;planter&#39;</span>, <span class="ruby-string">&#39;0.4.2&#39;</span>
 </pre>
 
 <p>And then execute:</p>
 
-<pre>$ bundle</pre>
+<pre class="bash">$ bundle</pre>
 
 <p>Or install it yourself as:</p>
 
-<pre>$ gem install planter</pre>
+<pre class="bash">$ gem install planter</pre>
 
-<h2 id="label-Usage">Usage<span><a href="#label-Usage">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Usage" class="legacy-anchor"></span>
+<h2 id="usage"><a href="#usage">Usage</a></h2>
 
-<p>Let&#39;s assume you&#39;d like to seed your <code>users</code> table.</p>
+<p>Let’s assume you’d like to seed your <code>users</code> table.</p>
 
-<p>To get started, simply add the following to your <code>db/seeds.rb</code> file. Note that the <code>config.seeders</code> should be an array of the seeders to use. They should be in the correct order to successfully seed the tables when considering associations.</p>
+<p>To get started, run <code>rails generate planter:initializer</code>, which will create <code>config/initializers/planter.rb</code> with the following contents.</p>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;planter&#39;</span>
+<span class="ruby-identifier">require</span> <span class="ruby-string">&#39;planter/adapters/active_record&#39;</span>
 
 <span class="ruby-constant">Planter</span>.<span class="ruby-identifier">configure</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">config</span><span class="ruby-operator">|</span>
-  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">seeders</span> = <span class="ruby-node">%i[ users ]</span>
+  <span class="ruby-comment">##</span>
+  <span class="ruby-comment"># The adapter used to create records, discover parent records, and</span>
+  <span class="ruby-comment"># inspect database table names. Active Record is used by default.</span>
+  <span class="ruby-comment"># To use a custom adapter, replace this line with your own adapter.</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">adapter</span> = <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Adapters</span><span class="ruby-operator">::</span><span class="ruby-constant">ActiveRecord</span>.<span class="ruby-identifier">new</span>
+
+  <span class="ruby-comment">##</span>
+  <span class="ruby-comment"># The list of seeders. These files are stored in the</span>
+  <span class="ruby-comment"># config.seeders_directory, which can be changed below. When a new</span>
+  <span class="ruby-comment"># seeder is generated, it will be appended to the bottom of this</span>
+  <span class="ruby-comment"># list. If the order is incorrect, you&#39;ll need to adjust it.</span>
+  <span class="ruby-comment"># Just be sure to keep the ending bracket on its own line, or the</span>
+  <span class="ruby-comment"># generator won&#39;t know where to put new elements.</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">seeders</span> = <span class="ruby-node">%i[
+  ]</span>
+
+  <span class="ruby-comment">##</span>
+  <span class="ruby-comment"># The directory where the seeders are kept.</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">seeders_directory</span> = <span class="ruby-string">&#39;db/seeds&#39;</span>
+
+  <span class="ruby-comment">##</span>
+  <span class="ruby-comment"># The directory where CSVs are kept.</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">csv_files_directory</span> = <span class="ruby-string">&#39;db/seed_files&#39;</span>
+
+  <span class="ruby-comment">##</span>
+  <span class="ruby-comment"># When true, don&#39;t print output when seeding.</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">quiet</span> = <span class="ruby-keyword">false</span>
+
+  <span class="ruby-comment">##</span>
+  <span class="ruby-comment"># The default trim mode for ERB. Valid modes are:</span>
+  <span class="ruby-comment"># &#39;%&#39;  enables Ruby code processing for lines beginning with %</span>
+  <span class="ruby-comment"># &#39;&lt;&gt;&#39; omit newline for lines starting with &lt;% and ending in %&gt;</span>
+  <span class="ruby-comment"># &#39;&gt;&#39;  omit newline for lines ending in %&gt;</span>
+  <span class="ruby-comment"># &#39;-&#39;  omit blank lines ending in -%&gt;</span>
+  <span class="ruby-comment"># I recommend reading the help documentation for ERB::new()</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">erb_trim_mode</span> = <span class="ruby-keyword">nil</span>
 <span class="ruby-keyword">end</span>
+</pre>
 
-<span class="ruby-comment"># You could put the above lines in an initializer if you&#39;re feeling squirrelly</span>
+<p>By default, a <code>planter:seed</code> task is provided for seeding your application. This allows you to use <code>db:seed</code> for other purposes. If you want <a href="Planter.html"><code>Planter</code></a> to hook into the existing <code>db:seed</code> task, simply add the following to <code>db/seeds.rb</code>.</p>
 
+<pre class="ruby"><span class="ruby-comment"># db/seeds.rb</span>
 <span class="ruby-constant">Planter</span>.<span class="ruby-identifier">seed</span>
 </pre>
 
-<p>Then, create a directory called <code>db/seeds</code>, and create a file called <code>db/seeds/users_seeder.rb</code>. In that file, create the following class. Note the name of the seeder is the name of the table, plus <code>Seeder</code>, and it inherits from <code>Planter::Seeder</code>.</p>
+<p>To create a users seeder, run <code>rails generate planter:seeder users</code>. Usually, seeders seed a specific table, so it’s recommended to name your seeders after the table. If you don’t, you’ll need to manually specify a few things. More on that later. This will create a file named <code>db/seeds/users_seeder.rb</code> (the directory will be created if it doesn’t exist) with the following contents.</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
+  <span class="ruby-comment"># TODO: Choose a seeding_method. For example:</span>
+  <span class="ruby-comment"># seeding_method :csv</span>
+
+  <span class="ruby-comment"># For now, we overload the seed method so no exception will be raised.</span>
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">seed</span>
+  <span class="ruby-keyword">end</span>
 <span class="ruby-keyword">end</span>
 </pre>
 
-<p>You then need to choose a seeding method, of which there are currently three.</p>
+<p>This also adds <code>users</code> to the <code>config.seeders</code> array in our initializer. A few things to note.</p>
+<ul><li>
+<p>The seeder will always be appended at the end of the array. If this is not the correct order, you’ll need to adjust the array manually.</p>
+</li><li>
+<p>When adjusting the array, always keep the closing bracket on its own line, or the generator won’t know where to put the new seeders.</p>
+</li></ul>
 
-<h3 id="label-Seeding+from+CSV">Seeding from CSV<span><a href="#label-Seeding+from+CSV">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<p>If you want to generate a seeder for every table currently in your database, run <code>rails generate planter:seeder ALL</code>.</p>
+
+<p><a href="Planter.html"><code>Planter</code></a> uses <a href="Planter/Adapters/ActiveRecord.html"><code>Planter::Adapters::ActiveRecord</code></a> by default, so the built-in seeding methods work with Active Record models without extra configuration. See <a href="#custom-adapters">Custom Adapters</a> if you want to use a different persistence backend.</p>
+
+<p>You then need to choose a seeding method, of which there are currently two.</p>
+
+<span id="label-Seeding+from+CSV" class="legacy-anchor"></span>
+<h3 id="seeding-from-csv"><a href="#seeding-from-csv">Seeding from CSV</a></h3>
 
 <p>To seed from CSV, you simply need to add the following to your seeder class.</p>
 
@@ -172,18 +567,64 @@ test2@example.com,test2</pre>
 <span class="ruby-keyword">end</span>
 </pre>
 
-<p><code>ERB</code> can be used in the CSV files if you name it with <code>.erb</code> at the end of the file name. For example, <code>users.csv.erb</code>. Note that lines starting with <code>&lt;%</code> and ending with <code>%&gt;</code> will not be considered rows, so you can use <code>ERB</code> rows to set values. For example:</p>
+<p><code>ERB</code> can be used in the CSV files if you end the file name with <code>.csv.erb</code> or <code>.erb.csv</code>. For example, <code>users.csv.erb</code>. When using ERB, instance variables set in the seeder can be used in the CSV.</p>
 
-<pre>email,login_attempts
-&lt;% count = 1 %&gt;
-test2@example.com,&lt;%= count += 1 %&gt;
-test2@example.com,&lt;%= count += 1 %&gt;</pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
+  <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:csv</span>, <span class="ruby-value">csv_name:</span> <span class="ruby-value">:people</span>
 
-<p>Running <code>rails db:seed</code> will now seed your <code>users</code> table.</p>
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>
+    <span class="ruby-ivar">@name_prefix</span> = <span class="ruby-string">&#39;Test User&#39;</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
 
-<h2 id="label-Seeding+from+a+data+array">Seeding from a data array<span><a href="#label-Seeding+from+a+data+array">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<pre>participant_id,name
+&lt;%= Participant.find_by(email: &#39;test1@example.com&#39;).id %&gt;,&lt;%= @name_prefix %&gt; 1
+&lt;%= Participant.find_by(email: &#39;test2@example.com&#39;).id %&gt;,&lt;%= @name_prefix %&gt; 2</pre>
 
-<p>If you need dynamic seeds, you can add something similar to the following to your seeder class. In this example, we&#39;ll use <a href="https://github.com/faker-ruby/faker">faker</a>.</p>
+<p>Note that, if you need to change the trim mode for ERB, you can set a default in the initializer.</p>
+
+<pre class="ruby"><span class="ruby-constant">Planter</span>.<span class="ruby-identifier">configure</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">config</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">seeders</span> = <span class="ruby-node">%i[
+    users
+  ]</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">erb_trim_mode</span> = <span class="ruby-string">&#39;&lt;&gt;&#39;</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>…or, for individual seeders, via <code>seeding_method</code>.</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
+  <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:csv</span>, <span class="ruby-value">erb_trim_mode:</span> <span class="ruby-string">&#39;&lt;&gt;&#39;</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>For help with <code>erb_trim_mode</code>, see the help documentation for <code>ERB::new</code>.</p>
+
+<p>Lastly, it’s worth mentioning <code>transformations</code> under the CSV section, as that’s usually the pace where they’re needed most, but it will work with any method.</p>
+
+<p>If you’re seeding with a CSV, and it contains values that need to have code executed on them before it’s imported into the database, you can define an instance variable called <code>@transformations</code>, or a method called <code>transformations</code>, that returns a Hash of field names, and Procs to run on the value. For example, if you have an <code>admin</code> column, and the CSV contains “true”, it will come through as a String, but you probably want it to be a Boolean. This can be solved with the following.</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
+  <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:csv</span>
+
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">transformations</span>
+    {
+      <span class="ruby-value">admin:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">value</span>) { <span class="ruby-identifier">value</span> <span class="ruby-operator">==</span> <span class="ruby-string">&#39;true&#39;</span> },
+      <span class="ruby-value">last_name:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">value</span>, <span class="ruby-identifier">row</span>) { <span class="ruby-node">&quot;#{value} #{row[:suffix]}&quot;</span>.<span class="ruby-identifier">squish</span> }
+    }
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>When defining a Proc/Lambda, you can make it accept 0, 1, or 2 arguments. - When <code>0</code>, the value is replaced by the result of the Lambda - When <code>1</code>, the value is passed to the Lambda, and is subsequently replaced by the result of the Lambda - When <code>2</code>, the value is the first argument, and the entire row, as a Hash, is the second argument. This allows for more complicated transformations that can be dependent on other fields and values in the record.</p>
+
+<p>Running <code>rails planter:seed</code> will now seed your <code>users</code> table.</p>
+
+<span id="label-Seeding+from+a+data+array" class="legacy-anchor"></span>
+<h2 id="seeding-from-a-data-array"><a href="#seeding-from-a-data-array">Seeding from a data array</a></h2>
+
+<p>If you need dynamic seeds, you can add something similar to the following to your seeder class. In this example, we’ll use <a href="https://github.com/faker-ruby/faker">faker</a>.</p>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;faker&#39;</span> <span class="ruby-comment"># You could just require this in `db/seeds.rb`.</span>
 
@@ -199,16 +640,16 @@ test2@example.com,&lt;%= count += 1 %&gt;</pre>
 <span class="ruby-keyword">end</span>
 </pre>
 
-<p>The <code>number_of_records</code> option allows you to only create one array element, but create ten records. If you leave this option off, you&#39;ll need your array to have ten elements to create ten records. It&#39;s also worth noting that setting an instance variable called <code>@data</code> from an <code>initialize</code> method would also work, as the <code>Planter::Seeder</code> parent class automatically provides <code>attr_reader :data</code>.</p>
+<p>The <code>number_of_records</code> option allows you to only create one array element, but create ten records. If you leave this option off, you’ll need your array to have ten elements to create ten records. It’s also worth noting that setting an instance variable called <code>@data</code> from an <code>initialize</code> method would also work, as the <a href="Planter/Seeder.html"><code>Planter::Seeder</code></a> parent class automatically provides <code>attr_reader :data</code>.</p>
 
-<p>Running <code>rails db:seed</code> should now seed your <code>users</code> table.</p>
+<p>Running <code>rails planter:seed</code> should now seed your <code>users</code> table.</p>
 
-<p>You can also seed children records for every existing record of a parent model. For example, to seed an address for every user, you&#39;d need to create an <code>AddressesSeeder</code> that uses the <code>parent_model</code> option, as seen below.</p>
+<p>You can also seed children records for every existing record of a parent model. For example, to seed an address for every user, you’d need to create an <code>AddressesSeeder</code> that uses the <code>parent</code> option, as seen below. This option should be the name of the <code>belongs_to</code> association in your model when using the default Active Record adapter. The primary key, foreign key, and model name of the parent will all be determined by the adapter.</p>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;faker&#39;</span>
 
 <span class="ruby-keyword">class</span> <span class="ruby-constant">AddressesSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
-  <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:data_array</span>, <span class="ruby-value">parent_model:</span> <span class="ruby-string">&#39;User&#39;</span>
+  <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:data_array</span>, <span class="ruby-value">parent:</span> <span class="ruby-value">:user</span>
 
   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data</span>
     [{
@@ -221,9 +662,10 @@ test2@example.com,&lt;%= count += 1 %&gt;</pre>
 <span class="ruby-keyword">end</span>
 </pre>
 
-<p>Note that specifying <code>number_of_records</code> in this instance will create that many records <em>for each record of the parent model</em>. You can also specify the association if it&#39;s different from the table name, using the <code>:assocation</code> option.</p>
+<p>Note that specifying <code>number_of_records</code> in this instance will create that many records <em>for each record of the parent model</em>.</p>
 
-<h3 id="label-Custom+seeds">Custom seeds<span><a href="#label-Custom+seeds">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-Custom+seeds" class="legacy-anchor"></span>
+<h3 id="custom-seeds"><a href="#custom-seeds">Custom seeds</a></h3>
 
 <p>To write your own custom seeds, just overload the <code>seed</code> method and do whatever you need to do.</p>
 
@@ -234,48 +676,99 @@ test2@example.com,&lt;%= count += 1 %&gt;</pre>
   }
 
   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">seed</span>
-    <span class="ruby-constant">USERS</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">email</span>, <span class="ruby-identifier">attrs</span><span class="ruby-operator">|</span> <span class="ruby-constant">User</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">email</span>).<span class="ruby-identifier">first_or_create!</span>(<span class="ruby-identifier">attrs</span>) }
+    <span class="ruby-constant">USERS</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">email</span>, <span class="ruby-identifier">attrs</span><span class="ruby-operator">|</span> <span class="ruby-constant">User</span>.<span class="ruby-identifier">where</span>(<span class="ruby-value">email:</span> <span class="ruby-identifier">email</span>).<span class="ruby-identifier">first_or_create!</span>(<span class="ruby-identifier">attrs</span>) }
   <span class="ruby-keyword">end</span>
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-Customization">Customization<span><a href="#label-Customization">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Custom+Adapters" class="legacy-anchor"></span>
+<h2 id="custom-adapters"><a href="#custom-adapters">Custom Adapters</a></h2>
 
-<p>You can change the directories of both the seeder files and the CSV files. In your <code>configure</code> block in <code>db/seeds.rb</code>, you can add the following. Note that, in both instances, the path should be relative to <code>Rails.root</code>.</p>
+<p>Active Record is the default adapter, but you can provide your own adapter object in the initializer. Replace the generated Active Record adapter require and configuration with your custom adapter, while keeping <code>config.seeders</code> as your ordered seed plan.</p>
+
+<p>You can generate a custom adapter stub with the following command.</p>
+
+<pre class="bash">$ rails generate planter:adapter sequel</pre>
+
+<p>This creates <code>lib/planter/adapters/sequel.rb</code> with the required adapter methods and updates <code>config/initializers/planter.rb</code> to use it. The generated methods raise <code>NotImplementedError</code> until you implement them. Running the generator replaces the currently configured adapter line, but does not change <code>config.seeders</code>.</p>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;planter&#39;</span>
+<span class="ruby-identifier">require</span> <span class="ruby-string">&#39;my_adapter&#39;</span>
 
 <span class="ruby-constant">Planter</span>.<span class="ruby-identifier">configure</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">config</span><span class="ruby-operator">|</span>
-  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">seeders_directory</span> = <span class="ruby-string">&#39;db/seeder_classes&#39;</span>
-  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">csv_files_directory</span> = <span class="ruby-string">&#39;db/csvs&#39;</span>
-  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">seeders</span> = <span class="ruby-node">%i[
-    users
-    addresses
-  ]</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">adapter</span> = <span class="ruby-constant">MyAdapter</span>.<span class="ruby-identifier">new</span>
 <span class="ruby-keyword">end</span>
-
-<span class="ruby-constant">Planter</span>.<span class="ruby-identifier">seed</span>
 </pre>
 
-<h2 id="label-License">License<span><a href="#label-License">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<p>Custom adapters are duck typed. They should implement the same public API as <a href="Planter/Adapters/ActiveRecord.html"><code>Planter::Adapters::ActiveRecord</code></a>.</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyAdapter</span>
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">create_record</span>(<span class="ruby-value">model_name:</span>, <span class="ruby-value">lookup_attributes:</span>, <span class="ruby-value">create_attributes:</span>)
+    <span class="ruby-comment"># Find or create a record for model_name.</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">parent_ids</span>(<span class="ruby-value">model_name:</span>, <span class="ruby-value">parent:</span>)
+    <span class="ruby-comment"># Return ids for each parent record used by parent seeding.</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">foreign_key</span>(<span class="ruby-value">model_name:</span>, <span class="ruby-value">parent:</span>)
+    <span class="ruby-comment"># Return the attribute used to attach a parent id to the seeded record.</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">table_columns</span>(<span class="ruby-value">model_name:</span>)
+    <span class="ruby-comment"># Return native columns or fields for model_name.</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">table_names</span>
+    <span class="ruby-comment"># Return table or collection names used by `rails generate planter:seeder ALL`.</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<span id="label-License" class="legacy-anchor"></span>
+<h2 id="license"><a href="#license">License</a></h2>
 
 <p>The gem is available as open source under the terms of the <a href="https://opensource.org/licenses/MIT">MIT License</a>.</p>
 
-<h2 id="label-Reporting+Bugs+and+Requesting+Features">Reporting Bugs and Requesting Features<span><a href="#label-Reporting+Bugs+and+Requesting+Features">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Reporting+Bugs+and+Requesting+Features" class="legacy-anchor"></span>
+<h2 id="reporting-bugs-and-requesting-features"><a href="#reporting-bugs-and-requesting-features">Reporting Bugs and Requesting Features</a></h2>
 
-<p>If you have an idea or find a bug, please <a href="https://github.com/evanthegrayt/planter/issues/new">create an issue</a>. Just make sure the topic doesn&#39;t already exist. Better yet, you can always submit a Pull Request.</p>
+<p>If you have an idea or find a bug, please <a href="https://github.com/evanthegrayt/planter/issues/new">create an issue</a>. Just make sure the topic doesn’t already exist. Better yet, you can always submit a Pull Request.</p>
 
-<h2 id="label-Self-Promotion">Self-Promotion<span><a href="#label-Self-Promotion">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Support+this+project" class="legacy-anchor"></span>
+<h2 id="support-this-project"><a href="#support-this-project">Support this project</a></h2>
 
-<p>I do these projects for fun, and I enjoy knowing that they&#39;re helpful to people. Consider starring <a href="https://github.com/evanthegrayt/planter">the repository</a> if you like it! If you love it, follow me <a href="https://github.com/evanthegrayt">on Github</a>!</p>
+<p>I love knowing when people find my work useful. Any kind of support is very much appreciated!</p>
+<ul><li>
+<p>⭐️ Like the project? Star <a href="https://github.com/evanthegrayt/planter">the repository</a>!</p>
+</li><li>
+<p>❤️ Love the project? Follow me <a href="https://github.com/evanthegrayt">on GitHub</a>!</p>
+</li><li>
+<p>💸 <em>Really</em> love it? Consider <a href="https://paypal.me/evanrgray">buying me a tea</a>!</p>
+</li></ul>
 
 </main>
 
+<aside class="table-of-contents" role="complementary" aria-label="Table of Contents">
+  <div class="toc-sticky">
+    <h3 class="toc-heading">On This Page</h3>
+    <nav class="toc-nav" id="toc-nav" aria-label="Page sections">
+      <!-- Generated by JavaScript based on page headings -->
+    </nav>
+  </div>
+</aside>
 
 
-<footer id="validator-badges" role="contentinfo">
-  <p><a href="https://validator.w3.org/check/referer">Validate</a>
-  <p>Generated by <a href="https://ruby.github.io/rdoc/">RDoc</a> 6.3.0.
-  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+<footer class="site-footer">
+  
+
+  <div class="footer-bottom">
+    <p>
+      Generated by <a href="https://ruby.github.io/rdoc/">RDoc 7.2.0</a>
+      using the Aliki theme by <a href="http://st0012.dev">Stan Lo</a>
+    </p>
+  </div>
 </footer>
+
+</body>
 

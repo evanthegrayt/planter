@@ -5,17 +5,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>module Planter::Version - RDoc Documentation</title>
+<title>class Planter::Generators::AdapterGenerator - RDoc Documentation</title>
 
 
   <meta
     name="keywords"
-    content="ruby,module,Planter::Version"
+    content="ruby,class,Planter::Generators::AdapterGenerator"
   >
 
     <meta
       name="description"
-      content="module Planter::Version: Module that contains all gem version information. Follows semantic versioning."
+      content="Documentation for the Planter::Generators::AdapterGenerator class"
     >
 
 
@@ -24,11 +24,14 @@
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="module Planter::Version - RDoc Documentation">
+<meta property="og:title" content="class Planter::Generators::AdapterGenerator - RDoc Documentation">
 
 
 
-    <meta property="og:description" content="Module that contains all gem version information. Follows semantic versioning.">
+    <meta
+      property="og:description"
+      content="Documentation for Planter::Generators::AdapterGenerator class - API reference and code examples"
+    >
 
 
 
@@ -36,67 +39,70 @@
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="module Planter::Version - RDoc Documentation">
+<meta name="twitter:title" content="class Planter::Generators::AdapterGenerator - RDoc Documentation">
 
 
 
-    <meta name="twitter:description" content="Module that contains all gem version information. Follows semantic versioning.">
+    <meta
+      name="twitter:description"
+      content="Documentation for Planter::Generators::AdapterGenerator class - API reference and code examples"
+    >
 
 
 
 <script type="text/javascript">
-  var rdoc_rel_prefix = "../";
-  var index_rel_prefix = "../";
+  var rdoc_rel_prefix = "../../";
+  var index_rel_prefix = "../../";
 </script>
 
 <script
-  src="../js/theme-toggle.js?v=7.2.0"
+  src="../../js/theme-toggle.js?v=7.2.0"
 ></script>
 
 <script
-  src="../js/search_navigation.js?v=7.2.0"
+  src="../../js/search_navigation.js?v=7.2.0"
   defer
 ></script>
 
 <script
-  src="../js/search_data.js?v=7.2.0"
+  src="../../js/search_data.js?v=7.2.0"
   defer
 ></script>
 
 <script
-  src="../js/search_ranker.js?v=7.2.0"
+  src="../../js/search_ranker.js?v=7.2.0"
   defer
 ></script>
 
 <script
-  src="../js/search_controller.js?v=7.2.0"
+  src="../../js/search_controller.js?v=7.2.0"
   defer
 ></script>
 
 <script
-  src="../js/c_highlighter.js?v=7.2.0"
+  src="../../js/c_highlighter.js?v=7.2.0"
   defer
 ></script>
 
 <script
-  src="../js/bash_highlighter.js?v=7.2.0"
+  src="../../js/bash_highlighter.js?v=7.2.0"
   defer
 ></script>
 
 <script
-  src="../js/aliki.js?v=7.2.0"
+  src="../../js/aliki.js?v=7.2.0"
   defer
 ></script>
 
 <link
-  href="../css/rdoc.css?v=7.2.0"
+  href="../../css/rdoc.css?v=7.2.0"
   rel="stylesheet"
 >
 
 
 
 
-<body role="document" class="module has-toc">
+<body role="document" class="class has-toc">
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <!-- Chevron (right arrow) - used for expand/collapse -->
   <symbol
@@ -307,7 +313,7 @@
 </svg>
 
 <header class="top-navbar">
-  <a href="../index.html" class="navbar-brand">
+  <a href="../../index.html" class="navbar-brand">
     RDoc Documentation
   </a>
 
@@ -400,7 +406,7 @@
 
 
             <li>
-              <a href="../README_md.html">
+              <a href="../../README_md.html">
                 README
               </a>
             </li>
@@ -413,6 +419,21 @@
   
 
   
+<div id="parent-class-section" class="nav-section">
+  <details class="nav-section-collapsible" open>
+    <summary class="nav-section-header">
+      <span class="nav-section-icon">
+        <svg><use href="#icon-ancestors"></use></svg>
+      </span>
+      <span class="nav-section-title">Ancestors</span>
+      <span class="nav-section-chevron">
+        <svg><use href="#icon-chevron"></use></svg>
+      </span>
+    </summary>
+    <ul><li>Rails::Generators::Base</li></ul>
+  </details>
+</div>
+
 
   
 
@@ -434,11 +455,9 @@
       </summary>
       <ul class="nav-list" role="directory">
 
-        <li ><a href="#method-i-to_a">to_a</a></li>
+        <li ><a href="#method-i-generate_adapter">generate_adapter</a></li>
 
-        <li ><a href="#method-i-to_h">to_h</a></li>
-
-        <li ><a href="#method-i-to_s">to_s</a></li>
+        <li ><a href="#method-i-update_initializer">update_initializer</a></li>
 
       </ul>
     </details>
@@ -457,41 +476,45 @@
       </span>
     </summary>
 
-    <ul class="link-list nav-list"><li><details open><summary><code><a href="../Planter.html">Planter</a></code></summary><ul class="link-list nav-list"><li><details><summary><code><a href="../Planter/Adapters.html">Adapters</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Planter/Adapters/ActiveRecord.html">ActiveRecord</a></code></li></ul></details></li><li><code><a href="../Planter/Config.html">Config</a></code></li><li><details><summary><code><a href="../Planter/Generators.html">Generators</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Planter/Generators/AdapterGenerator.html">AdapterGenerator</a></code></li><li><code><a href="../Planter/Generators/InitializerGenerator.html">InitializerGenerator</a></code></li><li><code><a href="../Planter/Generators/SeederGenerator.html">SeederGenerator</a></code></li></ul></details></li><li><code><a href="../Planter/Seeder.html">Seeder</a></code></li><li><code><a href="../Planter/Version.html">Version</a></code></li></ul></details></li></ul>
+    <ul class="link-list nav-list"><li><details open><summary><code><a href="../../Planter.html">Planter</a></code></summary><ul class="link-list nav-list"><li><details><summary><code><a href="../../Planter/Adapters.html">Adapters</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Planter/Adapters/ActiveRecord.html">ActiveRecord</a></code></li></ul></details></li><li><code><a href="../../Planter/Config.html">Config</a></code></li><li><details><summary><code><a href="../../Planter/Generators.html">Generators</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Planter/Generators/AdapterGenerator.html">AdapterGenerator</a></code></li><li><code><a href="../../Planter/Generators/InitializerGenerator.html">InitializerGenerator</a></code></li><li><code><a href="../../Planter/Generators/SeederGenerator.html">SeederGenerator</a></code></li></ul></details></li><li><code><a href="../../Planter/Seeder.html">Seeder</a></code></li><li><code><a href="../../Planter/Version.html">Version</a></code></li></ul></details></li></ul>
   </details>
 </div>
 
 </nav>
 
-<main role="main" aria-labelledby="module-planter-version">
+<main role="main" aria-labelledby="class-planter-generators-adaptergenerator">
   
   
     <ol role="navigation" aria-label="Breadcrumb navigation" class="breadcrumb">
       
       <li>
         
-        <a href="../Planter.html">Planter</a><span>::</span>
+        <a href="../../Planter.html">Planter</a><span>::</span>
         
       </li>
       
       <li>
         
-        <span>Version</span>
+        <a href="../../Planter/Generators.html">Generators</a><span>::</span>
+        
+      </li>
+      
+      <li>
+        
+        <span>AdapterGenerator</span>
         
       </li>
       
     </ol>
   
 
-  <span id="module-Planter::Version" class="legacy-anchor"></span>
-  <h1 id="module-planter-version" class="anchor-link module">
-    module Planter::Version
+  <span id="class-Planter::Generators::AdapterGenerator" class="legacy-anchor"></span>
+  <h1 id="class-planter-generators-adaptergenerator" class="anchor-link class">
+    class Planter::Generators::AdapterGenerator
   </h1>
 
   <section class="description">
     
-<p>Module that contains all gem version information. Follows semantic versioning. Read: <a href="https://semver.org">semver.org</a>/</p>
-
   </section>
 
 
@@ -501,45 +524,6 @@
 
 
 
-
-    <section class="constants-list">
-      <header>
-        <h3 id="untitled-constants"><a href="#untitled-constants">Constants</a></h3>
-      </header>
-      <dl>
-
-        <dt id="MAJOR">MAJOR</dt>
-
-        <dd>
-
-          <p>Major version.</p>
-
-<p>@return [Integer]</p>
-        </dd>
-
-
-        <dt id="MINOR">MINOR</dt>
-
-        <dd>
-
-          <p>Minor version.</p>
-
-<p>@return [Integer]</p>
-        </dd>
-
-
-        <dt id="PATCH">PATCH</dt>
-
-        <dd>
-
-          <p>Patch version.</p>
-
-<p>@return [Integer]</p>
-        </dd>
-
-
-      </dl>
-    </section>
 
 
 
@@ -560,12 +544,12 @@
        </header>
 
 
-      <div id="method-i-to_a" class="method-detail anchor-link ">
+      <div id="method-i-generate_adapter" class="method-detail anchor-link ">
         <div class="method-header">
 
             <div class="method-heading">
-              <a href="#method-i-to_a" title="Link to this method">
-                <span class="method-name">to_a</span>
+              <a href="#method-i-generate_adapter" title="Link to this method">
+                <span class="method-name">generate_adapter</span>
                 <span class="method-args">()</span>
               </a>
             </div>
@@ -578,11 +562,78 @@
               <summary>Source</summary>
             </details>
           </div>
-          <div class="method-source-code" id="to_a-source">
-            <pre class="ruby"><span class="ruby-comment"># File lib/planter/version.rb, line 32</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_a</span>
-  [<span class="ruby-constant">MAJOR</span>, <span class="ruby-constant">MINOR</span>, <span class="ruby-constant">PATCH</span>]
-<span class="ruby-keyword">end</span></pre>
+          <div class="method-source-code" id="generate_adapter-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/generators/planter/adapter_generator.rb, line 8</span>
+      <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">generate_adapter</span>
+        <span class="ruby-identifier">create_file</span> <span class="ruby-identifier">adapter_path</span>, <span class="ruby-identifier">&lt;&lt;~RUBY</span>
+<span class="ruby-value">          # frozen_string_literal: true
+
+          module Planter
+            module Adapters
+              ##
+              # Custom adapter for Planter.
+              class #{adapter_class_name}
+                ##
+                # Create a record unless one already exists.
+                #
+                # @param [String] model_name the model being seeded
+                #
+                # @param [Hash] lookup_attributes attributes used to find the record
+                #
+                # @param [Hash] create_attributes additional attributes used only when
+                #   creating a new record
+                #
+                # @return [Object]
+                def create_record(model_name:, lookup_attributes:, create_attributes:)
+                  raise NotImplementedError, &quot;\#{self.class} must implement #create_record&quot;
+                end
+
+                ##
+                # Return the parent ids to use when seeding child records.
+                #
+                # @param [String] model_name the model being seeded
+                #
+                # @param [String, Symbol] parent the parent association name
+                #
+                # @return [Array]
+                def parent_ids(model_name:, parent:)
+                  raise NotImplementedError, &quot;\#{self.class} must implement #parent_ids&quot;
+                end
+
+                ##
+                # Return the foreign key used to assign a parent id on a child record.
+                #
+                # @param [String] model_name the model being seeded
+                #
+                # @param [String, Symbol] parent the parent association name
+                #
+                # @return [String, Symbol]
+                def foreign_key(model_name:, parent:)
+                  raise NotImplementedError, &quot;\#{self.class} must implement #foreign_key&quot;
+                end
+
+                ##
+                # Return native columns or fields for the model being seeded.
+                #
+                # @param [String] model_name the model being seeded
+                #
+                # @return [Array&lt;String&gt;]
+                def table_columns(model_name:)
+                  raise NotImplementedError, &quot;\#{self.class} must implement #table_columns&quot;
+                end
+
+                ##
+                # Return table or collection names that can have seeders generated.
+                #
+                # @return [Array&lt;String&gt;]
+                def table_names
+                  raise NotImplementedError, &quot;\#{self.class} must implement #table_names&quot;
+                end
+              end
+            end
+          end</span>
+<span class="ruby-identifier">        RUBY</span>
+      <span class="ruby-keyword">end</span></pre>
           </div>
 
 
@@ -590,9 +641,7 @@
         <div class="method-description">
 
 
-          <p><a href="Version.html"><code>Version</code></a> as +[MAJOR, <a href="Version.html#MINOR"><code>MINOR</code></a>, PATCH]+</p>
-
-<p>@return [Array]</p>
+          
 
 
         </div>
@@ -604,12 +653,12 @@
       </div>
 
 
-      <div id="method-i-to_h" class="method-detail anchor-link ">
+      <div id="method-i-update_initializer" class="method-detail anchor-link ">
         <div class="method-header">
 
             <div class="method-heading">
-              <a href="#method-i-to_h" title="Link to this method">
-                <span class="method-name">to_h</span>
+              <a href="#method-i-update_initializer" title="Link to this method">
+                <span class="method-name">update_initializer</span>
                 <span class="method-args">()</span>
               </a>
             </div>
@@ -622,10 +671,14 @@
               <summary>Source</summary>
             </details>
           </div>
-          <div class="method-source-code" id="to_h-source">
-            <pre class="ruby"><span class="ruby-comment"># File lib/planter/version.rb, line 48</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_h</span>
-  <span class="ruby-node">%i[major minor patch]</span>.<span class="ruby-identifier">zip</span>(<span class="ruby-identifier">to_a</span>).<span class="ruby-identifier">to_h</span>
+          <div class="method-source-code" id="update_initializer-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/generators/planter/adapter_generator.rb, line 79</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">update_initializer</span>
+  <span class="ruby-identifier">contents</span> = <span class="ruby-operator">::</span><span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-identifier">initializer_full_path</span>)
+  <span class="ruby-identifier">contents</span> = <span class="ruby-identifier">replace_or_insert_adapter_require</span>(<span class="ruby-identifier">contents</span>)
+  <span class="ruby-identifier">contents</span> = <span class="ruby-identifier">replace_or_insert_adapter_config</span>(<span class="ruby-identifier">contents</span>)
+
+  <span class="ruby-operator">::</span><span class="ruby-constant">File</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">initializer_full_path</span>, <span class="ruby-identifier">contents</span>)
 <span class="ruby-keyword">end</span></pre>
           </div>
 
@@ -634,53 +687,7 @@
         <div class="method-description">
 
 
-          <p><a href="Version.html"><code>Version</code></a> as +{major: <a href="Version.html#MAJOR"><code>MAJOR</code></a>, minor: <a href="Version.html#MINOR"><code>MINOR</code></a>, patch: PATCH}+</p>
-
-<p>@return [Hash]</p>
-
-
-        </div>
-
-
-
-
-
-      </div>
-
-
-      <div id="method-i-to_s" class="method-detail anchor-link ">
-        <div class="method-header">
-
-            <div class="method-heading">
-              <a href="#method-i-to_s" title="Link to this method">
-                <span class="method-name">to_s</span>
-                <span class="method-args">()</span>
-              </a>
-            </div>
-
-        </div>
-
-
-          <div class="method-controls">
-            <details class="method-source-toggle">
-              <summary>Source</summary>
-            </details>
-          </div>
-          <div class="method-source-code" id="to_s-source">
-            <pre class="ruby"><span class="ruby-comment"># File lib/planter/version.rb, line 40</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_s</span>
-  <span class="ruby-identifier">to_a</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;.&quot;</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-
-
-
-        <div class="method-description">
-
-
-          <p><a href="Version.html"><code>Version</code></a> as <code>MAJOR.MINOR.PATCH</code></p>
-
-<p>@return [String]</p>
+          
 
 
         </div>

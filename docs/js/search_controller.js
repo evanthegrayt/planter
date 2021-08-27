@@ -1,23 +1,23 @@
-Search = function(data, input, result) {
+SearchController = function(data, input, result) {
   this.data = data;
   this.input = input;
   this.result = result;
 
   this.current = null;
   this.view = this.result.parentNode;
-  this.searcher = new Searcher(data.index);
+  this.ranker = new SearchRanker(data.index);
   this.init();
 }
 
-Search.prototype = Object.assign({}, Navigation, new function() {
+SearchController.prototype = Object.assign({}, SearchNavigation, new function() {
   var suid = 1;
 
   this.init = function() {
     var _this = this;
     var observer = function(e) {
-      switch(e.keyCode) {
-        case 38: // Event.KEY_UP
-        case 40: // Event.KEY_DOWN
+      switch(e.key) {
+        case 'ArrowUp':
+        case 'ArrowDown':
           return;
       }
       _this.search(_this.input.value);
@@ -25,7 +25,7 @@ Search.prototype = Object.assign({}, Navigation, new function() {
     this.input.addEventListener('keyup', observer);
     this.input.addEventListener('click', observer); // mac's clear field
 
-    this.searcher.ready(function(results, isLast) {
+    this.ranker.ready(function(results, isLast) {
       _this.addResults(results, isLast);
     })
 
@@ -34,7 +34,9 @@ Search.prototype = Object.assign({}, Navigation, new function() {
   }
 
   this.search = function(value, selectFirstMatch) {
-    value = value.trim().toLowerCase();
+    this.selectFirstMatch = selectFirstMatch;
+
+    value = value.trim();
     if (value) {
       this.setNavigationActive(true);
     } else {
@@ -51,7 +53,7 @@ Search.prototype = Object.assign({}, Navigation, new function() {
       this.result.setAttribute('aria-busy',     'true');
       this.result.setAttribute('aria-expanded', 'true');
       this.firstRun = true;
-      this.searcher.find(value);
+      this.ranker.find(value);
     }
   }
 
@@ -76,7 +78,15 @@ Search.prototype = Object.assign({}, Navigation, new function() {
     //TODO: ECMAScript
     //if (jQuery.browser.msie) this.$element[0].className += '';
 
-    if (isLast) this.result.setAttribute('aria-busy', 'false');
+    if (this.selectFirstMatch && this.current) {
+      this.selectFirstMatch = false;
+      this.select(this.current);
+    }
+
+    if (isLast) {
+      this.selectFirstMatch = false;
+      this.result.setAttribute('aria-busy', 'false');
+    }
   }
 
   this.move = function(isDown) {
@@ -86,7 +96,7 @@ Search.prototype = Object.assign({}, Navigation, new function() {
       this.current.classList.remove('search-selected');
       next.classList.add('search-selected');
       this.input.setAttribute('aria-activedescendant', next.getAttribute('id'));
-      this.scrollIntoView(next, this.view);
+      this.scrollInElement(next, this.result);
       this.current = next;
       this.input.value = next.firstChild.firstChild.text;
       this.input.select();
@@ -101,10 +111,19 @@ Search.prototype = Object.assign({}, Navigation, new function() {
   }
 
   this.escapeHTML = function(html) {
-    return html.replace(/[&<>]/g, function(c) {
+    return html.replace(/[&<>"`']/g, function(c) {
       return '&#' + c.charCodeAt(0) + ';';
     });
   }
 
+  this.hide = function() {
+    this.result.setAttribute('aria-expanded', 'false');
+    this.setNavigationActive(false);
+  }
+
+  this.show = function() {
+    this.result.setAttribute('aria-expanded', 'true');
+    this.setNavigationActive(true);
+  }
 });
 

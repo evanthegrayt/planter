@@ -5,17 +5,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>module Planter::Version - RDoc Documentation</title>
+<title>module Planter::Generators - RDoc Documentation</title>
 
 
   <meta
     name="keywords"
-    content="ruby,module,Planter::Version"
+    content="ruby,module,Planter::Generators"
   >
 
     <meta
       name="description"
-      content="module Planter::Version: Module that contains all gem version information. Follows semantic versioning."
+      content="Documentation for the Planter::Generators module"
     >
 
 
@@ -24,11 +24,14 @@
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="module Planter::Version - RDoc Documentation">
+<meta property="og:title" content="module Planter::Generators - RDoc Documentation">
 
 
 
-    <meta property="og:description" content="Module that contains all gem version information. Follows semantic versioning.">
+    <meta
+      property="og:description"
+      content="Documentation for Planter::Generators module - API reference and code examples"
+    >
 
 
 
@@ -36,11 +39,14 @@
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="module Planter::Version - RDoc Documentation">
+<meta name="twitter:title" content="module Planter::Generators - RDoc Documentation">
 
 
 
-    <meta name="twitter:description" content="Module that contains all gem version information. Follows semantic versioning.">
+    <meta
+      name="twitter:description"
+      content="Documentation for Planter::Generators module - API reference and code examples"
+    >
 
 
 
@@ -421,29 +427,6 @@
   
 
 
-  <div class="nav-section">
-    <details class="nav-section-collapsible" open>
-      <summary class="nav-section-header">
-        <span class="nav-section-icon">
-          <svg><use href="#icon-instance-methods"></use></svg>
-        </span>
-        <span class="nav-section-title">Instance Methods</span>
-        <span class="nav-section-chevron">
-          <svg><use href="#icon-chevron"></use></svg>
-        </span>
-      </summary>
-      <ul class="nav-list" role="directory">
-
-        <li ><a href="#method-i-to_a">to_a</a></li>
-
-        <li ><a href="#method-i-to_h">to_h</a></li>
-
-        <li ><a href="#method-i-to_s">to_s</a></li>
-
-      </ul>
-    </details>
-  </div>
-
 
   <div id="classindex-section" class="nav-section">
   <details class="nav-section-collapsible" open>
@@ -463,7 +446,7 @@
 
 </nav>
 
-<main role="main" aria-labelledby="module-planter-version">
+<main role="main" aria-labelledby="module-planter-generators">
   
   
     <ol role="navigation" aria-label="Breadcrumb navigation" class="breadcrumb">
@@ -476,22 +459,20 @@
       
       <li>
         
-        <span>Version</span>
+        <span>Generators</span>
         
       </li>
       
     </ol>
   
 
-  <span id="module-Planter::Version" class="legacy-anchor"></span>
-  <h1 id="module-planter-version" class="anchor-link module">
-    module Planter::Version
+  <span id="module-Planter::Generators" class="legacy-anchor"></span>
+  <h1 id="module-planter-generators" class="anchor-link module">
+    module Planter::Generators
   </h1>
 
   <section class="description">
     
-<p>Module that contains all gem version information. Follows semantic versioning. Read: <a href="https://semver.org">semver.org</a>/</p>
-
   </section>
 
 
@@ -502,197 +483,18 @@
 
 
 
-    <section class="constants-list">
-      <header>
-        <h3 id="untitled-constants"><a href="#untitled-constants">Constants</a></h3>
-      </header>
-      <dl>
 
-        <dt id="MAJOR">MAJOR</dt>
 
-        <dd>
 
-          <p>Major version.</p>
 
-<p>@return [Integer]</p>
-        </dd>
 
 
-        <dt id="MINOR">MINOR</dt>
 
-        <dd>
 
-          <p>Minor version.</p>
 
-<p>@return [Integer]</p>
-        </dd>
 
 
-        <dt id="PATCH">PATCH</dt>
 
-        <dd>
-
-          <p>Patch version.</p>
-
-<p>@return [Integer]</p>
-        </dd>
-
-
-      </dl>
-    </section>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-     <section id="public-instance-untitled-method-details" class="method-section anchor-link">
-       <header>
-         <h3 id="public-instance-untitled-methods"><a href="#public-instance-untitled-methods">Public Instance Methods</a></h3>
-       </header>
-
-
-      <div id="method-i-to_a" class="method-detail anchor-link ">
-        <div class="method-header">
-
-            <div class="method-heading">
-              <a href="#method-i-to_a" title="Link to this method">
-                <span class="method-name">to_a</span>
-                <span class="method-args">()</span>
-              </a>
-            </div>
-
-        </div>
-
-
-          <div class="method-controls">
-            <details class="method-source-toggle">
-              <summary>Source</summary>
-            </details>
-          </div>
-          <div class="method-source-code" id="to_a-source">
-            <pre class="ruby"><span class="ruby-comment"># File lib/planter/version.rb, line 32</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_a</span>
-  [<span class="ruby-constant">MAJOR</span>, <span class="ruby-constant">MINOR</span>, <span class="ruby-constant">PATCH</span>]
-<span class="ruby-keyword">end</span></pre>
-          </div>
-
-
-
-        <div class="method-description">
-
-
-          <p><a href="Version.html"><code>Version</code></a> as +[MAJOR, <a href="Version.html#MINOR"><code>MINOR</code></a>, PATCH]+</p>
-
-<p>@return [Array]</p>
-
-
-        </div>
-
-
-
-
-
-      </div>
-
-
-      <div id="method-i-to_h" class="method-detail anchor-link ">
-        <div class="method-header">
-
-            <div class="method-heading">
-              <a href="#method-i-to_h" title="Link to this method">
-                <span class="method-name">to_h</span>
-                <span class="method-args">()</span>
-              </a>
-            </div>
-
-        </div>
-
-
-          <div class="method-controls">
-            <details class="method-source-toggle">
-              <summary>Source</summary>
-            </details>
-          </div>
-          <div class="method-source-code" id="to_h-source">
-            <pre class="ruby"><span class="ruby-comment"># File lib/planter/version.rb, line 48</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_h</span>
-  <span class="ruby-node">%i[major minor patch]</span>.<span class="ruby-identifier">zip</span>(<span class="ruby-identifier">to_a</span>).<span class="ruby-identifier">to_h</span>
-<span class="ruby-keyword">end</span></pre>
-          </div>
-
-
-
-        <div class="method-description">
-
-
-          <p><a href="Version.html"><code>Version</code></a> as +{major: <a href="Version.html#MAJOR"><code>MAJOR</code></a>, minor: <a href="Version.html#MINOR"><code>MINOR</code></a>, patch: PATCH}+</p>
-
-<p>@return [Hash]</p>
-
-
-        </div>
-
-
-
-
-
-      </div>
-
-
-      <div id="method-i-to_s" class="method-detail anchor-link ">
-        <div class="method-header">
-
-            <div class="method-heading">
-              <a href="#method-i-to_s" title="Link to this method">
-                <span class="method-name">to_s</span>
-                <span class="method-args">()</span>
-              </a>
-            </div>
-
-        </div>
-
-
-          <div class="method-controls">
-            <details class="method-source-toggle">
-              <summary>Source</summary>
-            </details>
-          </div>
-          <div class="method-source-code" id="to_s-source">
-            <pre class="ruby"><span class="ruby-comment"># File lib/planter/version.rb, line 40</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_s</span>
-  <span class="ruby-identifier">to_a</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;.&quot;</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-
-
-
-        <div class="method-description">
-
-
-          <p><a href="Version.html"><code>Version</code></a> as <code>MAJOR.MINOR.PATCH</code></p>
-
-<p>@return [String]</p>
-
-
-        </div>
-
-
-
-
-
-      </div>
-
-
-    </section>
 
 
 

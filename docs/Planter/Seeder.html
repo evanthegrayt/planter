@@ -1,103 +1,542 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>class Planter::Seeder - RDoc Documentation</title>
+
+
+  <meta
+    name="keywords"
+    content="ruby,class,Planter::Seeder"
+  >
+
+    <meta
+      name="description"
+      content="class Planter::Seeder: Class that seeders should inherit from. seeds+, and named +TABLE_seeder."
+    >
+
+
+
+
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="class Planter::Seeder - RDoc Documentation">
+
+
+
+    <meta property="og:description" content="Class that seeders should inherit from. seeds+, and named +TABLE_seeder.">
+
+
+
+
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="class Planter::Seeder - RDoc Documentation">
+
+
+
+    <meta name="twitter:description" content="Class that seeders should inherit from. seeds+, and named +TABLE_seeder.">
+
+
 
 <script type="text/javascript">
   var rdoc_rel_prefix = "../";
   var index_rel_prefix = "../";
 </script>
 
-<script src="../js/navigation.js" defer></script>
-<script src="../js/search.js" defer></script>
-<script src="../js/search_index.js" defer></script>
-<script src="../js/searcher.js" defer></script>
-<script src="../js/darkfish.js" defer></script>
+<script
+  src="../js/theme-toggle.js?v=7.2.0"
+></script>
 
-<link href="../css/fonts.css" rel="stylesheet">
-<link href="../css/rdoc.css" rel="stylesheet">
+<script
+  src="../js/search_navigation.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="../js/search_data.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="../js/search_ranker.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="../js/search_controller.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="../js/c_highlighter.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="../js/bash_highlighter.js?v=7.2.0"
+  defer
+></script>
+
+<script
+  src="../js/aliki.js?v=7.2.0"
+  defer
+></script>
+
+<link
+  href="../css/rdoc.css?v=7.2.0"
+  rel="stylesheet"
+>
 
 
-<body id="top" role="document" class="class">
-<nav role="navigation">
-  <div id="project-navigation">
-    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
-  <h2>
-    <a href="../index.html" rel="home">Home</a>
-  </h2>
 
-  <div id="table-of-contents-navigation">
-    <a href="../table_of_contents.html#pages">Pages</a>
-    <a href="../table_of_contents.html#classes">Classes</a>
-    <a href="../table_of_contents.html#methods">Methods</a>
-  </div>
-</div>
 
-    <div id="search-section" role="search" class="project-section initially-hidden">
-  <form action="#" method="get" accept-charset="utf-8">
-    <div id="search-field-wrapper">
+<body role="document" class="class has-toc">
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <!-- Chevron (right arrow) - used for expand/collapse -->
+  <symbol
+    id="icon-chevron"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </symbol>
+
+  <!-- File/Document - Pages section -->
+  <symbol
+    id="icon-file"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path
+      d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
+    ></path>
+
+    <polyline points="14 2 14 8 20 8"></polyline>
+  </symbol>
+
+  <!-- Layers/Stack - Classes and Modules section -->
+  <symbol
+    id="icon-layers"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+    <polyline points="2 17 12 22 22 17"></polyline>
+    <polyline points="2 12 12 17 22 12"></polyline>
+  </symbol>
+
+  <!-- Curly braces with C - Class Methods section -->
+  <symbol
+    id="icon-class-methods"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M6 3C3.5 3 2 4.5 2 7v3c0 1.5-1 2-1 2s1 .5 1 2v5c0 2.5 1.5 4 4 4"></path>
+    <path d="M18 3c2.5 0 4 1.5 4 4v3c0 1.5 1 2 1 2s-1 .5-1 2v5c0 2.5-1.5 4-4 4"></path>
+
+    <text
+      x="12"
+      y="17"
+      text-anchor="middle"
+      font-size="13"
+      font-weight="bold"
+      fill="currentColor"
+      stroke="none"
+    >
+      C
+    </text>
+  </symbol>
+
+  <!-- Curly braces with I - Instance Methods section -->
+  <symbol
+    id="icon-instance-methods"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M6 3C3.5 3 2 4.5 2 7v3c0 1.5-1 2-1 2s1 .5 1 2v5c0 2.5 1.5 4 4 4"></path>
+    <path d="M18 3c2.5 0 4 1.5 4 4v3c0 1.5 1 2 1 2s-1 .5-1 2v5c0 2.5-1.5 4-4 4"></path>
+
+    <text
+      x="12"
+      y="17"
+      text-anchor="middle"
+      font-size="13"
+      font-weight="bold"
+      fill="currentColor"
+      stroke="none"
+    >
+      I
+    </text>
+  </symbol>
+
+  <!-- Double chevrons up - Ancestors section -->
+  <symbol
+    id="icon-ancestors"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polyline points="17 11 12 6 7 11"></polyline>
+    <polyline points="17 18 12 13 7 18"></polyline>
+  </symbol>
+
+  <!-- User with plus - Included Modules section -->
+  <symbol
+    id="icon-includes"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+    <circle cx="8.5" cy="7" r="4"></circle>
+
+    <line
+      x1="20"
+      y1="8"
+      x2="20"
+      y2="14"
+    ></line>
+
+    <line
+      x1="23"
+      y1="11"
+      x2="17"
+      y2="11"
+    ></line>
+  </symbol>
+
+  <!-- User with check - Extended Modules section -->
+  <symbol
+    id="icon-extends"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+    <circle cx="8.5" cy="7" r="4"></circle>
+    <polyline points="17 11 19 13 23 9"></polyline>
+  </symbol>
+
+  <!-- List - Sections section -->
+  <symbol
+    id="icon-list"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <line
+      x1="8"
+      y1="6"
+      x2="21"
+      y2="6"
+    ></line>
+
+    <line
+      x1="8"
+      y1="12"
+      x2="21"
+      y2="12"
+    ></line>
+
+    <line
+      x1="8"
+      y1="18"
+      x2="21"
+      y2="18"
+    ></line>
+
+    <line
+      x1="3"
+      y1="6"
+      x2="3.01"
+      y2="6"
+    ></line>
+
+    <line
+      x1="3"
+      y1="12"
+      x2="3.01"
+      y2="12"
+    ></line>
+
+    <line
+      x1="3"
+      y1="18"
+      x2="3.01"
+      y2="18"
+    ></line>
+  </symbol>
+</svg>
+
+<header class="top-navbar">
+  <a href="../index.html" class="navbar-brand">
+    RDoc Documentation
+  </a>
+
+  <!-- Desktop search bar -->
+  <div class="navbar-search navbar-search-desktop" role="search">
+    <form action="#" method="get" accept-charset="utf-8">
       <input id="search-field" role="combobox" aria-label="Search"
-             aria-autocomplete="list" aria-controls="search-results"
-             type="text" name="search" placeholder="Search" spellcheck="false"
+             aria-autocomplete="list" aria-controls="search-results-desktop"
+             type="text" name="search" placeholder="Search (/) for a class, method..."
+             spellcheck="false" autocomplete="off"
              title="Type to search, Up and Down to navigate, Enter to load">
-    </div>
+      <ul id="search-results-desktop" aria-label="Search Results"
+          aria-busy="false" aria-expanded="false"
+          aria-atomic="false" class="initially-hidden search-results"></ul>
+    </form>
+  </div>
 
-    <ul id="search-results" aria-label="Search Results"
-        aria-busy="false" aria-expanded="false"
-        aria-atomic="false" class="initially-hidden"></ul>
-  </form>
+  <!-- Mobile search icon button -->
+  <button id="search-toggle" class="navbar-search-mobile" aria-label="Open search" type="button">
+    <span aria-hidden="true">🔍</span>
+  </button>
+
+  <!-- Theme toggle button -->
+  <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" type="button">
+    <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
+  </button>
+</header>
+
+<!-- Search Modal (Mobile) -->
+<div id="search-modal" class="search-modal" hidden aria-modal="true" role="dialog" aria-label="Search">
+  <div class="search-modal-backdrop"></div>
+  <div class="search-modal-content">
+    <div class="search-modal-header">
+      <form class="search-modal-form" action="#" method="get" accept-charset="utf-8">
+        <span class="search-modal-icon" aria-hidden="true">🔍</span>
+        <input id="search-field-mobile" role="combobox" aria-label="Search"
+               aria-autocomplete="list" aria-controls="search-results-mobile"
+               type="text" name="search" placeholder="Search documentation"
+               spellcheck="false" autocomplete="off">
+        <button type="button" class="search-modal-close" aria-label="Close search" id="search-modal-close">
+          <span aria-hidden="true">esc</span>
+        </button>
+      </form>
+    </div>
+    <div class="search-modal-body">
+      <ul id="search-results-mobile" aria-label="Search Results"
+          aria-busy="false" aria-expanded="false"
+          aria-atomic="false" class="search-results search-modal-results initially-hidden"></ul>
+      <div class="search-modal-empty">
+        <p>No recent searches</p>
+      </div>
+    </div>
+  </div>
 </div>
 
+<div id="navigation-toggle" role="button" tabindex="0" aria-label="Toggle sidebar" aria-expanded="true" aria-controls="navigation">
+  <span aria-hidden="true">&#9776;</span>
+</div>
+
+
+<nav id="navigation" role="navigation" hidden>
+  
+
+
+
+
+  <div id="fileindex-section" class="nav-section">
+    <details class="nav-section-collapsible" >
+      <summary class="nav-section-header">
+        <span class="nav-section-icon">
+          <svg>
+            <use href="#icon-file"></use>
+          </svg>
+        </span>
+
+        <span class="nav-section-title">Pages</span>
+
+        <span class="nav-section-chevron">
+          <svg>
+            <use href="#icon-chevron"></use>
+          </svg>
+        </span>
+      </summary>
+
+      <ul class="nav-list">
+
+
+
+
+
+
+            <li>
+              <a href="../README_md.html">
+                README
+              </a>
+            </li>
+
+      </ul>
+    </details>
   </div>
+
 
   
 
-  <div id="class-metadata">
-    
-    
+  
 <div id="parent-class-section" class="nav-section">
-  <h3>Parent</h3>
-
-  <p class="link">Object
+  <details class="nav-section-collapsible" open>
+    <summary class="nav-section-header">
+      <span class="nav-section-icon">
+        <svg><use href="#icon-ancestors"></use></svg>
+      </span>
+      <span class="nav-section-title">Ancestors</span>
+      <span class="nav-section-chevron">
+        <svg><use href="#icon-chevron"></use></svg>
+      </span>
+    </summary>
+    <ul><li>Object</li></ul>
+  </details>
 </div>
 
-    
-    
-    
-<!-- Method Quickref -->
-<div id="method-list-section" class="nav-section">
-  <h3>Methods</h3>
 
-  <ul class="link-list" role="directory">
-    <li ><a href="#method-c-seeding_method">::seeding_method</a>
-    <li ><a href="#method-i-association">#association</a>
-    <li ><a href="#method-i-create_records">#create_records</a>
-    <li ><a href="#method-i-create_records_from_parent">#create_records_from_parent</a>
-    <li ><a href="#method-i-csv_file">#csv_file</a>
-    <li ><a href="#method-i-model">#model</a>
-    <li ><a href="#method-i-number_of_records">#number_of_records</a>
-    <li ><a href="#method-i-parent_model">#parent_model</a>
-    <li ><a href="#method-i-seed">#seed</a>
-    <li ><a href="#method-i-seeding_method">#seeding_method</a>
-  </ul>
-</div>
+  
 
+  
+
+  
+  <div class="nav-section">
+    <details class="nav-section-collapsible" open>
+      <summary class="nav-section-header">
+        <span class="nav-section-icon">
+          <svg><use href="#icon-class-methods"></use></svg>
+        </span>
+        <span class="nav-section-title">Class Methods</span>
+        <span class="nav-section-chevron">
+          <svg><use href="#icon-chevron"></use></svg>
+        </span>
+      </summary>
+      <ul class="nav-list" role="directory">
+
+        <li ><a href="#method-c-seeding_method">seeding_method</a></li>
+
+      </ul>
+    </details>
   </div>
+
+
+
+  <div class="nav-section">
+    <details class="nav-section-collapsible" open>
+      <summary class="nav-section-header">
+        <span class="nav-section-icon">
+          <svg><use href="#icon-instance-methods"></use></svg>
+        </span>
+        <span class="nav-section-title">Instance Methods</span>
+        <span class="nav-section-chevron">
+          <svg><use href="#icon-chevron"></use></svg>
+        </span>
+      </summary>
+      <ul class="nav-list" role="directory">
+
+        <li ><a href="#method-i-csv_name">csv_name</a></li>
+
+        <li ><a href="#method-i-erb_trim_mode">erb_trim_mode</a></li>
+
+        <li ><a href="#method-i-model">model</a></li>
+
+        <li ><a href="#method-i-number_of_records">number_of_records</a></li>
+
+        <li ><a href="#method-i-parent">parent</a></li>
+
+        <li ><a href="#method-i-seed">seed</a></li>
+
+        <li ><a href="#method-i-seed_method">seed_method</a></li>
+
+        <li ><a href="#method-i-unique_columns">unique_columns</a></li>
+
+      </ul>
+    </details>
+  </div>
+
+
+  <div id="classindex-section" class="nav-section">
+  <details class="nav-section-collapsible" open>
+    <summary class="nav-section-header">
+      <span class="nav-section-icon">
+        <svg><use href="#icon-layers"></use></svg>
+      </span>
+      <span class="nav-section-title">Classes and Modules</span>
+      <span class="nav-section-chevron">
+        <svg><use href="#icon-chevron"></use></svg>
+      </span>
+    </summary>
+
+    <ul class="link-list nav-list"><li><details open><summary><code><a href="../Planter.html">Planter</a></code></summary><ul class="link-list nav-list"><li><details><summary><code><a href="../Planter/Adapters.html">Adapters</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Planter/Adapters/ActiveRecord.html">ActiveRecord</a></code></li></ul></details></li><li><code><a href="../Planter/Config.html">Config</a></code></li><li><details><summary><code><a href="../Planter/Generators.html">Generators</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Planter/Generators/AdapterGenerator.html">AdapterGenerator</a></code></li><li><code><a href="../Planter/Generators/InitializerGenerator.html">InitializerGenerator</a></code></li><li><code><a href="../Planter/Generators/SeederGenerator.html">SeederGenerator</a></code></li></ul></details></li><li><code><a href="../Planter/Seeder.html">Seeder</a></code></li><li><code><a href="../Planter/Version.html">Version</a></code></li></ul></details></li></ul>
+  </details>
+</div>
+
 </nav>
 
-<main role="main" aria-labelledby="class-Planter::Seeder">
-  <h1 id="class-Planter::Seeder" class="class">
+<main role="main" aria-labelledby="class-planter-seeder">
+  
+  
+    <ol role="navigation" aria-label="Breadcrumb navigation" class="breadcrumb">
+      
+      <li>
+        
+        <a href="../Planter.html">Planter</a><span>::</span>
+        
+      </li>
+      
+      <li>
+        
+        <span>Seeder</span>
+        
+      </li>
+      
+    </ol>
+  
+
+  <span id="class-Planter::Seeder" class="legacy-anchor"></span>
+  <h1 id="class-planter-seeder" class="anchor-link class">
     class Planter::Seeder
   </h1>
 
   <section class="description">
     
-<p>Class that seeders should inherit from. <a href="Seeder.html"><code>Seeder</code></a> files should be in <code>db/seeds</code>, and named <code>TABLE_seeder.rb</code>, where <code>TABLE</code> is the name of the table being seeded (I.E. <code>users_seeder.rb</code>). If your seeder is named differently than the table, you&#39;ll need to specify the table with the <code>model</code> option. The seeder&#39;s class name should be the same as the file name, but camelized. So, <code>UsersSeeder</code>. The directory where the seeder files are located can be changed via an initializer.</p>
+<p>Class that seeders should inherit from. Seeders should be in <code>db/seeds</code>, and named <code>TABLE_seeder.rb</code>, where <code>TABLE</code> is the name of the table being seeded (I.E. <code>users_seeder.rb</code>). If your seeder is named differently than the table, you’ll need to specify the table with the <code>model</code> option. The seeder’s class name should be the same as the file name, but camelized. So, <code>UsersSeeder</code>. The directory where the seeder files are located can be changed via an initializer.</p>
 
-<p>The most basic way to seed is to have a CSV file with the same name as the table in <code>db/seed_files/</code>. So, <code>users.csv</code>. This CSV should have the table&#39;s column names as header. To seed using this method, your class should look like the following. Note that <code>:csv_name</code> and <code>:model</code> are only required if your seeder or csv are named differently than the table being seeded. The directory where the seed files are kept can be changed via an initializer.</p>
+<p>The most basic way to seed is to have a CSV file with the same name as the table in <code>db/seed_files/</code>. So, <code>users.csv</code>. This CSV should have the table’s column names as header. To seed using this method, your class should look like the following. Note that <code>:csv_name</code> and <code>:model</code> are only required if your seeder or csv are named differently than the table being seeded. The directory where the seed files are kept can be changed via an initializer.</p>
 
 <pre class="ruby"><span class="ruby-comment"># db/seeds/users_seeder.rb</span>
 <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;planter&#39;</span>
@@ -106,7 +545,7 @@
 <span class="ruby-keyword">end</span>
 </pre>
 
-<p>Another way to seed is to create records from a data array. To do this, your class must implement a <code>data</code> attribute or method, which is an array of hashes. Note that this class already provides the <code>attr_reader</code> for this attribute, so the most you have to do it create instance variables in your constructor. If if you want your data to be different for each new record (via Faker, +Array#sample+, etc.), you&#39;ll probably want to supply a method called data that returns an array of new data each time.</p>
+<p>Another way to seed is to create records from a data array. To do this, your class must implement a <code>data</code> attribute or method, which is an array of hashes. Note that this class already provides the <code>attr_reader</code> for this attribute, so the most you have to do is create instance variables in your constructor. If if you want your data to be different for each new record (via Faker, +Array#sample+, etc.), you’ll probably want to supply a method called data that returns an array of new data each time.</p>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;planter&#39;</span>
 <span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
@@ -117,18 +556,18 @@
 <span class="ruby-keyword">end</span>
 </pre>
 
-<p>In both of the above methods, you can specify <code>parent_model</code> and <code>association</code>. If specified, records will be created via that parent model&#39;s association. If <code>association</code> is not provided, it will be assumed to be the model name, pluralized and snake-cased (implying a <code>has_many</code> relationship).  For example, if we&#39;re seeding the users table, and the model is <code>User</code>, the association will default to <code>users</code>.</p>
+<p>In both of the above methods, you can specify a <code>parent</code> association, which is the <code>belongs_to</code> association name in your model, which, when specified, records will be created for each record in the parent table. For example, if we’re seeding the users table, and the model is <code>User</code>, which belongs to <code>Person</code>, then doing the following will create a user record for each record in the Person table. Note that nothing is automatically done to prevent any validation errors; you must do this on your own, mostly likely using <code>Faker</code> or a similar library.</p>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;planter&#39;</span>
 <span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
-  <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:data_array</span>, <span class="ruby-value">parent_model:</span> <span class="ruby-string">&#39;Person&#39;</span>, <span class="ruby-value">association:</span> <span class="ruby-value">:users</span>
+  <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:data_array</span>, <span class="ruby-value">parent:</span> <span class="ruby-value">:person</span>
   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data</span>
     [{<span class="ruby-value">foo:</span> <span class="ruby-string">&#39;bar&#39;</span>, <span class="ruby-value">baz:</span> <span class="ruby-string">&#39;bar&#39;</span>}]
   <span class="ruby-keyword">end</span>
 <span class="ruby-keyword">end</span>
 </pre>
 
-<p>You can also set <code>number_of_records</code> to determine how many times each record in the <code>data</code> array will get created. The default is 1. Note that if this attribute is set alongside <code>parent_model</code> and <code>association</code>, <code>number_of_records</code> will be how many records will be created for each record in the parent table.</p>
+<p>You can also set <a href="Seeder.html#method-i-number_of_records"><code>number_of_records</code></a> to determine how many times each record in the <code>data</code> array will get created. The default is 1. Note that if this attribute is set alongside <code>parent</code>, <a href="Seeder.html#method-i-number_of_records"><code>number_of_records</code></a> will be how many records will be created for each record in the parent table.</p>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;planter&#39;</span>
 <span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
@@ -139,71 +578,194 @@
 <span class="ruby-keyword">end</span>
 </pre>
 
+<p>By default, all fields are used to look up the record. If it already exists, it is not re-created. If you have specific fields that a record should be looked-up by, you can pass the <a href="Seeder.html#method-i-unique_columns"><code>unique_columns</code></a> option. This will attempt to look up the record by those fields only, and if one doesn’t exist, one will be created with the rest of the attributes. An example of when this would be useful is with Devise; you can’t pass <code>password</code> in the create method, so specifying <a href="Seeder.html#method-i-unique_columns"><code>unique_columns</code></a> on everything except <code>password</code> allows it to be passed as an attribute to the <code>first_or_create</code> call.</p>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;planter&#39;</span>
+<span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
+  <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:data_array</span>, <span class="ruby-value">unique_columns:</span> <span class="ruby-node">%i[username email]</span>
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data</span>
+    [{<span class="ruby-value">username:</span> <span class="ruby-string">&#39;foo&#39;</span>, <span class="ruby-value">email:</span> <span class="ruby-string">&#39;bar&#39;</span>, <span class="ruby-value">password:</span> <span class="ruby-string">&#39;Example&#39;</span>}]
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
 <p>If you need to seed a different way, put your own custom <code>seed</code> method in your seeder class and do whatever needs to be done.</p>
 
   </section>
 
-  <section id="5Buntitled-5D" class="documentation-section">
+
+  <span id="5Buntitled-5D" class="legacy-anchor"></span>
+  <section class="documentation-section anchor-link">
+
+
+
 
 
     <section class="constants-list">
       <header>
-        <h3>Constants</h3>
+        <h3 id="untitled-constants"><a href="#untitled-constants">Constants</a></h3>
       </header>
       <dl>
-        <dt id="SEEDING_METHODS">SEEDING_METHODS
-        <dd><p>The allowed seeding methods.</p>
+
+        <dt id="SEEDING_METHODS">SEEDING_METHODS</dt>
+
+        <dd>
+
+          <p>The allowed seeding methods.</p>
 
 <p>@return [Array]</p>
+        </dd>
+
+
       </dl>
     </section>
 
-    <section class="attribute-method-details" class="method-section">
+
+
+    <section class="attribute-method-details method-section">
       <header>
-        <h3>Attributes</h3>
+        <h3 id="untitled-attributes"><a href="#untitled-attributes">Attributes</a></h3>
       </header>
 
-      <div id="attribute-i-data" class="method-detail">
+
+      <div id="attribute-i-data" class="method-detail anchor-link">
         <div class="method-heading attribute-method-heading">
-          <span class="method-name">data</span><span
-            class="attribute-access-type">[R]</span>
+          <a href="#attribute-i-data" title="Link to this attribute">
+            <span class="method-name">data</span>
+            <span class="attribute-access-type">[R]</span>
+          </a>
         </div>
 
         <div class="method-description">
-        <p>Array of hashes used to create records. Your class must set this attribute when using <code>data_array</code> seeding method, although it&#39;s probably more likely that you&#39;ll want to define a method that returns a new set of data each time (via <code>Faker</code>, +Array#sample+, etc.). When using <code>csv</code>, <code>data</code> will be set to the data within the csv. You can override this.</p>
+
+
+        <p>Array of hashes used to create records. Your class must set this attribute when using <code>data_array</code> seeding method, although it’s probably more likely that you’ll want to define a method that returns a new set of data each time (via <code>Faker</code>, +Array#sample+, etc.). When using <code>csv</code>, <code>data</code> will be set to the data within the csv. You can override this.</p>
 
 <p>@return [Array]</p>
+
         </div>
       </div>
+
+      <div id="attribute-i-transformations" class="method-detail anchor-link">
+        <div class="method-heading attribute-method-heading">
+          <a href="#attribute-i-transformations" title="Link to this attribute">
+            <span class="method-name">transformations</span>
+            <span class="attribute-access-type">[R]</span>
+          </a>
+        </div>
+
+        <div class="method-description">
+
+
+        <p>A hash of user-defined column names and procs to be run on values. This is most useful for when seeding from csv, and you need to transform, say, ‘true’ (String) into true (Boolean). The user may define this as an instance variable, or define a method that returns the hash.</p>
+
+<p>When defining a Proc/Lambda, you can make it accept 0, 1, or 2 arguments.</p>
+<ul><li>
+<p>When 0, the value is replaced by the result of the Lambda.</p>
+</li><li>
+<p>When 1, the value is passed to the Lambda, and is subsequently replaced by the result of the Lambda.</p>
+</li><li>
+<p>When 2, the value is the first argument, and the entire row, as a Hash, is the second argument. This allows for more complicated transformations that can be dependent on other fields and values in the record.</p>
+</li></ul>
+
+<p>@return [Hash, nil]</p>
+
+<p>@example</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">UsersSeeder</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Planter</span><span class="ruby-operator">::</span><span class="ruby-constant">Seeder</span>
+  <span class="ruby-identifier">seeding_method</span> <span class="ruby-value">:csv</span>
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">transformations</span>
+    {
+      <span class="ruby-value">admin:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">v</span>) { <span class="ruby-identifier">v</span> <span class="ruby-operator">==</span> <span class="ruby-string">&#39;true&#39;</span> },
+      <span class="ruby-value">last_name:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">value</span>, <span class="ruby-identifier">row</span>) { <span class="ruby-node">&quot;#{value} #{row[:suffix]}&quot;</span>.<span class="ruby-identifier">squish</span> }
+    }
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+        </div>
+      </div>
+
     </section>
 
 
-     <section id="public-class-5Buntitled-5D-method-details" class="method-section">
+
+
+
+
+     <section id="public-class-untitled-method-details" class="method-section anchor-link">
        <header>
-         <h3>Public Class Methods</h3>
+         <h3 id="public-class-untitled-methods"><a href="#public-class-untitled-methods">Public Class Methods</a></h3>
        </header>
 
-      <div id="method-c-seeding_method" class="method-detail ">
-        <div class="method-heading">
-          <span class="method-name">seeding_method</span><span
-            class="method-args">( method, number_of_records: 1, model: to_s.delete_suffix(&#39;Seeder&#39;).singularize, parent_model: nil, association: nil, csv_name: nil )</span>
-          <span class="method-click-advice">click to toggle source</span>
+
+      <div id="method-c-seeding_method" class="method-detail anchor-link ">
+        <div class="method-header">
+
+            <div class="method-heading">
+              <a href="#method-c-seeding_method" title="Link to this method">
+                <span class="method-name">seeding_method</span>
+                <span class="method-args">( seed_method, number_of_records: 1, model: nil, parent: nil, csv_name: nil, unique_columns: nil, erb_trim_mode: nil )</span>
+              </a>
+            </div>
+
         </div>
 
-        <div class="method-description">
-          <p>If your class is going to use the inherited <code>seed</code> method, you must tell it which <code>seeding_method</code> to use. The argument to this method must be included in the <code>SEEDING_METHODS</code> array.</p>
 
-<p>@param [Symbol] <a href="Seeder.html#method-c-seeding_method"><code>seeding_method</code></a></p>
+          <div class="method-controls">
+            <details class="method-source-toggle">
+              <summary>Source</summary>
+            </details>
+          </div>
+          <div class="method-source-code" id="seeding_method-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/planter/seeder.rb, line 212</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">seeding_method</span>(
+  <span class="ruby-identifier">seed_method</span>,
+  <span class="ruby-value">number_of_records:</span> <span class="ruby-value">1</span>,
+  <span class="ruby-value">model:</span> <span class="ruby-keyword">nil</span>,
+  <span class="ruby-value">parent:</span> <span class="ruby-keyword">nil</span>,
+  <span class="ruby-value">csv_name:</span> <span class="ruby-keyword">nil</span>,
+  <span class="ruby-value">unique_columns:</span> <span class="ruby-keyword">nil</span>,
+  <span class="ruby-value">erb_trim_mode:</span> <span class="ruby-keyword">nil</span>
+)
+  <span class="ruby-keyword">unless</span> <span class="ruby-constant">SEEDING_METHODS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">seed_method</span>.<span class="ruby-identifier">intern</span>)
+    <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;Method must be: #{SEEDING_METHODS.join(&quot;, &quot;)}&quot;</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">seed_method</span> = <span class="ruby-identifier">seed_method</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">number_of_records</span> = <span class="ruby-identifier">number_of_records</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">model</span> = <span class="ruby-identifier">model</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">delete_suffix</span>(<span class="ruby-string">&quot;Seeder&quot;</span>).<span class="ruby-identifier">singularize</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">parent</span> = <span class="ruby-identifier">parent</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">csv_name</span> = <span class="ruby-identifier">csv_name</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">delete_suffix</span>(<span class="ruby-string">&quot;Seeder&quot;</span>).<span class="ruby-identifier">underscore</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">erb_trim_mode</span> = <span class="ruby-identifier">erb_trim_mode</span> <span class="ruby-operator">||</span> <span class="ruby-constant">Planter</span>.<span class="ruby-identifier">config</span>.<span class="ruby-identifier">erb_trim_mode</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">unique_columns</span> =
+    <span class="ruby-keyword">case</span> <span class="ruby-identifier">unique_columns</span>
+    <span class="ruby-keyword">when</span> <span class="ruby-constant">String</span>, <span class="ruby-constant">Symbol</span> <span class="ruby-keyword">then</span> [<span class="ruby-identifier">unique_columns</span>.<span class="ruby-identifier">intern</span>]
+    <span class="ruby-keyword">when</span> <span class="ruby-constant">Array</span> <span class="ruby-keyword">then</span> <span class="ruby-identifier">unique_columns</span>.<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:intern</span>)
+    <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>If your class is going to use the inherited <code>seed</code> method, you must tell it which <a href="Seeder.html#method-c-seeding_method"><code>seeding_method</code></a> to use. The argument to this method must be included in the <a href="Seeder.html#SEEDING_METHODS"><code>SEEDING_METHODS</code></a> array.</p>
+
+<p>@param [Symbol] <a href="Seeder.html#method-i-seed_method"><code>seed_method</code></a></p>
 
 <p>@kwarg [Integer] <a href="Seeder.html#method-i-number_of_records"><code>number_of_records</code></a></p>
 
 <p>@kwarg [String] model</p>
 
-<p>@kwarg [String] <a href="Seeder.html#method-i-parent_model"><code>parent_model</code></a></p>
+<p>@kwarg [Symbol, String] parent</p>
 
-<p>@kwarg [Symbol, String] association</p>
+<p>@kwarg [Symbol, String] <a href="Seeder.html#method-i-csv_name"><code>csv_name</code></a></p>
 
-<p>@kwarg [Symbol, String] csv_name</p>
+<p>@kwarg [Symbol, String] <a href="Seeder.html#method-i-unique_columns"><code>unique_columns</code></a></p>
+
+<p>@kwarg [String] <a href="Seeder.html#method-i-erb_trim_mode"><code>erb_trim_mode</code></a></p>
 
 <p>@example</p>
 
@@ -212,277 +774,411 @@ class UsersSeeder &lt; Planter::Seeder
   seeding_method :csv,
     number_of_records: 2,
     model: &#39;User&#39;
-    parent_model: &#39;Person&#39;,
-    association: :users,
-    csv_name: :awesome_users
+    parent: :person,
+    csv_name: :awesome_users,
+    unique_columns %i[username email],
+    erb_trim_mode: &#39;&lt;&gt;&#39;
 end</pre>
 
-          <div class="method-source-code" id="seeding_method-source">
-            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 114</span>
-<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">seeding_method</span>(
-  <span class="ruby-identifier">method</span>,
-  <span class="ruby-value">number_of_records:</span> <span class="ruby-value">1</span>,
-  <span class="ruby-value">model:</span> <span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">delete_suffix</span>(<span class="ruby-string">&#39;Seeder&#39;</span>).<span class="ruby-identifier">singularize</span>,
-  <span class="ruby-value">parent_model:</span> <span class="ruby-keyword">nil</span>,
-  <span class="ruby-value">association:</span> <span class="ruby-keyword">nil</span>,
-  <span class="ruby-value">csv_name:</span> <span class="ruby-keyword">nil</span>
-)
-  <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-constant">SEEDING_METHODS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">method</span>.<span class="ruby-identifier">intern</span>)
-    <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;Method must be one of #{SEEDING_METHODS.join(&#39;, &#39;)}&quot;</span>
-  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">association</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">parent_model</span>
-    <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-string">&quot;Must specify :parent_model with :association&quot;</span>
-  <span class="ruby-keyword">end</span>
 
-  <span class="ruby-ivar">@seeding_method</span> = <span class="ruby-identifier">method</span>
-  <span class="ruby-ivar">@number_of_records</span> = <span class="ruby-identifier">number_of_records</span>
-  <span class="ruby-ivar">@model</span> = <span class="ruby-identifier">model</span>
-  <span class="ruby-ivar">@parent_model</span> = <span class="ruby-identifier">parent_model</span>
-  <span class="ruby-ivar">@association</span> = <span class="ruby-ivar">@parent_model</span> <span class="ruby-operator">&amp;&amp;</span> (<span class="ruby-identifier">association</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">determine_association</span>)
-  <span class="ruby-ivar">@csv_file</span> = <span class="ruby-identifier">determine_csv_filename</span>(<span class="ruby-identifier">csv_name</span>) <span class="ruby-keyword">if</span> <span class="ruby-ivar">@seeding_method</span> <span class="ruby-operator">==</span> <span class="ruby-value">:csv</span>
-<span class="ruby-keyword">end</span></pre>
-          </div>
         </div>
 
 
+
+
+
       </div>
+
 
     </section>
 
-     <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
+
+
+
+
+
+
+     <section id="public-instance-untitled-method-details" class="method-section anchor-link">
        <header>
-         <h3>Public Instance Methods</h3>
+         <h3 id="public-instance-untitled-methods"><a href="#public-instance-untitled-methods">Public Instance Methods</a></h3>
        </header>
 
-      <div id="method-i-seed" class="method-detail ">
-        <div class="method-heading">
-          <span class="method-name">seed</span><span
-            class="method-args">()</span>
-          <span class="method-click-advice">click to toggle source</span>
+
+      <div id="method-i-csv_name" class="method-detail anchor-link ">
+        <div class="method-header">
+
+            <div class="method-heading">
+              <a href="#method-i-csv_name" title="Link to this method">
+                <span class="method-name">csv_name</span>
+                <span class="method-args">()</span>
+              </a>
+            </div>
+
         </div>
 
-        <div class="method-description">
-          <p>The default seed method. To use this method, your class must provide a valid <code>seeding_method</code>, and not implement its own <code>seed</code> method.</p>
 
-          <div class="method-source-code" id="seed-source">
-            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 165</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">seed</span>
-  <span class="ruby-identifier">validate_attributes</span>
-
-  <span class="ruby-identifier">parent_model</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">create_records_from_parent</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">create_records</span>
-<span class="ruby-keyword">end</span></pre>
+          <div class="method-controls">
+            <details class="method-source-toggle">
+              <summary>Source</summary>
+            </details>
           </div>
-        </div>
-
-
-      </div>
-
-    </section>
-
-     <section id="protected-instance-5Buntitled-5D-method-details" class="method-section">
-       <header>
-         <h3>Protected Instance Methods</h3>
-       </header>
-
-      <div id="method-i-association" class="method-detail ">
-        <div class="method-heading">
-          <span class="method-name">association</span><span
-            class="method-args">()</span>
-          <span class="method-click-advice">click to toggle source</span>
-        </div>
-
-        <div class="method-description">
-          <p>When using <code>parent_model</code>, the association name. Your class can set this attribute via <code>seeding_method</code>.</p>
-
-<p>@return [Symbol]</p>
-
-          <div class="method-source-code" id="association-source">
-            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 205</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">association</span>
-  <span class="ruby-ivar">@association</span> <span class="ruby-operator">||=</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">instance_variable_get</span>(<span class="ruby-string">&#39;@association&#39;</span>)
-<span class="ruby-keyword">end</span></pre>
+          <div class="method-source-code" id="csv_name-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/planter/seeder.rb, line 174</span>
+<span class="ruby-identifier">class_attribute</span> <span class="ruby-value">:csv_name</span>
+</pre>
           </div>
-        </div>
 
 
-      </div>
-
-      <div id="method-i-create_records" class="method-detail ">
-        <div class="method-heading">
-          <span class="method-name">create_records</span><span
-            class="method-args">()</span>
-          <span class="method-click-advice">click to toggle source</span>
-        </div>
 
         <div class="method-description">
-          <p>Creates records from the <code>data</code> attribute.</p>
-
-          <div class="method-source-code" id="create_records-source">
-            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 230</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">create_records</span>
-  <span class="ruby-identifier">data</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">rec</span><span class="ruby-operator">|</span>
-    <span class="ruby-identifier">number_of_records</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword">do</span>
-      <span class="ruby-identifier">model</span>.<span class="ruby-identifier">constantize</span>.<span class="ruby-identifier">where</span>(
-        <span class="ruby-identifier">rec</span>.<span class="ruby-identifier">transform_values</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">value</span><span class="ruby-operator">|</span> <span class="ruby-identifier">value</span> <span class="ruby-operator">==</span> <span class="ruby-string">&#39;NULL&#39;</span> <span class="ruby-operator">?</span> <span class="ruby-keyword">nil</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">value</span> }
-      ).<span class="ruby-identifier">first_or_create!</span>
-    <span class="ruby-keyword">end</span>
-  <span class="ruby-keyword">end</span>
-<span class="ruby-keyword">end</span></pre>
-          </div>
-        </div>
 
 
-      </div>
-
-      <div id="method-i-create_records_from_parent" class="method-detail ">
-        <div class="method-heading">
-          <span class="method-name">create_records_from_parent</span><span
-            class="method-args">()</span>
-          <span class="method-click-advice">click to toggle source</span>
-        </div>
-
-        <div class="method-description">
-          <p>Create records from the <code>data</code> attribute for each record in the <code>parent_table</code>, via the specified <code>association</code>.</p>
-
-          <div class="method-source-code" id="create_records_from_parent-source">
-            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 243</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">create_records_from_parent</span>
-  <span class="ruby-identifier">parent_model</span>.<span class="ruby-identifier">constantize</span>.<span class="ruby-identifier">all</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">assoc_rec</span><span class="ruby-operator">|</span>
-    <span class="ruby-identifier">number_of_records</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword">do</span>
-      <span class="ruby-identifier">data</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">rec</span><span class="ruby-operator">|</span> <span class="ruby-identifier">send</span>(<span class="ruby-identifier">create_method</span>, <span class="ruby-identifier">assoc_rec</span>, <span class="ruby-identifier">association</span>, <span class="ruby-identifier">rec</span>) }
-    <span class="ruby-keyword">end</span>
-  <span class="ruby-keyword">end</span>
-<span class="ruby-keyword">end</span></pre>
-          </div>
-        </div>
-
-
-      </div>
-
-      <div id="method-i-csv_file" class="method-detail ">
-        <div class="method-heading">
-          <span class="method-name">csv_file</span><span
-            class="method-args">()</span>
-          <span class="method-click-advice">click to toggle source</span>
-        </div>
-
-        <div class="method-description">
           <p>The csv file corresponding to the model.</p>
 
 <p>@return [String]</p>
 
-          <div class="method-source-code" id="csv_file-source">
-            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 224</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">csv_file</span>
-  <span class="ruby-ivar">@csv_file</span> <span class="ruby-operator">||=</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">instance_variable_get</span>(<span class="ruby-string">&#39;@csv_file&#39;</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
+
         </div>
+
+
+
 
 
       </div>
 
-      <div id="method-i-model" class="method-detail ">
-        <div class="method-heading">
-          <span class="method-name">model</span><span
-            class="method-args">()</span>
-          <span class="method-click-advice">click to toggle source</span>
+
+      <div id="method-i-erb_trim_mode" class="method-detail anchor-link ">
+        <div class="method-header">
+
+            <div class="method-heading">
+              <a href="#method-i-erb_trim_mode" title="Link to this method">
+                <span class="method-name">erb_trim_mode</span>
+                <span class="method-args">()</span>
+              </a>
+            </div>
+
         </div>
 
+
+          <div class="method-controls">
+            <details class="method-source-toggle">
+              <summary>Source</summary>
+            </details>
+          </div>
+          <div class="method-source-code" id="erb_trim_mode-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/planter/seeder.rb, line 138</span>
+<span class="ruby-identifier">class_attribute</span> <span class="ruby-value">:erb_trim_mode</span>
+</pre>
+          </div>
+
+
+
         <div class="method-description">
-          <p>The model for the table being seeded. If the model name you need is different, change via <code>seeding_method</code>.</p>
+
+
+          <p>What trim mode should ERB use?</p>
 
 <p>@return [String]</p>
 
-          <div class="method-source-code" id="model-source">
-            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 186</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">model</span>
-  <span class="ruby-ivar">@model</span> <span class="ruby-operator">||=</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">instance_variable_get</span>(<span class="ruby-string">&#39;@model&#39;</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
+
         </div>
+
+
+
 
 
       </div>
 
-      <div id="method-i-number_of_records" class="method-detail ">
-        <div class="method-heading">
-          <span class="method-name">number_of_records</span><span
-            class="method-args">()</span>
-          <span class="method-click-advice">click to toggle source</span>
+
+      <div id="method-i-model" class="method-detail anchor-link ">
+        <div class="method-header">
+
+            <div class="method-heading">
+              <a href="#method-i-model" title="Link to this method">
+                <span class="method-name">model</span>
+                <span class="method-args">()</span>
+              </a>
+            </div>
+
         </div>
 
+
+          <div class="method-controls">
+            <details class="method-source-toggle">
+              <summary>Source</summary>
+            </details>
+          </div>
+          <div class="method-source-code" id="model-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/planter/seeder.rb, line 152</span>
+<span class="ruby-identifier">class_attribute</span> <span class="ruby-value">:model</span>
+</pre>
+          </div>
+
+
+
         <div class="method-description">
-          <p>The number of records to create from each record in the <code>data</code> array. If nil, defaults to 1, but you can override this in your class via <code>seeding_method</code>.</p>
+
+
+          <p>The model for the table being seeded. If the model name you need is different, change via <a href="Seeder.html#method-c-seeding_method"><code>seeding_method</code></a>.</p>
+
+<p>@return [String]</p>
+
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-number_of_records" class="method-detail anchor-link ">
+        <div class="method-header">
+
+            <div class="method-heading">
+              <a href="#method-i-number_of_records" title="Link to this method">
+                <span class="method-name">number_of_records</span>
+                <span class="method-args">()</span>
+              </a>
+            </div>
+
+        </div>
+
+
+          <div class="method-controls">
+            <details class="method-source-toggle">
+              <summary>Source</summary>
+            </details>
+          </div>
+          <div class="method-source-code" id="number_of_records-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/planter/seeder.rb, line 168</span>
+<span class="ruby-identifier">class_attribute</span> <span class="ruby-value">:number_of_records</span>
+</pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>The number of records to create from each record in the <code>data</code> array. If nil, defaults to 1, but you can override this in your class via <a href="Seeder.html#method-c-seeding_method"><code>seeding_method</code></a>.</p>
 
 <p>@return [Integer]</p>
 
-          <div class="method-source-code" id="number_of_records-source">
-            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 215</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">number_of_records</span>
-  <span class="ruby-ivar">@number_of_records</span> <span class="ruby-operator">||=</span>
-    <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">instance_variable_get</span>(<span class="ruby-string">&#39;@number_of_records&#39;</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
+
         </div>
+
+
+
 
 
       </div>
 
-      <div id="method-i-parent_model" class="method-detail ">
-        <div class="method-heading">
-          <span class="method-name">parent_model</span><span
-            class="method-args">()</span>
-          <span class="method-click-advice">click to toggle source</span>
+
+      <div id="method-i-parent" class="method-detail anchor-link ">
+        <div class="method-header">
+
+            <div class="method-heading">
+              <a href="#method-i-parent" title="Link to this method">
+                <span class="method-name">parent</span>
+                <span class="method-args">()</span>
+              </a>
+            </div>
+
         </div>
 
+
+          <div class="method-controls">
+            <details class="method-source-toggle">
+              <summary>Source</summary>
+            </details>
+          </div>
+          <div class="method-source-code" id="parent-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/planter/seeder.rb, line 160</span>
+<span class="ruby-identifier">class_attribute</span> <span class="ruby-value">:parent</span>
+</pre>
+          </div>
+
+
+
         <div class="method-description">
-          <p>The model of the parent. When provided with <code>association</code>, records in the <code>data</code> array, will be created for each record in the parent table. Your class must set this attribute via <code>seeding_method</code>.</p>
+
+
+          <p>The model of the parent. When provided with <code>association</code>, records in the <code>data</code> array, will be created for each record in the parent table. Your class must set this attribute via <a href="Seeder.html#method-c-seeding_method"><code>seeding_method</code></a>.</p>
 
 <p>@return [String]</p>
 
-          <div class="method-source-code" id="parent_model-source">
-            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 196</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">parent_model</span>
-  <span class="ruby-ivar">@parent_model</span> <span class="ruby-operator">||=</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">instance_variable_get</span>(<span class="ruby-string">&#39;@parent_model&#39;</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
+
         </div>
+
+
+
 
 
       </div>
 
-      <div id="method-i-seeding_method" class="method-detail ">
-        <div class="method-heading">
-          <span class="method-name">seeding_method</span><span
-            class="method-args">()</span>
-          <span class="method-click-advice">click to toggle source</span>
+
+      <div id="method-i-seed" class="method-detail anchor-link ">
+        <div class="method-header">
+
+            <div class="method-heading">
+              <a href="#method-i-seed" title="Link to this method">
+                <span class="method-name">seed</span>
+                <span class="method-args">()</span>
+              </a>
+            </div>
+
         </div>
 
+
+          <div class="method-controls">
+            <details class="method-source-toggle">
+              <summary>Source</summary>
+            </details>
+          </div>
+          <div class="method-source-code" id="seed-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/planter/seeder.rb, line 241</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">seed</span>
+  <span class="ruby-identifier">validate_attributes</span>
+  <span class="ruby-identifier">extract_data_from_csv</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">seed_method</span> <span class="ruby-operator">==</span> <span class="ruby-value">:csv</span>
+
+  <span class="ruby-identifier">parent</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">create_records_from_parent</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">create_records</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
         <div class="method-description">
+
+
+          <p>The default seed method. To use this method, your class must provide a valid <a href="Seeder.html#method-c-seeding_method"><code>seeding_method</code></a>, and not implement its own <code>seed</code> method.</p>
+
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-seed_method" class="method-detail anchor-link ">
+        <div class="method-header">
+
+            <div class="method-heading">
+              <a href="#method-i-seed_method" title="Link to this method">
+                <span class="method-name">seed_method</span>
+                <span class="method-args">()</span>
+              </a>
+            </div>
+
+        </div>
+
+
+          <div class="method-controls">
+            <details class="method-source-toggle">
+              <summary>Source</summary>
+            </details>
+          </div>
+          <div class="method-source-code" id="seed_method-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/planter/seeder.rb, line 180</span>
+<span class="ruby-identifier">class_attribute</span> <span class="ruby-value">:seed_method</span>
+</pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
           <p>The seeding method specified.</p>
 
 <p>@return [Symbol]</p>
 
-          <div class="method-source-code" id="seeding_method-source">
-            <pre><span class="ruby-comment"># File lib/planter/seeder.rb, line 177</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">seeding_method</span>
-  <span class="ruby-ivar">@seeding_method</span> <span class="ruby-operator">||=</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">instance_variable_get</span>(<span class="ruby-string">&#39;@seeding_method&#39;</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
+
         </div>
+
+
+
 
 
       </div>
 
+
+      <div id="method-i-unique_columns" class="method-detail anchor-link ">
+        <div class="method-header">
+
+            <div class="method-heading">
+              <a href="#method-i-unique_columns" title="Link to this method">
+                <span class="method-name">unique_columns</span>
+                <span class="method-args">()</span>
+              </a>
+            </div>
+
+        </div>
+
+
+          <div class="method-controls">
+            <details class="method-source-toggle">
+              <summary>Source</summary>
+            </details>
+          </div>
+          <div class="method-source-code" id="unique_columns-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/planter/seeder.rb, line 145</span>
+<span class="ruby-identifier">class_attribute</span> <span class="ruby-value">:unique_columns</span>
+</pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>When creating a record, the fields that will be used to look up the record. If it already exists, a new one will not be created.</p>
+
+<p>@return [Array]</p>
+
+
+        </div>
+
+
+
+
+
+      </div>
+
+
     </section>
 
+
+
+
   </section>
+
 </main>
 
+<aside class="table-of-contents" role="complementary" aria-label="Table of Contents">
+  <div class="toc-sticky">
+    <h3 class="toc-heading">On This Page</h3>
+    <nav class="toc-nav" id="toc-nav" aria-label="Page sections">
+      <!-- Generated by JavaScript based on page headings -->
+    </nav>
+  </div>
+</aside>
 
-<footer id="validator-badges" role="contentinfo">
-  <p><a href="https://validator.w3.org/check/referer">Validate</a>
-  <p>Generated by <a href="https://ruby.github.io/rdoc/">RDoc</a> 6.3.0.
-  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+
+<footer class="site-footer">
+  
+
+  <div class="footer-bottom">
+    <p>
+      Generated by <a href="https://ruby.github.io/rdoc/">RDoc 7.2.0</a>
+      using the Aliki theme by <a href="http://st0012.dev">Stan Lo</a>
+    </p>
+  </div>
 </footer>
+
+</body>
 
