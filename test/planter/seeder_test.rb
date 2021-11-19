@@ -6,6 +6,7 @@ class Planter::SeederTest < ActiveSupport::TestCase
     Planter.configure do |c|
       c.seeders = %i[users addresses bios roles comments]
       c.quiet = true
+      c.erb_trim_mode = '<>'
     end
   end
 

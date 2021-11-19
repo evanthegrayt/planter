@@ -43,6 +43,15 @@ module Planter
     attr_accessor :quiet
 
     ##
+    # The default trim mode for ERB. Must be "%", "<>", ">", or "-".
+    # For more information, see documentation for +ERB::new+.
+    #
+    # @param [String] erb_trim_mode
+    #
+    # @return [String]
+    attr_accessor :erb_trim_mode
+
+    ##
     # Create a new instance of the config.
     def initialize
       @quiet = false

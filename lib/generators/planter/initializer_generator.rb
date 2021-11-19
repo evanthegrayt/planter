@@ -25,6 +25,15 @@ module Planter
             ##
             # The directory where CSVs are kept.
             # config.csv_files_directory = 'db/seed_files'
+
+            ##
+            # The default trim mode for ERB. Valid modes are:
+            # '%'  enables Ruby code processing for lines beginning with %
+            # '<>' omit newline for lines starting with <% and ending in %>
+            # '>'  omit newline for lines ending in %>
+            # '-'  omit blank lines ending in -%>
+            # I recommend reading the help documentation for ERB::new()
+            # config.erb_trim_mode = nil
           end
         EOF
       end

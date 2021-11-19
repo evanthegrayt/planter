@@ -66,6 +66,15 @@ Planter.configure do |config|
   ##
   # The directory where CSVs are kept.
   # config.csv_files_directory = 'db/seed_files'
+
+  ##
+  # The default trim mode for ERB. Valid modes are:
+  # '%'  enables Ruby code processing for lines beginning with %
+  # '<>' omit newline for lines starting with <% and ending in %>
+  # '>'  omit newline for lines ending in %>
+  # '-'  omit blank lines ending in -%>
+  # I recommend reading the help documentation for ERB::new()
+  # config.erb_trim_mode = nil
 end
 ```
 
@@ -135,17 +144,36 @@ class UsersSeeder < Planter::Seeder
 end
 ```
 
-`ERB` can be used in the CSV files if you name it with `.erb` at the end of the
-file name. For example, `users.csv.erb`. Note that lines starting with `<%` and
-ending with `%>` will not be considered rows, so you can use `ERB` rows to set
-values. For example:
+`ERB` can be used in the CSV files if you end the file name with `.csv.erb`.
+For example, `users.csv.erb`.
 
 ```
-email,login_attempts
-<% count = 1 %>
-test2@example.com,<%= count += 1 %>
-test2@example.com,<%= count += 1 %>
+participant_id,name
+<%= Participant.find_by(email: 'test1@example.com').id %>,"Test User1"
+<%= Participant.find_by(email: 'test2@example.com').id %>,"Test User2"
 ```
+
+Note that, if you need to change the trim mode for ERB, you can set a default in
+the initializer.
+
+```ruby
+Planter.configure do |config|
+  config.seeders = %i[
+    users
+  ]
+  config.erb_trim_mode = '<>'
+end
+```
+
+...or, for individual seeders, via `seeding_method`.
+
+```ruby
+class UsersSeeder < Planter::Seeder
+  seeding_method :csv, erb_trim_mode: '<>'
+end
+```
+
+For help with `erb_trim_mode`, see the help documentation for `ERB::new`.
 
 Running `rails planter:seed` will now seed your `users` table.
 

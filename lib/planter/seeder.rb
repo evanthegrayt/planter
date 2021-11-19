@@ -120,6 +120,8 @@ module Planter
     #
     # @kwarg [Symbol, String] unique_columns
     #
+    # @kwarg [String] erb_trim_mode
+    #
     # @example
     #   require 'planter'
     #   class UsersSeeder < Planter::Seeder
@@ -129,16 +131,18 @@ module Planter
     #       parent_model: 'Person',
     #       association: :users,
     #       csv_name: :awesome_users,
-    #       unique_columns %i[username email]
+    #       unique_columns %i[username email],
+    #       erb_trim_mode: '<>'
     #   end
     def self.seeding_method(
       method,
       number_of_records: 1,
-      model: to_s.delete_suffix('Seeder').singularize,
+      model: nil,
       parent_model: nil,
       association: nil,
       csv_name: nil,
-      unique_columns: nil
+      unique_columns: nil,
+      erb_trim_mode: nil
     )
       if !SEEDING_METHODS.include?(method.intern)
         raise ArgumentError, "Method must be one of #{SEEDING_METHODS.join(', ')}"
@@ -148,10 +152,11 @@ module Planter
 
       @seeding_method = method
       @number_of_records = number_of_records
-      @model = model
+      @model = model || to_s.delete_suffix('Seeder').singularize
       @parent_model = parent_model
       @association = @parent_model && (association || determine_association)
       @csv_file = determine_csv_filename(csv_name) if @seeding_method == :csv
+      @erb_trim_mode = erb_trim_mode || Planter.config.erb_trim_mode
       @unique_columns =
         case unique_columns
         when String, Symbol then [unique_columns.intern]
@@ -261,6 +266,14 @@ module Planter
     end
 
     ##
+    # What trim mode should ERB use?
+    #
+    # @return [String]
+    def erb_trim_mode
+      @erb_trim_mode ||= self.class.instance_variable_get('@erb_trim_mode')
+    end
+
+    ##
     # Creates records from the +data+ attribute.
     def create_records
       data.each do |rec|
@@ -309,7 +322,7 @@ module Planter
       when :csv
         contents = ::File.read(csv_file)
         if csv_file.end_with?('.erb')
-          contents = ERB.new(contents, trim_mode: '<>').result(binding)
+          contents = ERB.new(contents, trim_mode: erb_trim_mode).result(binding)
         end
 
         @data ||= ::CSV.parse(
