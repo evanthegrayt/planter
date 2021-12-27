@@ -21,7 +21,7 @@ module Planter
     # Patch version.
     #
     # @return [Integer]
-    PATCH = 14
+    PATCH = 15
 
     ##
     # Version as +[MAJOR, MINOR, PATCH]+
