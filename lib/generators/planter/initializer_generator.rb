@@ -19,7 +19,7 @@ module Planter
             ]
 
             ##
-            # The directory where the seeder files are kept.
+            # The directory where the seeders are kept.
             # config.seeders_directory = 'db/seeds'
 
             ##

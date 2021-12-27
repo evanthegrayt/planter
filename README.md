@@ -60,7 +60,7 @@ Planter.configure do |config|
   ]
 
   ##
-  # The directory where the seeder files are kept.
+  # The directory where the seeders are kept.
   # config.seeders_directory = 'db/seeds'
 
   ##
@@ -262,4 +262,4 @@ Request.
 I do these projects for fun, and I enjoy knowing that they're helpful to people.
 Consider starring [the repository](https://github.com/evanthegrayt/planter)
 if you like it! If you love it, follow me [on
-Github](https://github.com/evanthegrayt)!
+GitHub](https://github.com/evanthegrayt)!

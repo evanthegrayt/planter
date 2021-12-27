@@ -19,7 +19,7 @@ class Planter::SeederTest < ActiveSupport::TestCase
   end
 
   test 'attributes are protected' do
-    assert_raise(NameError) { seeder.seeding_method }
+    assert_raise(NameError) { seeder.seed_method }
   end
 
   test 'csv with unique columns' do
@@ -61,10 +61,10 @@ class Planter::SeederTest < ActiveSupport::TestCase
       association: :addresses,
     )
     seeder = Planter::Seeder.new
-    assert_equal :data_array, seeder.send(:seeding_method)
-    assert_equal 5, seeder.send(:number_of_records)
-    assert_equal 'Address', seeder.send(:model)
-    assert_equal 'User', seeder.send(:parent_model)
-    assert_equal :addresses, seeder.send(:association)
+    assert_equal :data_array, seeder.seed_method
+    assert_equal 5, seeder.number_of_records
+    assert_equal 'Address', seeder.model
+    assert_equal 'User', seeder.parent_model
+    assert_equal :addresses, seeder.association
   end
 end
