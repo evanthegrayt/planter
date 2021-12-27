@@ -2,13 +2,13 @@
 
 module Planter
   ##
-  # Class that seeders should inherit from. Seeder files should be in
-  # +db/seeds+, and named +TABLE_seeder.rb+, where +TABLE+ is the name of the
-  # table being seeded (I.E. +users_seeder.rb+). If your seeder is named
-  # differently than the table, you'll need to specify the table with the
-  # +model+ option. The seeder's class name should be the same as the file
-  # name, but camelized. So, +UsersSeeder+. The directory where the seeder
-  # files are located can be changed via an initializer.
+  # Class that seeders should inherit from. Seeders should be in +db/seeds+,
+  # and named +TABLE_seeder.rb+, where +TABLE+ is the name of the table being
+  # seeded (I.E. +users_seeder.rb+). If your seeder is named differently than
+  # the table, you'll need to specify the table with the +model+ option. The
+  # seeder's class name should be the same as the file name, but camelized. So,
+  # +UsersSeeder+. The directory where the seeder files are located can be
+  # changed via an initializer.
   #
   # The most basic way to seed is to have a CSV file with the same name as the
   # table in +db/seed_files/+. So, +users.csv+. This CSV should have the
@@ -102,93 +102,152 @@ module Planter
     attr_reader :data
 
     ##
-    # If your class is going to use the inherited +seed+ method, you must tell
-    # it which +seeding_method+ to use. The argument to this method must be
-    # included in the +SEEDING_METHODS+ array.
+    # What trim mode should ERB use?
     #
-    # @param [Symbol] seeding_method
-    #
-    # @kwarg [Integer] number_of_records
-    #
-    # @kwarg [String] model
-    #
-    # @kwarg [String] parent_model
-    #
-    # @kwarg [Symbol, String] association
-    #
-    # @kwarg [Symbol, String] csv_name
-    #
-    # @kwarg [Symbol, String] unique_columns
-    #
-    # @kwarg [String] erb_trim_mode
-    #
-    # @example
-    #   require 'planter'
-    #   class UsersSeeder < Planter::Seeder
-    #     seeding_method :csv,
-    #       number_of_records: 2,
-    #       model: 'User'
-    #       parent_model: 'Person',
-    #       association: :users,
-    #       csv_name: :awesome_users,
-    #       unique_columns %i[username email],
-    #       erb_trim_mode: '<>'
-    #   end
-    def self.seeding_method(
-      method,
-      number_of_records: 1,
-      model: nil,
-      parent_model: nil,
-      association: nil,
-      csv_name: nil,
-      unique_columns: nil,
-      erb_trim_mode: nil
-    )
-      if !SEEDING_METHODS.include?(method.intern)
-        raise ArgumentError, "Method must be one of #{SEEDING_METHODS.join(', ')}"
-      elsif association && !parent_model
-        raise ArgumentError, "Must specify :parent_model with :association"
-      end
+    # @return [String]
+    class_attribute :erb_trim_mode
 
-      @seeding_method = method
-      @number_of_records = number_of_records
-      @model = model || to_s.delete_suffix('Seeder').singularize
-      @parent_model = parent_model
-      @association = @parent_model && (association || determine_association)
-      @csv_file = determine_csv_filename(csv_name) if @seeding_method == :csv
-      @erb_trim_mode = erb_trim_mode || Planter.config.erb_trim_mode
-      @unique_columns =
-        case unique_columns
-        when String, Symbol then [unique_columns.intern]
-        when Array then unique_columns.map(&:intern)
+    ##
+    # When creating a record, the fields that will be used to look up the
+    # record. If it already exists, a new one will not be created.
+    #
+    # @return [Array]
+    class_attribute :unique_columns
+
+    ##
+    # The model for the table being seeded. If the model name you need is
+    # different, change via +seeding_method+.
+    #
+    # @return [String]
+    class_attribute :model
+
+    ##
+    # The model of the parent. When provided with +association+, records in the
+    # +data+ array, will be created for each record in the parent table. Your
+    # class must set this attribute via +seeding_method+.
+    #
+    # @return [String]
+    class_attribute :parent_model
+
+    ##
+    # The number of records to create from each record in the +data+ array. If
+    # nil, defaults to 1, but you can override this in your class via
+    # +seeding_method+.
+    #
+    # @return [Integer]
+    class_attribute :number_of_records
+
+    ##
+    # When using +parent_model+, the association name. Your class can set this
+    # attribute via +seeding_method+.
+    #
+    # @return [Symbol]
+    class_attribute :association
+
+    ##
+    # The csv file corresponding to the model.
+    #
+    # @return [String]
+    class_attribute :csv_file
+
+    ##
+    # The seeding method specified.
+    #
+    # @return [Symbol]
+    class_attribute :seed_method
+
+    ##
+    # Access the metaclass so we can define public and private class methods.
+    class << self
+      ##
+      # If your class is going to use the inherited +seed+ method, you must tell
+      # it which +seeding_method+ to use. The argument to this method must be
+      # included in the +SEEDING_METHODS+ array.
+      #
+      # @param [Symbol] seeding_method
+      #
+      # @kwarg [Integer] number_of_records
+      #
+      # @kwarg [String] model
+      #
+      # @kwarg [String] parent_model
+      #
+      # @kwarg [Symbol, String] association
+      #
+      # @kwarg [Symbol, String] csv_name
+      #
+      # @kwarg [Symbol, String] unique_columns
+      #
+      # @kwarg [String] erb_trim_mode
+      #
+      # @example
+      #   require 'planter'
+      #   class UsersSeeder < Planter::Seeder
+      #     seeding_method :csv,
+      #       number_of_records: 2,
+      #       model: 'User'
+      #       parent_model: 'Person',
+      #       association: :users,
+      #       csv_name: :awesome_users,
+      #       unique_columns %i[username email],
+      #       erb_trim_mode: '<>'
+      #   end
+      def seeding_method(
+        method,
+        number_of_records: 1,
+        model: nil,
+        parent_model: nil,
+        association: nil,
+        csv_name: nil,
+        unique_columns: nil,
+        erb_trim_mode: nil
+      )
+        if !SEEDING_METHODS.include?(method.intern)
+          raise ArgumentError, "Method must be: #{SEEDING_METHODS.join(', ')}"
+        elsif association && !parent_model
+          raise ArgumentError, "Must specify :parent_model with :association"
         end
-    end
 
-    def self.determine_association # :nodoc:
-      associations =
-        @parent_model.constantize.reflect_on_all_associations.map(&:name)
-      table = to_s.delete_suffix('Seeder').underscore.split('/').last
-
-      [table, table.singularize].map(&:intern).each do |t|
-        return t if associations.include?(t)
+        self.seed_method = method
+        self.number_of_records = number_of_records
+        self.model = model || to_s.delete_suffix('Seeder').singularize
+        self.parent_model = parent_model
+        self.association = parent_model && (association || determine_association)
+        self.csv_file = determine_csv_filename(csv_name) if self.seed_method == :csv
+        self.erb_trim_mode = erb_trim_mode || Planter.config.erb_trim_mode
+        self.unique_columns =
+          case unique_columns
+          when String, Symbol then [unique_columns.intern]
+          when Array then unique_columns.map(&:intern)
+          end
       end
 
-      raise ArgumentError, "Couldn't determine association name"
-    end
-    private_class_method :determine_association
+      private
 
-    def self.determine_csv_filename(csv_name) # :nodoc:
-      file = (
-        csv_name || "#{to_s.delete_suffix('Seeder').underscore}"
-      ).to_s + '.csv'
-      [file, "#{file}.erb"].each do |f|
-        fname = Rails.root.join(Planter.config.csv_files_directory, f).to_s
-        return fname if ::File.file?(fname)
+      def determine_association # :nodoc:
+        associations =
+          parent_model.constantize.reflect_on_all_associations.map(&:name)
+        table = to_s.delete_suffix('Seeder').underscore.split('/').last
+
+        [table, table.singularize].map(&:intern).each do |t|
+          return t if associations.include?(t)
+        end
+
+        raise ArgumentError, "Couldn't determine association name"
       end
 
-      raise ArgumentError, "Couldn't find csv for #{@model}"
+      def determine_csv_filename(csv_name) # :nodoc:
+        file = (
+          csv_name || "#{to_s.delete_suffix('Seeder').underscore}"
+        ).to_s + '.csv'
+        [file, "#{file}.erb"].each do |f|
+          fname = Rails.root.join(Planter.config.csv_files_directory, f).to_s
+          return fname if ::File.file?(fname)
+        end
+
+        raise ArgumentError, "Couldn't find csv for #{model}"
+      end
     end
-    private_class_method :determine_csv_filename
 
     ##
     # The default seed method. To use this method, your class must provide a
@@ -200,78 +259,6 @@ module Planter
     end
 
     protected
-
-    ##
-    # The seeding method specified.
-    #
-    # @return [Symbol]
-    def seeding_method
-      @seeding_method ||= self.class.instance_variable_get('@seeding_method')
-    end
-
-    ##
-    # The model for the table being seeded. If the model name you need is
-    # different, change via +seeding_method+.
-    #
-    # @return [String]
-    def model
-      @model ||= self.class.instance_variable_get('@model')
-    end
-
-    ##
-    # The model of the parent. When provided with +association+, records in the
-    # +data+ array, will be created for each record in the parent table. Your
-    # class must set this attribute via +seeding_method+.
-    #
-    # @return [String]
-    def parent_model
-      @parent_model ||= self.class.instance_variable_get('@parent_model')
-    end
-
-    ##
-    # When using +parent_model+, the association name. Your class can set this
-    # attribute via +seeding_method+.
-    #
-    # @return [Symbol]
-    def association
-      @association ||= self.class.instance_variable_get('@association')
-    end
-
-    ##
-    # The number of records to create from each record in the +data+ array. If
-    # nil, defaults to 1, but you can override this in your class via
-    # +seeding_method+.
-    #
-    # @return [Integer]
-    def number_of_records
-      @number_of_records ||=
-        self.class.instance_variable_get('@number_of_records')
-    end
-
-    ##
-    # The csv file corresponding to the model.
-    #
-    # @return [String]
-    def csv_file
-      @csv_file ||= self.class.instance_variable_get('@csv_file')
-    end
-
-    ##
-    # When creating a record, the fields that will be used to look up the
-    # record. If it already exists, a new one will not be created.
-    #
-    # @return [Array]
-    def unique_columns
-      @unique_columns ||= self.class.instance_variable_get('@unique_columns')
-    end
-
-    ##
-    # What trim mode should ERB use?
-    #
-    # @return [String]
-    def erb_trim_mode
-      @erb_trim_mode ||= self.class.instance_variable_get('@erb_trim_mode')
-    end
 
     ##
     # Creates records from the +data+ attribute.
@@ -318,7 +305,7 @@ module Planter
     end
 
     def validate_attributes # :nodoc:
-      case seeding_method.intern
+      case seed_method.intern
       when :csv
         contents = ::File.read(csv_file)
         if csv_file.end_with?('.erb')

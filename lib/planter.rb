@@ -67,7 +67,7 @@ module Planter
   #   Planter.seed
   def self.seed
     seeders = ENV['SEEDERS']&.split(',') || config.seeders&.map(&:to_s)
-    raise RuntimeError, 'No seeders specified' unless seeders&.any?
+    raise RuntimeError, 'No seeders specified' if seeders.blank?
 
     seeders.each do |s|
       require Rails.root.join(config.seeders_directory, "#{s}_seeder.rb").to_s

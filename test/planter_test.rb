@@ -34,6 +34,18 @@ class PlanterTest < ActiveSupport::TestCase
 
   test 'it should seed' do
     Planter.configure do |config|
+      config.seeders = nil
+      config.quiet = true
+    end
+    assert_raise(RuntimeError) { Planter.seed }
+
+    Planter.configure do |config|
+      config.seeders = []
+      config.quiet = true
+    end
+    assert_raise(RuntimeError) { Planter.seed }
+
+    Planter.configure do |config|
       config.seeders = %i[users addresses]
       config.quiet = true
     end

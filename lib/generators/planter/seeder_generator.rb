@@ -3,7 +3,7 @@ module Planter
     class SeederGenerator < Rails::Generators::Base
       argument :seeder, required: true
 
-      desc "This generator creates a seeder file at #{::Planter.config.seeders_directory}"
+      desc "Creates a seeder file at #{::Planter.config.seeders_directory}"
 
       def generate_seeders
         seeder == 'ALL' ? tables.each { |t| generate(t) } : generate(seeder)
