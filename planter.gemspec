@@ -20,5 +20,5 @@ Gem::Specification.new do |spec|
     'https://evanthegrayt.github.io/planter/'
 
   spec.files = Dir["{app,config,db,lib}/**/*", "LICENSE", "Rakefile", "README.md"]
-  spec.add_dependency "rails", "~> 6.1.3", ">= 6.1.3.1"
+  spec.add_dependency "rails", "~> 6.1.4.4"
 end
