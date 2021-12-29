@@ -144,8 +144,8 @@ class UsersSeeder < Planter::Seeder
 end
 ```
 
-`ERB` can be used in the CSV files if you end the file name with `.csv.erb`.
-For example, `users.csv.erb`.
+`ERB` can be used in the CSV files if you end the file name with `.csv.erb` or
+`.erb.csv`. For example, `users.csv.erb`.
 
 ```
 participant_id,name

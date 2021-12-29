@@ -142,7 +142,7 @@ module Planter
     # The csv file corresponding to the model.
     #
     # @return [String]
-    class_attribute :csv_file
+    class_attribute :csv_name
 
     ##
     # The seeding method specified.
@@ -151,79 +151,59 @@ module Planter
     class_attribute :seed_method
 
     ##
-    # Access the metaclass so we can define public and private class methods.
-    class << self
-      ##
-      # If your class is going to use the inherited +seed+ method, you must tell
-      # it which +seeding_method+ to use. The argument to this method must be
-      # included in the +SEEDING_METHODS+ array.
-      #
-      # @param [Symbol] seed_method
-      #
-      # @kwarg [Integer] number_of_records
-      #
-      # @kwarg [String] model
-      #
-      # @kwarg [String] parent
-      #
-      # @kwarg [Symbol, String] parent
-      #
-      # @kwarg [Symbol, String] csv_name
-      #
-      # @kwarg [Symbol, String] unique_columns
-      #
-      # @kwarg [String] erb_trim_mode
-      #
-      # @example
-      #   require 'planter'
-      #   class UsersSeeder < Planter::Seeder
-      #     seeding_method :csv,
-      #       number_of_records: 2,
-      #       model: 'User'
-      #       parent: :person,
-      #       csv_name: :awesome_users,
-      #       unique_columns %i[username email],
-      #       erb_trim_mode: '<>'
-      #   end
-      def seeding_method(
-        seed_method,
-        number_of_records: 1,
-        model: nil,
-        parent: nil,
-        csv_name: nil,
-        unique_columns: nil,
-        erb_trim_mode: nil
-      )
-        if !SEEDING_METHODS.include?(seed_method.intern)
-          raise ArgumentError, "Method must be: #{SEEDING_METHODS.join(', ')}"
-        end
-
-        self.seed_method = seed_method
-        self.number_of_records = number_of_records
-        self.model = model || to_s.delete_suffix('Seeder').singularize
-        self.parent = parent
-        self.csv_file = determine_csv_filename(csv_name) if seed_method == :csv
-        self.erb_trim_mode = erb_trim_mode || Planter.config.erb_trim_mode
-        self.unique_columns =
-          case unique_columns
-          when String, Symbol then [unique_columns.intern]
-          when Array then unique_columns.map(&:intern)
-          end
+    # If your class is going to use the inherited +seed+ method, you must tell
+    # it which +seeding_method+ to use. The argument to this method must be
+    # included in the +SEEDING_METHODS+ array.
+    #
+    # @param [Symbol] seed_method
+    #
+    # @kwarg [Integer] number_of_records
+    #
+    # @kwarg [String] model
+    #
+    # @kwarg [Symbol, String] parent
+    #
+    # @kwarg [Symbol, String] csv_name
+    #
+    # @kwarg [Symbol, String] unique_columns
+    #
+    # @kwarg [String] erb_trim_mode
+    #
+    # @example
+    #   require 'planter'
+    #   class UsersSeeder < Planter::Seeder
+    #     seeding_method :csv,
+    #       number_of_records: 2,
+    #       model: 'User'
+    #       parent: :person,
+    #       csv_name: :awesome_users,
+    #       unique_columns %i[username email],
+    #       erb_trim_mode: '<>'
+    #   end
+    def self.seeding_method(
+      seed_method,
+      number_of_records: 1,
+      model: nil,
+      parent: nil,
+      csv_name: nil,
+      unique_columns: nil,
+      erb_trim_mode: nil
+    )
+      if !SEEDING_METHODS.include?(seed_method.intern)
+        raise ArgumentError, "Method must be: #{SEEDING_METHODS.join(', ')}"
       end
 
-      private
-
-      def determine_csv_filename(csv_name) # :nodoc:
-        file = (
-          csv_name || "#{to_s.delete_suffix('Seeder').underscore}"
-        ).to_s + '.csv'
-        [file, "#{file}.erb"].each do |f|
-          fname = Rails.root.join(Planter.config.csv_files_directory, f).to_s
-          return fname if ::File.file?(fname)
+      self.seed_method = seed_method
+      self.number_of_records = number_of_records
+      self.model = model || to_s.delete_suffix('Seeder').singularize
+      self.parent = parent
+      self.csv_name = csv_name || to_s.delete_suffix('Seeder').underscore
+      self.erb_trim_mode = erb_trim_mode || Planter.config.erb_trim_mode
+      self.unique_columns =
+        case unique_columns
+        when String, Symbol then [unique_columns.intern]
+        when Array then unique_columns.map(&:intern)
         end
-
-        raise ArgumentError, "Couldn't find csv for #{model}"
-      end
     end
 
     ##
@@ -231,6 +211,7 @@ module Planter
     # valid +seeding_method+, and not implement its own +seed+ method.
     def seed
       validate_attributes
+      extract_data_from_csv if seed_method == :csv
 
       parent ? create_records_from_parent : create_records
     end
@@ -263,18 +244,11 @@ module Planter
     def validate_attributes # :nodoc:
       case seed_method.intern
       when :csv
-        contents = ::File.read(csv_file)
-        if csv_file.end_with?('.erb')
-          contents = ERB.new(contents, trim_mode: erb_trim_mode).result(binding)
-        end
-
-        @data ||= ::CSV.parse(
-          contents, headers: true, header_converters: :symbol
-        ).map(&:to_hash)
+        raise "Couldn't find csv for #{model}" unless full_csv_name
       when :data_array
-        raise "Must define '@data'" if public_send(:data).nil?
+        raise 'data is not defined in the seeder' if public_send(:data).nil?
       else
-        raise("Must set 'seeding_method'")
+        raise 'seeding_method not defined in the seeder'
       end
     end
 
@@ -303,6 +277,26 @@ module Planter
     def parent_model
       @parent_model ||=
         association_options.fetch(:class_name, parent.to_s.classify)
+    end
+
+    def full_csv_name
+      @full_csv_name ||=
+        %W[#{csv_name}.csv #{csv_name}.csv.erb #{csv_name}.erb.csv]
+          .map { |f| Rails.root.join(Planter.config.csv_files_directory, f).to_s }
+          .find { |f| ::File.file?(f) }
+    end
+
+    def extract_data_from_csv
+      contents = ::File.read(full_csv_name)
+      if full_csv_name.include?('.erb')
+        contents = ERB.new(contents, trim_mode: erb_trim_mode).result(binding)
+      end
+
+      @data ||= ::CSV.parse(
+        contents,
+        headers: true,
+        header_converters: :symbol
+      ).map(&:to_hash)
     end
   end
 end
