@@ -29,11 +29,11 @@ class Planter::SeederTest < ActiveSupport::TestCase
     assert_equal 'test2', User.last.username
   end
 
-  test 'csv erb with parent' do
+  test 'csv erb with parent and transformation' do
     Planter.seed
     assert_equal 4, Comment.count
     assert_equal 20, Comment.last.upvotes
-    assert_equal 'This is a test 1', Comment.first.message
+    assert_equal 'This is a TEST 1', Comment.first.message
   end
 
   test 'has_one data_array with model parent and association' do

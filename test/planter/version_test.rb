@@ -1,12 +1,12 @@
-require "test_helper"
+require 'test_helper'
 
 class Planter::VersionTest < ActiveSupport::TestCase
-  test "version exists and follows semantiv versioning" do
+  test 'version exists and follows semantiv versioning' do
     assert Planter::VERSION
     assert_match Planter::Version.to_s, Planter::VERSION
   end
 
-  def test_to_a
+  test 'uest_to_a' do
     assert_instance_of(Array, Planter::Version.to_a)
     assert_equal(
       [
@@ -18,7 +18,7 @@ class Planter::VersionTest < ActiveSupport::TestCase
     )
   end
 
-  def test_to_h
+  test 'to_h' do
     assert_instance_of(Hash, Planter::Version.to_h)
     assert_equal(
       {
@@ -30,20 +30,36 @@ class Planter::VersionTest < ActiveSupport::TestCase
     )
   end
 
-  def test_to_s
+  test 'to_s' do
     assert_instance_of(String, Planter::Version.to_s)
     assert_match(/\d+\.\d+.\d+/, Planter::Version.to_s)
   end
 
-  def test_major
+  test 'major' do
     assert_instance_of(Integer, Planter::Version::MAJOR)
   end
 
-  def test_minor
+  test 'minor' do
     assert_instance_of(Integer, Planter::Version::MINOR)
   end
 
-  def test_patch
+  test 'patch' do
     assert_instance_of(Integer, Planter::Version::PATCH)
+  end
+
+  test 'readme should contain the current version' do
+    refute_empty File.readlines(
+      File.join(__dir__, '..', '..', 'README.md')
+    ).grep(
+      /gem\s+'planter',\s+'(?:~>(?:\s)?)?#{Planter::VERSION}'/
+    )
+  end
+
+  test 'Gemfile.lock should contain the current version' do
+    refute_empty File.readlines(
+      File.join(__dir__, '..', '..', 'Gemfile.lock')
+    ).grep(
+      /^\s*planter\s+\(#{Planter::VERSION}\)/
+    )
   end
 end

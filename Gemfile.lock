@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    planter (0.1.2)
+    planter (0.1.3)
       rails (~> 6.1.4.4)
 
 GEM

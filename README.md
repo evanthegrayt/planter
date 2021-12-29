@@ -21,10 +21,10 @@ You can view the documentation [here](https://evanthegrayt.github.io/planter/).
 ## Installation
 Add the following line to your application's Gemfile. Because this plugin is
 currently a pre-release version, it's recommended to lock it to a specific
-version, as breaking changes may occur, even at the patch level.
+version, as breaking changes may occur, even at the minor level.
 
 ```ruby
-gem 'planter', '0.0.10'
+gem 'planter', '0.1.3'
 ```
 
 And then execute:
@@ -83,6 +83,7 @@ allows you to use `db:seed` for other purposes. If you want Planter to hook
 into the existing `db:seed` task, simply add the following to `db/seeds.rb`.
 
 ```ruby
+# db/seeds.rb
 Planter.seed
 ```
 
@@ -174,6 +175,38 @@ end
 ```
 
 For help with `erb_trim_mode`, see the help documentation for `ERB::new`.
+
+Lastly, it's worth mentioning `transformations` under the CSV section, as that's
+usually the pace where they're needed most, but it will work with any method.
+
+If you're seeding with a CSV, and it contains values that need to have code
+executed on them before it's imported into the database, you can define an
+instance variable called `@transformations`, or a method called
+`transformations`, that returns a Hash of field names, and Procs to run on the
+value. For example, if you have an `admin` column, and the CSV contains "true",
+it will come through as a String, but you probably want it to be a Boolean. This
+can be solved with the following.
+
+```ruby
+class UsersSeeder < Planter::Seeder
+  seeding_method :csv
+
+  def transformations
+    {
+      admin: ->(value) { value == 'true' },
+      last_name: ->(value, row) { "#{value} #{row[:suffix]}".squish }
+    }
+  end
+end
+```
+
+When defining a Proc/Lambda, you can make it accept 0, 1, or 2 arguments.
+- When `0`, the value is replaced by the result of the Lambda
+- When `1`, the value is passed to the Lambda, and is subsequently replaced by
+  the result of the Lambda
+- When `2`, the value is the first argument, and the entire row, as a Hash, is
+  the second argument. This allows for more complicated transformations that can
+  be dependent on other fields and values in the record.
 
 Running `rails planter:seed` will now seed your `users` table.
 

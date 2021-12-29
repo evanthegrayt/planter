@@ -103,6 +103,35 @@ module Planter
     attr_reader :data
 
     ##
+    # A hash of user-defined column names and procs to be run on values. This
+    # is most useful for when seeding from csv, and you need to transform, say,
+    # 'true' (String) into true (Boolean). The user may define this as an
+    # instance variable, or define a method that returns the hash.
+    #
+    # When defining a Proc/Lambda, you can make it accept 0, 1, or 2 arguments.
+    # - When 0, the value is replaced by the result of the Lambda.
+    # - When 1, the value is passed to the Lambda, and is subsequently
+    #   replaced by the result of the Lambda.
+    # - When 2, the value is the first argument, and the entire row, as a
+    #   Hash, is the second argument. This allows for more complicated
+    #   transformations that can be dependent on other fields and values in the
+    #   record.
+    #
+    # @return [Hash, nil]
+    #
+    # @example
+    #   class UsersSeeder < Planter::Seeder
+    #     seeding_method :csv
+    #     def transformations
+    #       {
+    #         admin: ->(v) { v == 'true' },
+    #         last_name: ->(value, row) { "#{value} #{row[:suffix]}".squish }
+    #       }
+    #     end
+    #   end
+    attr_reader :transformations
+
+    ##
     # What trim mode should ERB use?
     #
     # @return [String]
@@ -189,7 +218,7 @@ module Planter
       unique_columns: nil,
       erb_trim_mode: nil
     )
-      if !SEEDING_METHODS.include?(seed_method.intern)
+      unless SEEDING_METHODS.include?(seed_method.intern)
         raise ArgumentError, "Method must be: #{SEEDING_METHODS.join(', ')}"
       end
 
@@ -216,7 +245,7 @@ module Planter
       parent ? create_records_from_parent : create_records
     end
 
-    protected
+    private
 
     ##
     # Creates records from the +data+ attribute.
@@ -234,7 +263,7 @@ module Planter
 
     def create_record(record, parent_id: nil)
       number_of_records.times do
-        unique, attrs = split_record(record)
+        unique, attrs = split_record(apply_transformations(record))
         model.constantize.where(
           unique.tap { |u| u[foreign_key] = parent_id if parent_id }
         ).first_or_create!(attrs)
@@ -249,6 +278,27 @@ module Planter
         raise 'data is not defined in the seeder' if public_send(:data).nil?
       else
         raise 'seeding_method not defined in the seeder'
+      end
+    end
+
+    def apply_transformations(record)
+      return record if public_send(:transformations).nil?
+
+      Hash[record.map { |field, value| map_record(field, value, record) }]
+    end
+
+    def map_record(field, value, record)
+      [
+        field,
+        transformations.key?(field) ? transform(field, value, record) : value
+      ]
+    end
+
+    def transform(field, value, record)
+      case transformations[field].arity
+      when 0 then transformations[field].call
+      when 1 then transformations[field].call(value)
+      when 2 then transformations[field].call(value, record)
       end
     end
 
