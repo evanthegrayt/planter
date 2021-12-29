@@ -29,21 +29,21 @@ class Planter::SeederTest < ActiveSupport::TestCase
     assert_equal 'test2', User.last.username
   end
 
-  test 'csv erb with parent_model' do
+  test 'csv erb with parent' do
     Planter.seed
     assert_equal 4, Comment.count
     assert_equal 20, Comment.last.upvotes
     assert_equal 'This is a test 1', Comment.first.message
   end
 
-  test 'has_one data_array with model parent_model and association' do
+  test 'has_one data_array with model parent and association' do
     Planter.seed
     assert_equal 2, Profile.count
   end
 
-  test 'has_many data_array with unique parent_model and number_of_records' do
+  test 'has_many data_array with unique parent and number_of_records' do
     Planter.seed
-    assert_equal 2, Address.count
+    assert_equal 4, Address.count
   end
 
   test 'custom seed method' do
@@ -57,14 +57,12 @@ class Planter::SeederTest < ActiveSupport::TestCase
       :data_array,
       number_of_records: 5,
       model: 'Address',
-      parent_model: 'User',
-      association: :addresses,
+      parent: :user,
     )
     seeder = Planter::Seeder.new
     assert_equal :data_array, seeder.seed_method
     assert_equal 5, seeder.number_of_records
     assert_equal 'Address', seeder.model
-    assert_equal 'User', seeder.parent_model
-    assert_equal :addresses, seeder.association
+    assert_equal :user, seeder.parent
   end
 end

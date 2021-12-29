@@ -52,6 +52,6 @@ class PlanterTest < ActiveSupport::TestCase
     Planter.seed
 
     assert_equal 2, User.count
-    assert_equal 2, Address.count
+    assert_equal 4, Address.count
   end
 end

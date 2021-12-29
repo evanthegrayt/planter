@@ -207,13 +207,16 @@ Running `rails planter:seed` should now seed your `users` table.
 
 You can also seed children records for every existing record of a parent model.
 For example, to seed an address for every user, you'd need to create an
-`AddressesSeeder` that uses the `parent_model` option, as seen below.
+`AddressesSeeder` that uses the `parent` option, as seen below. This option
+should be the name of the `belongs_to` association in your model. The primary
+key, foreign key, and model name of the parent will all be determined by
+reflecting on the association.
 
 ```ruby
 require 'faker'
 
 class AddressesSeeder < Planter::Seeder
-  seeding_method :data_array, parent_model: 'User'
+  seeding_method :data_array, parent: :user
 
   def data
     [{
@@ -227,9 +230,7 @@ end
 ```
 
 Note that specifying `number_of_records` in this instance will create that many
-records *for each record of the parent model*. You can also specify the
-association if it's different from the table name, using the `:assocation`
-option.
+records *for each record of the parent model*.
 
 ### Custom seeds
 To write your own custom seeds, just overload the `seed` method and do whatever

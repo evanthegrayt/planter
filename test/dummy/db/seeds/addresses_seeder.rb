@@ -1,6 +1,6 @@
 class AddressesSeeder < Planter::Seeder
   seeding_method :data_array,
-    parent_model: 'User',
+    parent: :person,
     number_of_records: 2,
     unique_columns: %i[city state]
 
