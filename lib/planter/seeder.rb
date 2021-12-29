@@ -26,7 +26,7 @@ module Planter
   # Another way to seed is to create records from a data array. To do this,
   # your class must implement a +data+ attribute or method, which is an array
   # of hashes. Note that this class already provides the +attr_reader+ for this
-  # attribute, so the most you have to do it create instance variables in your
+  # attribute, so the most you have to do is create instance variables in your
   # constructor. If if you want your data to be different for each new record
   # (via Faker, +Array#sample+, etc.), you'll probably want to supply a method
   # called data that returns an array of new data each time.
@@ -38,15 +38,17 @@ module Planter
   #     end
   #   end
   #
-  # In both of the above methods, you can specify +parent_model+ and
-  # +association+. If specified, records will be created via that parent
-  # model's association. If +association+ is not provided, it will be assumed
-  # to be the model name, pluralized and snake-cased (implying a +has_many+
-  # relationship).  For example, if we're seeding the users table, and the
-  # model is +User+, the association will default to +users+.
+  # In both of the above methods, you can specify a +parent+ association, which
+  # is the +belongs_to+ association name in your model, which, when specified,
+  # records will be created for each record in the parent table. For example,
+  # if we're seeding the users table, and the model is +User+, which belongs to
+  # +Person+, then doing the following will create a user record for each
+  # record in the Person table. Note that nothing is automatically done to
+  # prevent any validation errors; you must do this on your own, mostly likely
+  # using +Faker+ or a similar library.
   #   require 'planter'
   #   class UsersSeeder < Planter::Seeder
-  #     seeding_method :data_array, parent_model: 'Person', association: :users
+  #     seeding_method :data_array, parent: :person
   #     def data
   #       [{foo: 'bar', baz: 'bar'}]
   #     end
@@ -54,9 +56,8 @@ module Planter
   #
   # You can also set +number_of_records+ to determine how many times each
   # record in the +data+ array will get created. The default is 1. Note that if
-  # this attribute is set alongside +parent_model+ and +association+,
-  # +number_of_records+ will be how many records will be created for each
-  # record in the parent table.
+  # this attribute is set alongside +parent+, +number_of_records+ will be how
+  # many records will be created for each record in the parent table.
   #   require 'planter'
   #   class UsersSeeder < Planter::Seeder
   #     seeding_method :data_array, number_of_records: 5
@@ -127,7 +128,7 @@ module Planter
     # class must set this attribute via +seeding_method+.
     #
     # @return [String]
-    class_attribute :parent_model
+    class_attribute :parent
 
     ##
     # The number of records to create from each record in the +data+ array. If
@@ -136,13 +137,6 @@ module Planter
     #
     # @return [Integer]
     class_attribute :number_of_records
-
-    ##
-    # When using +parent_model+, the association name. Your class can set this
-    # attribute via +seeding_method+.
-    #
-    # @return [Symbol]
-    class_attribute :association
 
     ##
     # The csv file corresponding to the model.
@@ -164,15 +158,15 @@ module Planter
       # it which +seeding_method+ to use. The argument to this method must be
       # included in the +SEEDING_METHODS+ array.
       #
-      # @param [Symbol] seeding_method
+      # @param [Symbol] seed_method
       #
       # @kwarg [Integer] number_of_records
       #
       # @kwarg [String] model
       #
-      # @kwarg [String] parent_model
+      # @kwarg [String] parent
       #
-      # @kwarg [Symbol, String] association
+      # @kwarg [Symbol, String] parent
       #
       # @kwarg [Symbol, String] csv_name
       #
@@ -186,34 +180,29 @@ module Planter
       #     seeding_method :csv,
       #       number_of_records: 2,
       #       model: 'User'
-      #       parent_model: 'Person',
-      #       association: :users,
+      #       parent: :person,
       #       csv_name: :awesome_users,
       #       unique_columns %i[username email],
       #       erb_trim_mode: '<>'
       #   end
       def seeding_method(
-        method,
+        seed_method,
         number_of_records: 1,
         model: nil,
-        parent_model: nil,
-        association: nil,
+        parent: nil,
         csv_name: nil,
         unique_columns: nil,
         erb_trim_mode: nil
       )
-        if !SEEDING_METHODS.include?(method.intern)
+        if !SEEDING_METHODS.include?(seed_method.intern)
           raise ArgumentError, "Method must be: #{SEEDING_METHODS.join(', ')}"
-        elsif association && !parent_model
-          raise ArgumentError, "Must specify :parent_model with :association"
         end
 
-        self.seed_method = method
+        self.seed_method = seed_method
         self.number_of_records = number_of_records
         self.model = model || to_s.delete_suffix('Seeder').singularize
-        self.parent_model = parent_model
-        self.association = parent_model && (association || determine_association)
-        self.csv_file = determine_csv_filename(csv_name) if self.seed_method == :csv
+        self.parent = parent
+        self.csv_file = determine_csv_filename(csv_name) if seed_method == :csv
         self.erb_trim_mode = erb_trim_mode || Planter.config.erb_trim_mode
         self.unique_columns =
           case unique_columns
@@ -223,18 +212,6 @@ module Planter
       end
 
       private
-
-      def determine_association # :nodoc:
-        associations =
-          parent_model.constantize.reflect_on_all_associations.map(&:name)
-        table = to_s.delete_suffix('Seeder').underscore.split('/').last
-
-        [table, table.singularize].map(&:intern).each do |t|
-          return t if associations.include?(t)
-        end
-
-        raise ArgumentError, "Couldn't determine association name"
-      end
 
       def determine_csv_filename(csv_name) # :nodoc:
         file = (
@@ -255,7 +232,7 @@ module Planter
     def seed
       validate_attributes
 
-      parent_model ? create_records_from_parent : create_records
+      parent ? create_records_from_parent : create_records
     end
 
     protected
@@ -263,44 +240,23 @@ module Planter
     ##
     # Creates records from the +data+ attribute.
     def create_records
-      data.each do |rec|
-        number_of_records.times do
-          rec.transform_values { |value| value == 'NULL' ? nil : value }
-          unique, attrs = split_record(rec)
-          model.constantize.where(unique).first_or_create!(attrs)
-        end
-      end
+      data.each { |record| create_record(record) }
     end
 
     ##
-    # Create records from the +data+ attribute for each record in the
-    # +parent_table+, via the specified +association+.
+    # Create records from the +data+ attribute for each record in the +parent+.
     def create_records_from_parent
-      parent_model.constantize.all.each do |assoc_rec|
-        number_of_records.times do
-          data.each { |rec| send(create_method, assoc_rec, association, rec) }
-        end
+      parent_model.constantize.pluck(primary_key).each do |parent_id|
+        data.each { |record| create_record(record, parent_id: parent_id) }
       end
     end
 
-    private
-
-    def create_method # :nodoc:
-      parent_model.constantize.reflect_on_association(
-        association
-      ).macro.to_s.include?('many') ? :create_has_many : :create_has_one
-    end
-
-    def create_has_many(assoc_rec, association, rec) # :nodoc:
-      unique, attrs = split_record(rec)
-      assoc_rec.public_send(association).where(unique).first_or_create!(attrs)
-    end
-
-    def create_has_one(assoc_rec, association, rec) # :nodoc:
-      if assoc_rec.public_send(association)
-        assoc_rec.public_send(association).update_attributes(rec)
-      else
-        assoc_rec.public_send("create_#{association}", rec)
+    def create_record(record, parent_id: nil)
+      number_of_records.times do
+        unique, attrs = split_record(record)
+        model.constantize.where(
+          unique.tap { |u| u[foreign_key] = parent_id if parent_id }
+        ).first_or_create!(attrs)
       end
     end
 
@@ -324,8 +280,29 @@ module Planter
 
     def split_record(rec) # :nodoc:
       return [rec, {}] unless unique_columns
+
       u = unique_columns.each_with_object({}) { |c, h| h[c] = rec.delete(c) }
       [u, rec]
+    end
+
+    def association_options
+      @association_options ||=
+        model.constantize.reflect_on_association(parent).options
+    end
+
+    def primary_key
+      @primary_key ||=
+        association_options.fetch(:primary_key, :id)
+    end
+
+    def foreign_key
+      @foreign_key ||=
+        association_options.fetch(:foreign_key, "#{parent}_id")
+    end
+
+    def parent_model
+      @parent_model ||=
+        association_options.fetch(:class_name, parent.to_s.classify)
     end
   end
 end
