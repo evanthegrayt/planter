@@ -146,12 +146,23 @@ end
 ```
 
 `ERB` can be used in the CSV files if you end the file name with `.csv.erb` or
-`.erb.csv`. For example, `users.csv.erb`.
+`.erb.csv`. For example, `users.csv.erb`. When using ERB, instance variables set
+in the seeder can be used in the CSV.
+
+```ruby
+class UsersSeeder < Planter::Seeder
+  seeding_method :csv, csv_name: :people
+
+  def initialize
+    @name_prefix = 'Test User'
+  end
+end
+```
 
 ```
 participant_id,name
-<%= Participant.find_by(email: 'test1@example.com').id %>,"Test User1"
-<%= Participant.find_by(email: 'test2@example.com').id %>,"Test User2"
+<%= Participant.find_by(email: 'test1@example.com').id %>,<%= @name_prefix %> 1
+<%= Participant.find_by(email: 'test2@example.com').id %>,<%= @name_prefix %> 2
 ```
 
 Note that, if you need to change the trim mode for ERB, you can set a default in
@@ -277,7 +288,7 @@ class UsersSeeder < Planter::Seeder
   }
 
   def seed
-    USERS.each { |email, attrs| User.where(email).first_or_create!(attrs) }
+    USERS.each { |email, attrs| User.where(email: email).first_or_create!(attrs) }
   end
 end
 ```
