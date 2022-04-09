@@ -24,11 +24,13 @@ require 'planter/seeder'
 #
 #   Planter.seed
 module Planter
+  module_function
+
   ##
   # The seeder configuration.
   #
   # @return [Planter::Config]
-  def self.config
+  def config
     @config ||= Planter::Config.new
   end
 
@@ -36,7 +38,7 @@ module Planter
   # Resets the config back to its initial state.
   #
   # @return [Planter::Config]
-  def self.reset_config
+  def reset_config
     @config = Planter::Config.new
   end
 
@@ -52,7 +54,7 @@ module Planter
   #     config.seeders_directory = 'db/seeds'
   #     config.csv_files_directory = 'db/seed_files'
   #   end
-  def self.configure
+  def configure
     config.tap { |c| yield c }
   end
 
@@ -65,7 +67,7 @@ module Planter
   # @example
   #   # db/seeds.rb, assuming your +configure+ block is in an initializer.
   #   Planter.seed
-  def self.seed
+  def seed
     seeders = ENV['SEEDERS']&.split(',') || config.seeders&.map(&:to_s)
     raise RuntimeError, 'No seeders specified' if seeders.blank?
 

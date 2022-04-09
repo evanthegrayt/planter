@@ -23,11 +23,13 @@ module Planter
     # @return [Integer]
     PATCH = 3
 
+    module_function
+
     ##
     # Version as +[MAJOR, MINOR, PATCH]+
     #
     # @return [Array]
-    def self.to_a
+    def to_a
       [MAJOR, MINOR, PATCH]
     end
 
@@ -35,7 +37,7 @@ module Planter
     # Version as +MAJOR.MINOR.PATCH+
     #
     # @return [String]
-    def self.to_s
+    def to_s
       to_a.join('.')
     end
 
@@ -43,7 +45,7 @@ module Planter
     # Version as +{major: MAJOR, minor: MINOR, patch: PATCH}+
     #
     # @return [Hash]
-    def self.to_h
+    def to_h
       Hash[%i[major minor patch].zip(to_a)]
     end
   end
