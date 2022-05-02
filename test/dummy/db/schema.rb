@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_23_220729) do
-
+ActiveRecord::Schema[7.0].define(version: 2021_04_23_220729) do
   create_table "addresses", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "street_1"
@@ -19,8 +18,8 @@ ActiveRecord::Schema.define(version: 2021_04_23_220729) do
     t.string "city"
     t.string "state", limit: 2
     t.string "zip"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_addresses_on_user_id"
   end
 
@@ -34,15 +33,15 @@ ActiveRecord::Schema.define(version: 2021_04_23_220729) do
   create_table "profiles", force: :cascade do |t|
     t.integer "user_id", null: false
     t.text "bio"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
   create_table "roles", force: :cascade do |t|
     t.text "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "roles_users", id: false, force: :cascade do |t|
@@ -55,8 +54,8 @@ ActiveRecord::Schema.define(version: 2021_04_23_220729) do
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
     t.string "username", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
   end
