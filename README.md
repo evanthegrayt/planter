@@ -23,7 +23,7 @@ currently a pre-release version, it's recommended to lock it to a specific
 version, as breaking changes may occur, even at the minor level.
 
 ```ruby
-gem 'planter', '0.1.3'
+gem 'planter', '0.2.0'
 ```
 
 And then execute:
