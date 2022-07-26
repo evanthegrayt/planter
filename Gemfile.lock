@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     planter (0.2.0)
-      rails (~> 7.0.2.3)
+      rails (~> 7.0)
 
 GEM
   remote: https://rubygems.org/
