@@ -1,3 +1,9 @@
+require "simplecov"
+SimpleCov.start "rails" do
+  add_filter "/lib/planter/version.rb"
+  minimum_coverage 90
+end
+
 # Configure Rails Environment
 ENV["RAILS_ENV"] = "test"
 
