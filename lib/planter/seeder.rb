@@ -219,14 +219,14 @@ module Planter
       erb_trim_mode: nil
     )
       unless SEEDING_METHODS.include?(seed_method.intern)
-        raise ArgumentError, "Method must be: #{SEEDING_METHODS.join(', ')}"
+        raise ArgumentError, "Method must be: #{SEEDING_METHODS.join(", ")}"
       end
 
       self.seed_method = seed_method
       self.number_of_records = number_of_records
-      self.model = model || to_s.delete_suffix('Seeder').singularize
+      self.model = model || to_s.delete_suffix("Seeder").singularize
       self.parent = parent
-      self.csv_name = csv_name || to_s.delete_suffix('Seeder').underscore
+      self.csv_name = csv_name || to_s.delete_suffix("Seeder").underscore
       self.erb_trim_mode = erb_trim_mode || Planter.config.erb_trim_mode
       self.unique_columns =
         case unique_columns
@@ -275,16 +275,16 @@ module Planter
       when :csv
         raise "Couldn't find csv for #{model}" unless full_csv_name
       when :data_array
-        raise 'data is not defined in the seeder' if public_send(:data).nil?
+        raise "data is not defined in the seeder" if public_send(:data).nil?
       else
-        raise 'seeding_method not defined in the seeder'
+        raise "seeding_method not defined in the seeder"
       end
     end
 
     def apply_transformations(record)
       return record if public_send(:transformations).nil?
 
-      Hash[record.map { |field, value| map_record(field, value, record) }]
+      record.map { |field, value| map_record(field, value, record) }.to_h
     end
 
     def map_record(field, value, record)
@@ -338,7 +338,7 @@ module Planter
 
     def extract_data_from_csv
       contents = ::File.read(full_csv_name)
-      if full_csv_name.include?('.erb')
+      if full_csv_name.include?(".erb")
         contents = ERB.new(contents, trim_mode: erb_trim_mode).result(binding)
       end
 

@@ -1,3 +1,3 @@
-require 'planter'
+require "planter"
 
 Planter.seed

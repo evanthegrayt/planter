@@ -6,18 +6,18 @@ class Planter::ConfigTest < ActiveSupport::TestCase
   end
 
   test "sets default values" do
-    assert_equal 'db/seeds', @config.seeders_directory
-    assert_equal 'db/seed_files', @config.csv_files_directory
+    assert_equal "db/seeds", @config.seeders_directory
+    assert_equal "db/seed_files", @config.csv_files_directory
     assert_nil @config.seeders
     assert_equal(false, @config.quiet)
   end
 
   test "attributes are accessible" do
-    @config.seeders_directory = 'db/different_seeders_directory'
-    assert_equal 'db/different_seeders_directory', @config.seeders_directory
+    @config.seeders_directory = "db/different_seeders_directory"
+    assert_equal "db/different_seeders_directory", @config.seeders_directory
 
-    @config.csv_files_directory = 'db/different_csv_files_directory'
-    assert_equal 'db/different_csv_files_directory', @config.csv_files_directory
+    @config.csv_files_directory = "db/different_csv_files_directory"
+    assert_equal "db/different_csv_files_directory", @config.csv_files_directory
 
     @config.seeders = %i[users]
     assert_equal %i[users], @config.seeders

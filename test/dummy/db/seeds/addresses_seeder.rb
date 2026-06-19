@@ -7,8 +7,8 @@ class AddressesSeeder < Planter::Seeder
   def data
     [{
       street_1: "#{rand(100..1000)} W 8 Mile Rd",
-      city: 'Detroit',
-      state: 'MI',
+      city: "Detroit",
+      state: "MI",
       zip: 48219
     }]
   end
