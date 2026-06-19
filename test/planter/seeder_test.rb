@@ -2,6 +2,7 @@ require "test_helper"
 
 class Planter::SeederTest < ActiveSupport::TestCase
   setup do
+    reset_seeder_class_attributes
     Planter.reset_config
     Planter.configure do |c|
       c.seeders = %i[users addresses bios roles comments]
@@ -11,6 +12,7 @@ class Planter::SeederTest < ActiveSupport::TestCase
   end
 
   teardown do
+    reset_seeder_class_attributes
     Planter.reset_config
   end
 
@@ -20,6 +22,40 @@ class Planter::SeederTest < ActiveSupport::TestCase
 
   test "attributes are protected" do
     assert_raise(NameError) { seeder.seed_method }
+  end
+
+  test "seeding method rejects unsupported methods" do
+    error = assert_raise(ArgumentError) do
+      Class.new(Planter::Seeder) { seeding_method :json }
+    end
+
+    assert_equal "Method must be: csv, data_array", error.message
+  end
+
+  test "seed raises a helpful error when seeding method is not configured" do
+    error = assert_raise(RuntimeError) { Planter::Seeder.new.seed }
+
+    assert_equal "seeding_method not defined in the seeder", error.message
+  end
+
+  test "data array seed requires data" do
+    seeder_class = Class.new(Planter::Seeder) do
+      seeding_method :data_array, model: "User"
+    end
+
+    error = assert_raise(RuntimeError) { seeder_class.new.seed }
+
+    assert_equal "data is not defined in the seeder", error.message
+  end
+
+  test "csv seed requires a matching csv file" do
+    seeder_class = Class.new(Planter::Seeder) do
+      seeding_method :csv, model: "User", csv_name: :missing_users
+    end
+
+    error = assert_raise(RuntimeError) { seeder_class.new.seed }
+
+    assert_equal "Couldn't find csv for User", error.message
   end
 
   test "csv with unique columns" do
@@ -34,6 +70,31 @@ class Planter::SeederTest < ActiveSupport::TestCase
     assert_equal 4, Comment.count
     assert_equal 20, Comment.last.upvotes
     assert_equal "This is a TEST 1", Comment.first.message
+  end
+
+  test "transformations can ignore input or use the whole record" do
+    seeder_class = Class.new(Planter::Seeder) do
+      seeding_method :data_array, model: "User", unique_columns: :email
+
+      def data
+        [{
+          email: "before@example.com",
+          username: "before"
+        }]
+      end
+
+      def transformations
+        {
+          email: -> { "after@example.com" },
+          username: ->(_value, row) { row[:email].split("@").first }
+        }
+      end
+    end
+
+    seeder_class.new.seed
+
+    user = User.find_by!(email: "after@example.com")
+    assert_equal "before", user.username
   end
 
   test "has_one data_array with model parent and association" do
@@ -100,5 +161,17 @@ class Planter::SeederTest < ActiveSupport::TestCase
     assert_equal 5, seeder.number_of_records
     assert_equal "Address", seeder.model
     assert_equal :user, seeder.parent
+  end
+
+  private
+
+  def reset_seeder_class_attributes
+    Planter::Seeder.seed_method = nil
+    Planter::Seeder.number_of_records = nil
+    Planter::Seeder.model = nil
+    Planter::Seeder.parent = nil
+    Planter::Seeder.csv_name = nil
+    Planter::Seeder.erb_trim_mode = nil
+    Planter::Seeder.unique_columns = nil
   end
 end

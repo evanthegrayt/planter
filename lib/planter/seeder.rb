@@ -273,7 +273,7 @@ module Planter
     end
 
     def validate_attributes # :nodoc:
-      case seed_method.intern
+      case seed_method&.intern
       when :csv
         raise "Couldn't find csv for #{model}" unless full_csv_name
       when :data_array
