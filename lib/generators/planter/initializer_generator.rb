@@ -1,10 +1,10 @@
 module Planter
   module Generators
     class InitializerGenerator < Rails::Generators::Base
-      desc 'Genrates an initializer for Planter at config/initializers/planter.rb'
+      desc "Genrates an initializer for Planter at config/initializers/planter.rb"
 
       def create_initializer_file
-        create_file 'config/initializers/planter.rb', <<~EOF
+        create_file "config/initializers/planter.rb", <<~EOF
           require 'planter'
 
           Planter.configure do |config|

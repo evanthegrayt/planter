@@ -1,11 +1,11 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 # Specify your gem's dependencies in planter.gemspec.
 gemspec
 
 group :development, :test do
-  gem 'sqlite3'
+  gem "sqlite3"
 end
 
 # Start debugger with binding.b [https://github.com/ruby/debug]

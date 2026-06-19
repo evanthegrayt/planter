@@ -15,13 +15,13 @@ module Planter
     # Minor version.
     #
     # @return [Integer]
-    MINOR = 2
+    MINOR = 3
 
     ##
     # Patch version.
     #
     # @return [Integer]
-    PATCH = 0
+    PATCH = 1
 
     module_function
 
@@ -38,7 +38,7 @@ module Planter
     #
     # @return [String]
     def to_s
-      to_a.join('.')
+      to_a.join(".")
     end
 
     ##
@@ -46,7 +46,7 @@ module Planter
     #
     # @return [Hash]
     def to_h
-      Hash[%i[major minor patch].zip(to_a)]
+      %i[major minor patch].zip(to_a).to_h
     end
   end
 

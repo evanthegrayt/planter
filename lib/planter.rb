@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'csv'
-require 'erb'
-require 'planter/version'
-require 'planter/railtie'
-require 'planter/config'
-require 'planter/seeder'
+require "csv"
+require "erb"
+require "planter/version"
+require "planter/railtie"
+require "planter/config"
+require "planter/seeder"
 
 ##
 # The main module for the plugin. It nicely wraps the +Planter::Config+ class
@@ -68,8 +68,8 @@ module Planter
   #   # db/seeds.rb, assuming your +configure+ block is in an initializer.
   #   Planter.seed
   def seed
-    seeders = ENV['SEEDERS']&.split(',') || config.seeders&.map(&:to_s)
-    raise RuntimeError, 'No seeders specified' if seeders.blank?
+    seeders = ENV["SEEDERS"]&.split(",") || config.seeders&.map(&:to_s)
+    raise "No seeders specified" if seeders.blank?
 
     seeders.each do |s|
       require Rails.root.join(config.seeders_directory, "#{s}_seeder.rb").to_s

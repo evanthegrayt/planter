@@ -6,7 +6,7 @@ module Planter
       desc "Creates a seeder file at #{::Planter.config.seeders_directory}"
 
       def generate_seeders
-        seeder == 'ALL' ? tables.each { |t| generate(t) } : generate(seeder)
+        (seeder == "ALL") ? tables.each { |t| generate(t) } : generate(seeder)
       end
 
       private
@@ -25,7 +25,7 @@ module Planter
           end
         EOF
 
-        inject_into_file 'config/initializers/planter.rb',
+        inject_into_file "config/initializers/planter.rb",
           "    #{seeder}\n",
           before: /^\s*\]\s*$/
       end

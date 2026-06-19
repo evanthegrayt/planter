@@ -55,8 +55,8 @@ module Planter
     # Create a new instance of the config.
     def initialize
       @quiet = false
-      @seeders_directory = ::File.join('db', 'seeds')
-      @csv_files_directory = ::File.join('db', 'seed_files')
+      @seeders_directory = ::File.join("db", "seeds")
+      @csv_files_directory = ::File.join("db", "seed_files")
     end
   end
 end
