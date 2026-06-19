@@ -250,24 +250,26 @@ module Planter
     ##
     # Creates records from the +data+ attribute.
     def create_records
-      data.each { |record| create_record(record) }
+      number_of_records.times do
+        data.each { |record| create_record(record) }
+      end
     end
 
     ##
     # Create records from the +data+ attribute for each record in the +parent+.
     def create_records_from_parent
       parent_model.constantize.pluck(primary_key).each do |parent_id|
-        data.each { |record| create_record(record, parent_id: parent_id) }
+        number_of_records.times do
+          data.each { |record| create_record(record, parent_id: parent_id) }
+        end
       end
     end
 
     def create_record(record, parent_id: nil)
-      number_of_records.times do
-        unique, attrs = split_record(apply_transformations(record))
-        model.constantize.where(
-          unique.tap { |u| u[foreign_key] = parent_id if parent_id }
-        ).first_or_create!(attrs)
-      end
+      unique, attrs = split_record(apply_transformations(record))
+      model.constantize.where(
+        unique.tap { |u| u[foreign_key] = parent_id if parent_id }
+      ).first_or_create!(attrs)
     end
 
     def validate_attributes # :nodoc:
@@ -305,8 +307,8 @@ module Planter
     def split_record(rec) # :nodoc:
       return [rec, {}] unless unique_columns
 
-      u = unique_columns.each_with_object({}) { |c, h| h[c] = rec.delete(c) }
-      [u, rec]
+      u = unique_columns.each_with_object({}) { |c, h| h[c] = rec[c] }
+      [u, rec.except(*unique_columns)]
     end
 
     def association_options

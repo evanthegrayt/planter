@@ -41,9 +41,45 @@ class Planter::SeederTest < ActiveSupport::TestCase
     assert_equal 2, Profile.count
   end
 
-  test "has_many data_array with unique parent and number_of_records" do
+  test "has_many data_array with unique parent does not mutate records" do
     Planter.seed
-    assert_equal 4, Address.count
+    assert_equal User.count, Address.count
+    assert_equal 0, Address.where(city: nil, state: nil).count
+  end
+
+  test "data_array with parent reevaluates data for number_of_records" do
+    Planter.seed
+    Address.delete_all
+    parent_ids = User.pluck(:id)
+    sequence = 0
+    seeder_class = Class.new(Planter::Seeder) do
+      seeding_method(
+        :data_array,
+        model: "Address",
+        parent: :person,
+        number_of_records: 4
+      )
+
+      define_method(:data) do
+        sequence += 1
+        [{
+          street_1: "#{sequence} Main St",
+          city: "City #{sequence}",
+          state: "MI",
+          zip: "48219"
+        }]
+      end
+    end
+
+    seeder_class.new.seed
+
+    assert_equal parent_ids.size * 4, Address.count
+    assert_equal(
+      parent_ids.index_with { 4 },
+      Address.group(:user_id).count
+    )
+  ensure
+    Address.delete_all
   end
 
   test "custom seed method" do
