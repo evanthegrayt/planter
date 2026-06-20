@@ -34,18 +34,6 @@ class PlanterTest < ActiveSupport::TestCase
 
   test "it should seed" do
     Planter.configure do |config|
-      config.seeders = nil
-      config.quiet = true
-    end
-    assert_raise(RuntimeError) { Planter.seed }
-
-    Planter.configure do |config|
-      config.seeders = []
-      config.quiet = true
-    end
-    assert_raise(RuntimeError) { Planter.seed }
-
-    Planter.configure do |config|
       config.seeders = %i[users addresses]
       config.quiet = true
     end
@@ -53,5 +41,24 @@ class PlanterTest < ActiveSupport::TestCase
 
     assert_equal 2, User.count
     assert_equal 2, Address.count
+  end
+
+  test "it warns instead of aborting when no seeders are configured" do
+    original_seeders = ENV.delete("SEEDERS")
+    warning = /WARNING: Planter\.seed was called, but no seeders were specified/
+
+    Planter.configure do |config|
+      config.seeders = nil
+      config.quiet = true
+    end
+    assert_output(nil, warning) { assert_nil Planter.seed }
+
+    Planter.configure do |config|
+      config.seeders = []
+      config.quiet = true
+    end
+    assert_output(nil, warning) { assert_nil Planter.seed }
+  ensure
+    ENV["SEEDERS"] = original_seeders
   end
 end

@@ -69,7 +69,10 @@ module Planter
   #   Planter.seed
   def seed
     seeders = ENV["SEEDERS"]&.split(",") || config.seeders&.map(&:to_s)
-    raise "No seeders specified" if seeders.blank?
+    if seeders.blank?
+      warn "WARNING: Planter.seed was called, but no seeders were specified. Add seeders to config.seeders in config/initializers/planter.rb or set SEEDERS."
+      return
+    end
 
     seeders.each do |s|
       require Rails.root.join(config.seeders_directory, "#{s}_seeder.rb").to_s
