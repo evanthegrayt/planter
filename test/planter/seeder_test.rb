@@ -68,6 +68,10 @@ class Planter::SeederTest < ActiveSupport::TestCase
   test "csv erb with parent and transformation" do
     Planter.seed
     assert_equal 4, Comment.count
+    assert_equal(
+      User.pluck(:id).index_with { 2 },
+      Comment.group(:user_id).count
+    )
     assert_equal 20, Comment.last.upvotes
     assert_equal "This is a TEST 1", Comment.first.message
   end
@@ -100,11 +104,19 @@ class Planter::SeederTest < ActiveSupport::TestCase
   test "has_one data_array with model parent and association" do
     Planter.seed
     assert_equal 2, Profile.count
+    assert_equal(
+      User.pluck(:id).index_with { 1 },
+      Profile.group(:user_id).count
+    )
   end
 
   test "has_many data_array with unique parent does not mutate records" do
     Planter.seed
     assert_equal User.count, Address.count
+    assert_equal(
+      User.pluck(:id).index_with { 1 },
+      Address.group(:user_id).count
+    )
     assert_equal 0, Address.where(city: nil, state: nil).count
   end
 
