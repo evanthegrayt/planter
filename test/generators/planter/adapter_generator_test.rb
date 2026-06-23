@@ -18,6 +18,7 @@ class Planter::Generators::AdapterGeneratorTest < Rails::Generators::TestCase
       assert_includes contents, "def create_record(model_name:, lookup_attributes:, create_attributes:)"
       assert_includes contents, "def parent_ids(model_name:, parent:)"
       assert_includes contents, "def foreign_key(model_name:, parent:)"
+      assert_includes contents, "def table_columns(model_name:)"
       assert_includes contents, "def table_names"
       assert_includes contents, "raise NotImplementedError"
     end
@@ -39,6 +40,7 @@ class Planter::Generators::AdapterGeneratorTest < Rails::Generators::TestCase
     end
     assert_raises(NotImplementedError) { adapter.parent_ids(model_name: "User", parent: :account) }
     assert_raises(NotImplementedError) { adapter.foreign_key(model_name: "User", parent: :account) }
+    assert_raises(NotImplementedError) { adapter.table_columns(model_name: "User") }
     assert_raises(NotImplementedError) { adapter.table_names }
   end
 

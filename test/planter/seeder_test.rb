@@ -186,6 +186,162 @@ class Planter::SeederTest < ActiveSupport::TestCase
     assert_equal({slug: "first", name: "First"}, record)
   end
 
+  test "data_array moves non-column lookup attributes into create attributes" do
+    adapter = FakeColumnAdapter.new("Widget" => %w[slug name])
+    Planter.config.adapter = adapter
+    seeder_class = Class.new(Planter::Seeder) do
+      seeding_method :data_array, model: "Widget"
+
+      def data
+        [{
+          slug: "first",
+          name: "First",
+          phone: "123-456-7890"
+        }]
+      end
+    end
+
+    assert_output(nil, /WARNING: Planter moved non-column lookup attributes for Widget into create attributes: phone/) do
+      seeder_class.new.seed
+    end
+
+    assert_equal(
+      [{
+        model_name: "Widget",
+        lookup_attributes: {slug: "first", name: "First"},
+        create_attributes: {phone: "123-456-7890"}
+      }],
+      adapter.created_records
+    )
+  end
+
+  test "unique_columns moves non-column lookup attributes into create attributes" do
+    adapter = FakeColumnAdapter.new("Widget" => %w[slug name])
+    Planter.config.adapter = adapter
+    seeder_class = Class.new(Planter::Seeder) do
+      seeding_method(
+        :data_array,
+        model: "Widget",
+        unique_columns: %i[slug external_id]
+      )
+
+      def data
+        [{
+          slug: "first",
+          external_id: "external-first",
+          name: "First"
+        }]
+      end
+    end
+
+    assert_output(nil, /WARNING: Planter moved non-column lookup attributes for Widget into create attributes: external_id/) do
+      seeder_class.new.seed
+    end
+
+    assert_equal(
+      [{
+        model_name: "Widget",
+        lookup_attributes: {slug: "first"},
+        create_attributes: {external_id: "external-first", name: "First"}
+      }],
+      adapter.created_records
+    )
+  end
+
+  test "parent seeding keeps native foreign key in lookup attributes" do
+    adapter = FakeColumnAdapter.new("Widget" => %w[slug account_id])
+    Planter.config.adapter = adapter
+    seeder_class = Class.new(Planter::Seeder) do
+      seeding_method(
+        :data_array,
+        model: "Widget",
+        parent: :account,
+        unique_columns: :slug
+      )
+
+      def data
+        [{
+          slug: "first",
+          name: "First"
+        }]
+      end
+    end
+
+    seeder_class.new.seed
+
+    assert_equal(
+      [{
+        model_name: "Widget",
+        lookup_attributes: {slug: "first", account_id: 42},
+        create_attributes: {name: "First"}
+      }],
+      adapter.created_records
+    )
+  end
+
+  test "non-column lookup warning is printed once for repeated fields" do
+    adapter = FakeColumnAdapter.new("Widget" => %w[slug])
+    Planter.config.adapter = adapter
+    seeder_class = Class.new(Planter::Seeder) do
+      seeding_method :data_array, model: "Widget"
+
+      def data
+        [
+          {slug: "first", phone: "123-456-7890"},
+          {slug: "second", phone: "234-567-8901"}
+        ]
+      end
+    end
+
+    _stdout, stderr = capture_io { seeder_class.new.seed }
+
+    assert_equal 1, stderr.scan("WARNING: Planter moved non-column lookup attributes").count
+  end
+
+  test "filtering raises when no native lookup attributes remain" do
+    adapter = FakeColumnAdapter.new("Widget" => %w[slug])
+    Planter.config.adapter = adapter
+    seeder_class = Class.new(Planter::Seeder) do
+      seeding_method :data_array, model: "Widget"
+
+      def data
+        [{phone: "123-456-7890"}]
+      end
+    end
+    error = nil
+
+    _stdout, _stderr = capture_io do
+      error = assert_raises(RuntimeError) { seeder_class.new.seed }
+    end
+
+    assert_equal(
+      "No native lookup columns found for Widget. Add a native table column to the seed data or unique_columns.",
+      error.message
+    )
+    assert_empty adapter.created_records
+  end
+
+  test "csv moves extra headers out of lookup attributes" do
+    adapter = FakeColumnAdapter.new("Widget" => %w[email username])
+    Planter.config.adapter = adapter
+    seeder_class = Class.new(Planter::Seeder) do
+      seeding_method :csv, model: "Widget", csv_name: :extra_users
+    end
+
+    assert_output(nil, /WARNING: Planter moved non-column lookup attributes for Widget into create attributes: phone/) do
+      seeder_class.new.seed
+    end
+
+    assert_equal(
+      [{
+        model_name: "Widget",
+        lookup_attributes: {email: "extra@example.com", username: "extra"},
+        create_attributes: {phone: "123-456-7890"}
+      }],
+      adapter.created_records
+    )
+  end
+
   test "custom seed method" do
     Planter.seed
     assert_equal 2, Role.count
@@ -245,6 +401,17 @@ class Planter::SeederTest < ActiveSupport::TestCase
         lookup_attributes: lookup_attributes,
         create_attributes: create_attributes
       }
+    end
+  end
+
+  class FakeColumnAdapter < FakeAdapter
+    def initialize(table_columns)
+      super()
+      @table_columns = table_columns
+    end
+
+    def table_columns(model_name:)
+      @table_columns.fetch(model_name)
     end
   end
 end

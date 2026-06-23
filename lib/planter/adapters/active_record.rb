@@ -9,6 +9,7 @@ module Planter
     # - +create_record(model_name:, lookup_attributes:, create_attributes:)+
     # - +parent_ids(model_name:, parent:)+
     # - +foreign_key(model_name:, parent:)+
+    # - +table_columns(model_name:)+
     # - +table_names+
     #
     # +model_name+ is the configured seeder model name. +parent+ is the
@@ -54,6 +55,16 @@ module Planter
       # @return [String, Symbol]
       def foreign_key(model_name:, parent:)
         association_options(model_name, parent).fetch(:foreign_key, "#{parent}_id")
+      end
+
+      ##
+      # Return native table columns for the model being seeded.
+      #
+      # @param [String] model_name the model being seeded
+      #
+      # @return [Array<String>]
+      def table_columns(model_name:)
+        model_name.constantize.column_names
       end
 
       ##

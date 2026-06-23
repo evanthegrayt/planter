@@ -40,6 +40,14 @@ class Planter::Adapters::ActiveRecordTest < ActiveSupport::TestCase
     assert_equal "user_id", @adapter.foreign_key(model_name: "Profile", parent: :user)
   end
 
+  test "returns native table columns for model" do
+    table_columns = @adapter.table_columns(model_name: "User")
+
+    assert_includes table_columns, "email"
+    assert_includes table_columns, "username"
+    assert_not_includes table_columns, "phone"
+  end
+
   test "returns table names without rails metadata tables" do
     table_names = @adapter.table_names
 
