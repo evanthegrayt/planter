@@ -268,6 +268,7 @@ module Planter
     def create_record(record, parent_id: nil)
       unique, attrs = split_record(apply_transformations(record))
       unique = unique.merge(foreign_key => parent_id) if parent_id
+      unique, attrs = filter_lookup_attributes(unique, attrs)
       adapter.create_record(
         model_name: model,
         lookup_attributes: unique,
@@ -332,6 +333,42 @@ module Planter
 
       u = unique_columns.each_with_object({}) { |c, h| h[c] = rec[c] }
       [u, rec.except(*unique_columns)]
+    end
+
+    def filter_lookup_attributes(lookup_attributes, create_attributes)
+      return [lookup_attributes, create_attributes] unless adapter.respond_to?(:table_columns)
+
+      table_columns = adapter.table_columns(model_name: model).map(&:to_s)
+      native_lookup_attributes = lookup_attributes.select do |field, _value|
+        table_columns.include?(field.to_s)
+      end
+      non_column_lookup_attributes = lookup_attributes.except(*native_lookup_attributes.keys)
+
+      if non_column_lookup_attributes.any?
+        warn_non_column_lookup_attributes(non_column_lookup_attributes.keys)
+      end
+
+      if native_lookup_attributes.empty?
+        raise "No native lookup columns found for #{model}. " \
+          "Add a native table column to the seed data or unique_columns."
+      end
+
+      [
+        native_lookup_attributes,
+        non_column_lookup_attributes.merge(create_attributes)
+      ]
+    end
+
+    def warn_non_column_lookup_attributes(fields)
+      warning_key = [model, fields.map(&:to_s).sort]
+      @warned_non_column_lookup_attributes ||= []
+      return if @warned_non_column_lookup_attributes.include?(warning_key)
+
+      @warned_non_column_lookup_attributes << warning_key
+      warn(
+        "WARNING: Planter moved non-column lookup attributes for #{model} " \
+        "into create attributes: #{warning_key.last.join(", ")}"
+      )
     end
 
     def foreign_key

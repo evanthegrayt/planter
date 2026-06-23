@@ -23,7 +23,7 @@ currently a pre-release version, it's recommended to lock it to a specific
 version, as breaking changes may occur, even at the minor level.
 
 ```ruby
-gem 'planter', '0.4.1'
+gem 'planter', '0.4.2'
 ```
 
 And then execute:
@@ -350,6 +350,10 @@ class MyAdapter
 
   def foreign_key(model_name:, parent:)
     # Return the attribute used to attach a parent id to the seeded record.
+  end
+
+  def table_columns(model_name:)
+    # Return native columns or fields for model_name.
   end
 
   def table_names

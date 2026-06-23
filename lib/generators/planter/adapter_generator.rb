@@ -54,6 +54,16 @@ module Planter
                 end
 
                 ##
+                # Return native columns or fields for the model being seeded.
+                #
+                # @param [String] model_name the model being seeded
+                #
+                # @return [Array<String>]
+                def table_columns(model_name:)
+                  raise NotImplementedError, "\#{self.class} must implement #table_columns"
+                end
+
+                ##
                 # Return table or collection names that can have seeders generated.
                 #
                 # @return [Array<String>]
