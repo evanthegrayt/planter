@@ -1,4 +1,4 @@
-FROM ruby:3.0
+FROM ruby:3.2
 
 RUN apt-get update && apt-get install -y \
   vim sqlite3
