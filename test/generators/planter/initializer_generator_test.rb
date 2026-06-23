@@ -16,9 +16,10 @@ class Planter::Generators::InitializerGeneratorTest < Rails::Generators::TestCas
       assert_includes contents, "Planter.configure do |config|"
       assert_includes contents, "config.adapter = Planter::Adapters::ActiveRecord.new"
       assert_includes contents, "config.seeders = %i["
-      assert_includes contents, "# config.seeders_directory = 'db/seeds'"
-      assert_includes contents, "# config.csv_files_directory = 'db/seed_files'"
-      assert_includes contents, "# config.erb_trim_mode = nil"
+      assert_includes contents, "config.seeders_directory = 'db/seeds'"
+      assert_includes contents, "config.csv_files_directory = 'db/seed_files'"
+      assert_includes contents, "config.quiet = false"
+      assert_includes contents, "config.erb_trim_mode = nil"
     end
   end
 end

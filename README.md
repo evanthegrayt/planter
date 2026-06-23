@@ -23,7 +23,7 @@ currently a pre-release version, it's recommended to lock it to a specific
 version, as breaking changes may occur, even at the minor level.
 
 ```ruby
-gem 'planter', '0.4.0'
+gem 'planter', '0.4.1'
 ```
 
 And then execute:
@@ -67,11 +67,15 @@ Planter.configure do |config|
 
   ##
   # The directory where the seeders are kept.
-  # config.seeders_directory = 'db/seeds'
+  config.seeders_directory = 'db/seeds'
 
   ##
   # The directory where CSVs are kept.
-  # config.csv_files_directory = 'db/seed_files'
+  config.csv_files_directory = 'db/seed_files'
+
+  ##
+  # When true, don't print output when seeding.
+  config.quiet = false
 
   ##
   # The default trim mode for ERB. Valid modes are:
@@ -80,7 +84,7 @@ Planter.configure do |config|
   # '>'  omit newline for lines ending in %>
   # '-'  omit blank lines ending in -%>
   # I recommend reading the help documentation for ERB::new()
-  # config.erb_trim_mode = nil
+  config.erb_trim_mode = nil
 end
 ```
 

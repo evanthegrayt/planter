@@ -27,11 +27,15 @@ module Planter
 
             ##
             # The directory where the seeders are kept.
-            # config.seeders_directory = 'db/seeds'
+            config.seeders_directory = 'db/seeds'
 
             ##
             # The directory where CSVs are kept.
-            # config.csv_files_directory = 'db/seed_files'
+            config.csv_files_directory = 'db/seed_files'
+
+            ##
+            # When true, don't print output when seeding.
+            config.quiet = false
 
             ##
             # The default trim mode for ERB. Valid modes are:
@@ -40,7 +44,7 @@ module Planter
             # '>'  omit newline for lines ending in %>
             # '-'  omit blank lines ending in -%>
             # I recommend reading the help documentation for ERB::new()
-            # config.erb_trim_mode = nil
+            config.erb_trim_mode = nil
           end
         EOF
       end
