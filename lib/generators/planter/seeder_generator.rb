@@ -31,9 +31,7 @@ module Planter
       end
 
       def tables
-        @tables ||= ActiveRecord::Base.connection.tables.reject do |table|
-          %w[ar_internal_metadata schema_migrations].include?(table)
-        end
+        @tables ||= ::Planter.config.adapter.table_names
       end
     end
   end

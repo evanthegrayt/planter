@@ -258,7 +258,7 @@ module Planter
     ##
     # Create records from the +data+ attribute for each record in the +parent+.
     def create_records_from_parent
-      parent_model.constantize.pluck(primary_key).each do |parent_id|
+      adapter.parent_ids(model_name: model, parent: parent).each do |parent_id|
         number_of_records.times do
           data.each { |record| create_record(record, parent_id: parent_id) }
         end
@@ -267,9 +267,32 @@ module Planter
 
     def create_record(record, parent_id: nil)
       unique, attrs = split_record(apply_transformations(record))
-      model.constantize.where(
-        unique.tap { |u| u[foreign_key] = parent_id if parent_id }
-      ).first_or_create!(attrs)
+      unique = unique.merge(foreign_key => parent_id) if parent_id
+      adapter.create_record(
+        model_name: model,
+        lookup_attributes: unique,
+        create_attributes: attrs
+      )
+    end
+
+    def full_csv_name
+      @full_csv_name ||=
+        %W[#{csv_name}.csv #{csv_name}.csv.erb #{csv_name}.erb.csv]
+          .map { |f| Rails.root.join(Planter.config.csv_files_directory, f).to_s }
+          .find { |f| ::File.file?(f) }
+    end
+
+    def extract_data_from_csv
+      contents = ::File.read(full_csv_name)
+      if full_csv_name.include?(".erb")
+        contents = ERB.new(contents, trim_mode: erb_trim_mode).result(binding)
+      end
+
+      @data ||= ::CSV.parse(
+        contents,
+        headers: true,
+        header_converters: :symbol
+      ).map(&:to_hash)
     end
 
     def validate_attributes # :nodoc:
@@ -311,44 +334,12 @@ module Planter
       [u, rec.except(*unique_columns)]
     end
 
-    def association_options
-      @association_options ||=
-        model.constantize.reflect_on_association(parent).options
-    end
-
-    def primary_key
-      @primary_key ||=
-        association_options.fetch(:primary_key, :id)
-    end
-
     def foreign_key
-      @foreign_key ||=
-        association_options.fetch(:foreign_key, "#{parent}_id")
+      adapter.foreign_key(model_name: model, parent: parent)
     end
 
-    def parent_model
-      @parent_model ||=
-        association_options.fetch(:class_name, parent.to_s.classify)
-    end
-
-    def full_csv_name
-      @full_csv_name ||=
-        %W[#{csv_name}.csv #{csv_name}.csv.erb #{csv_name}.erb.csv]
-          .map { |f| Rails.root.join(Planter.config.csv_files_directory, f).to_s }
-          .find { |f| ::File.file?(f) }
-    end
-
-    def extract_data_from_csv
-      contents = ::File.read(full_csv_name)
-      if full_csv_name.include?(".erb")
-        contents = ERB.new(contents, trim_mode: erb_trim_mode).result(binding)
-      end
-
-      @data ||= ::CSV.parse(
-        contents,
-        headers: true,
-        header_converters: :symbol
-      ).map(&:to_hash)
+    def adapter
+      Planter.config.adapter
     end
   end
 end

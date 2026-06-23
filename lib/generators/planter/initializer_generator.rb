@@ -6,8 +6,15 @@ module Planter
       def create_initializer_file
         create_file "config/initializers/planter.rb", <<~EOF
           require 'planter'
+          require 'planter/adapters/active_record'
 
           Planter.configure do |config|
+            ##
+            # The adapter used to create records, discover parent records, and
+            # inspect database table names. Active Record is used by default.
+            # To use a custom adapter, replace this line with your own adapter.
+            config.adapter = Planter::Adapters::ActiveRecord.new
+
             ##
             # The list of seeders. These files are stored in the
             # config.seeders_directory, which can be changed below. When a new

@@ -10,6 +10,8 @@ class Planter::ConfigTest < ActiveSupport::TestCase
     assert_equal "db/seed_files", @config.csv_files_directory
     assert_nil @config.seeders
     assert_equal(false, @config.quiet)
+    assert_not @config.instance_variable_defined?(:@adapter)
+    assert_instance_of Planter::Adapters::ActiveRecord, @config.adapter
   end
 
   test "attributes are accessible" do
@@ -24,5 +26,9 @@ class Planter::ConfigTest < ActiveSupport::TestCase
 
     @config.quiet = true
     assert_equal true, @config.quiet
+
+    adapter = Object.new
+    @config.adapter = adapter
+    assert_same adapter, @config.adapter
   end
 end

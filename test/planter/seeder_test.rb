@@ -155,6 +155,37 @@ class Planter::SeederTest < ActiveSupport::TestCase
     Address.delete_all
   end
 
+  test "data_array delegates persistence and parent lookup to adapter" do
+    adapter = FakeAdapter.new
+    record = {
+      slug: "first",
+      name: "First"
+    }
+    Planter.config.adapter = adapter
+    seeder_class = Class.new(Planter::Seeder) do
+      seeding_method(
+        :data_array,
+        model: "Widget",
+        parent: :account,
+        unique_columns: :slug
+      )
+
+      define_method(:data) { [record] }
+    end
+
+    seeder_class.new.seed
+
+    assert_equal(
+      [{
+        model_name: "Widget",
+        lookup_attributes: {slug: "first", account_id: 42},
+        create_attributes: {name: "First"}
+      }],
+      adapter.created_records
+    )
+    assert_equal({slug: "first", name: "First"}, record)
+  end
+
   test "custom seed method" do
     Planter.seed
     assert_equal 2, Role.count
@@ -185,5 +216,35 @@ class Planter::SeederTest < ActiveSupport::TestCase
     Planter::Seeder.csv_name = nil
     Planter::Seeder.erb_trim_mode = nil
     Planter::Seeder.unique_columns = nil
+  end
+
+  class FakeAdapter
+    attr_reader :created_records
+
+    def initialize
+      @created_records = []
+    end
+
+    def parent_ids(model_name:, parent:)
+      raise "unexpected model" unless model_name == "Widget"
+      raise "unexpected parent" unless parent == :account
+
+      [42]
+    end
+
+    def foreign_key(model_name:, parent:)
+      raise "unexpected model" unless model_name == "Widget"
+      raise "unexpected parent" unless parent == :account
+
+      :account_id
+    end
+
+    def create_record(model_name:, lookup_attributes:, create_attributes:)
+      @created_records << {
+        model_name: model_name,
+        lookup_attributes: lookup_attributes,
+        create_attributes: create_attributes
+      }
+    end
   end
 end
