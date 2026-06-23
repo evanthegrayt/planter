@@ -23,7 +23,7 @@ currently a pre-release version, it's recommended to lock it to a specific
 version, as breaking changes may occur, even at the minor level.
 
 ```ruby
-gem 'planter', '0.3.4'
+gem 'planter', '0.4.0'
 ```
 
 And then execute:
@@ -46,8 +46,15 @@ To get started, run `rails generate planter:initializer`, which will create
 
 ```ruby
 require 'planter'
+require 'planter/adapters/active_record'
 
 Planter.configure do |config|
+  ##
+  # The adapter used to create records, discover parent records, and
+  # inspect database table names. Active Record is used by default.
+  # To use a custom adapter, replace this line with your own adapter.
+  config.adapter = Planter::Adapters::ActiveRecord.new
+
   ##
   # The list of seeders. These files are stored in the
   # config.seeders_directory, which can be changed below. When a new
@@ -114,7 +121,12 @@ the generator won't know where to put the new seeders.
 If you want to generate a seeder for every table currently in your database, run
 `rails generate planter:seeder ALL`.
 
-You then need to choose a seeding method, of which there are currently three.
+Planter uses `Planter::Adapters::ActiveRecord` by default, so the built-in
+seeding methods work with Active Record models without extra configuration. See
+[Custom Adapters](#custom-adapters) if you want to use a different persistence
+backend.
+
+You then need to choose a seeding method, of which there are currently two.
 
 ### Seeding from CSV
 To seed from CSV, you simply need to add the following to your seeder class.
@@ -251,9 +263,9 @@ Running `rails planter:seed` should now seed your `users` table.
 You can also seed children records for every existing record of a parent model.
 For example, to seed an address for every user, you'd need to create an
 `AddressesSeeder` that uses the `parent` option, as seen below. This option
-should be the name of the `belongs_to` association in your model. The primary
-key, foreign key, and model name of the parent will all be determined by
-reflecting on the association.
+should be the name of the `belongs_to` association in your model when using the
+default Active Record adapter. The primary key, foreign key, and model name of
+the parent will all be determined by the adapter.
 
 ```ruby
 require 'faker'
@@ -288,6 +300,56 @@ class UsersSeeder < Planter::Seeder
 
   def seed
     USERS.each { |email, attrs| User.where(email: email).first_or_create!(attrs) }
+  end
+end
+```
+
+## Custom Adapters
+Active Record is the default adapter, but you can provide your own adapter
+object in the initializer. Replace the generated Active Record adapter require
+and configuration with your custom adapter, while keeping `config.seeders` as
+your ordered seed plan.
+
+You can generate a custom adapter stub with the following command.
+
+```bash
+$ rails generate planter:adapter sequel
+```
+
+This creates `lib/planter/adapters/sequel.rb` with the required adapter methods
+and updates `config/initializers/planter.rb` to use it. The generated methods
+raise `NotImplementedError` until you implement them. Running the generator
+replaces the currently configured adapter line, but does not change
+`config.seeders`.
+
+```ruby
+require 'planter'
+require 'my_adapter'
+
+Planter.configure do |config|
+  config.adapter = MyAdapter.new
+end
+```
+
+Custom adapters are duck typed. They should implement the same public API as
+`Planter::Adapters::ActiveRecord`.
+
+```ruby
+class MyAdapter
+  def create_record(model_name:, lookup_attributes:, create_attributes:)
+    # Find or create a record for model_name.
+  end
+
+  def parent_ids(model_name:, parent:)
+    # Return ids for each parent record used by parent seeding.
+  end
+
+  def foreign_key(model_name:, parent:)
+    # Return the attribute used to attach a parent id to the seeded record.
+  end
+
+  def table_names
+    # Return table or collection names used by `rails generate planter:seeder ALL`.
   end
 end
 ```

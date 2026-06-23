@@ -12,7 +12,9 @@ class Planter::Generators::InitializerGeneratorTest < Rails::Generators::TestCas
 
     assert_file "config/initializers/planter.rb" do |contents|
       assert_includes contents, "require 'planter'"
+      assert_includes contents, "require 'planter/adapters/active_record'"
       assert_includes contents, "Planter.configure do |config|"
+      assert_includes contents, "config.adapter = Planter::Adapters::ActiveRecord.new"
       assert_includes contents, "config.seeders = %i["
       assert_includes contents, "# config.seeders_directory = 'db/seeds'"
       assert_includes contents, "# config.csv_files_directory = 'db/seed_files'"

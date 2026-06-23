@@ -15,13 +15,13 @@ module Planter
     # Minor version.
     #
     # @return [Integer]
-    MINOR = 3
+    MINOR = 4
 
     ##
     # Patch version.
     #
     # @return [Integer]
-    PATCH = 4
+    PATCH = 0
 
     module_function
 

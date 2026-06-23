@@ -6,6 +6,7 @@ class Planter::Generators::SeederGeneratorTest < Rails::Generators::TestCase
   tests Planter::Generators::SeederGenerator
   destination File.expand_path("../../../tmp/generators/seeder", __dir__)
   setup :prepare_destination
+  teardown { Planter.reset_config }
 
   test "creates a named seeder and registers it in the initializer" do
     write_initializer
@@ -32,6 +33,21 @@ class Planter::Generators::SeederGeneratorTest < Rails::Generators::TestCase
     assert_file "db/seeds/roles_users_seeder.rb"
     assert_no_file "db/seeds/ar_internal_metadata_seeder.rb"
     assert_no_file "db/seeds/schema_migrations_seeder.rb"
+  end
+
+  test "ALL uses the configured adapter to find tables" do
+    Planter.config.adapter = Class.new do
+      def table_names
+        %w[custom_widgets custom_accounts]
+      end
+    end.new
+    write_initializer
+
+    run_generator ["ALL"]
+
+    assert_file "db/seeds/custom_widgets_seeder.rb"
+    assert_file "db/seeds/custom_accounts_seeder.rb"
+    assert_no_file "db/seeds/users_seeder.rb"
   end
 
   private
