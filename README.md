@@ -372,8 +372,9 @@ issue](https://github.com/evanthegrayt/planter/issues/new). Just make sure
 the topic doesn't already exist. Better yet, you can always submit a Pull
 Request.
 
-## Self-Promotion
-I do these projects for fun, and I enjoy knowing that they're helpful to people.
-Consider starring [the repository](https://github.com/evanthegrayt/planter)
-if you like it! If you love it, follow me [on
-GitHub](https://github.com/evanthegrayt)!
+## Support this project
+I love knowing when people find my work useful!
+
+:star: Like the project? Consider starring [the repository](https://github.com/evanthegrayt/standup_md).\
+:heart: Love the project? Follow me [on GitHub](https://github.com/evanthegrayt).\
+:money_with_wings: *Really* love it? Consider [buying me a tea](https://paypal.me/evanrgray)!
