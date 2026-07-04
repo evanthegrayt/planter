@@ -1,10 +1,17 @@
 module Planter
+  ##
+  # Namespace for Rails generators provided by Planter.
   module Generators
+    ##
+    # Rails generator that creates one or more Planter seeder files.
     class SeederGenerator < Rails::Generators::Base
       argument :seeder, required: true
 
       desc "Creates a seeder file at #{::Planter.config.seeders_directory}"
 
+      ##
+      # Generate the requested seeder, or generate a seeder for every table
+      # when the argument is +ALL+.
       def generate_seeders
         (seeder == "ALL") ? tables.each { |t| generate(t) } : generate(seeder)
       end
@@ -19,7 +26,7 @@ module Planter
             # TODO: Choose a seeding_method. For example:
             # seeding_method :csv
 
-            # For now, we overload the seed method so no exception will be raised.
+            # For now, we override the seed method so no exception will be raised.
             def seed
             end
           end

@@ -1,10 +1,17 @@
 module Planter
+  ##
+  # Namespace for Rails generators provided by Planter.
   module Generators
+    ##
+    # Rails generator that creates a custom adapter stub and configures Planter
+    # to use it.
     class AdapterGenerator < Rails::Generators::Base
       argument :adapter, required: true
 
       desc "Creates an adapter file at lib/planter/adapters"
 
+      ##
+      # Create a custom adapter file with the required adapter API.
       def generate_adapter
         create_file adapter_path, <<~RUBY
           # frozen_string_literal: true
@@ -76,6 +83,8 @@ module Planter
         RUBY
       end
 
+      ##
+      # Update the Planter initializer to require and configure the new adapter.
       def update_initializer
         contents = ::File.read(initializer_full_path)
         contents = replace_or_insert_adapter_require(contents)

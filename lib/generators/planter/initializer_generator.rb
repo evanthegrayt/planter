@@ -1,8 +1,14 @@
 module Planter
+  ##
+  # Namespace for Rails generators provided by Planter.
   module Generators
+    ##
+    # Rails generator that creates Planter's initializer.
     class InitializerGenerator < Rails::Generators::Base
-      desc "Genrates an initializer for Planter at config/initializers/planter.rb"
+      desc "Generates an initializer for Planter at config/initializers/planter.rb"
 
+      ##
+      # Create the default Planter initializer file.
       def create_initializer_file
         create_file "config/initializers/planter.rb", <<~EOF
           require 'planter'
