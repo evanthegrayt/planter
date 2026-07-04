@@ -108,7 +108,7 @@ class UsersSeeder < Planter::Seeder
   # TODO: Choose a seeding_method. For example:
   # seeding_method :csv
 
-  # For now, we overload the seed method so no exception will be raised.
+  # For now, we override the seed method so no exception will be raised.
   def seed
   end
 end
@@ -141,8 +141,8 @@ class UsersSeeder < Planter::Seeder
 end
 ```
 
-Then, create a directory called `db/seed_files`, and create a csv file called
-`db/seed_files/users.csv`. In this file, the header should be the field names,
+Then, create a directory called `db/seed_files`, and create a CSV file called
+`db/seed_files/users.csv`. In this file, the headers should be the field names,
 and the rest of the rows should be the corresponding data.
 
 ```
@@ -203,7 +203,7 @@ end
 For help with `erb_trim_mode`, see the help documentation for `ERB::new`.
 
 Lastly, it's worth mentioning `transformations` under the CSV section, as that's
-usually the pace where they're needed most, but it will work with any method.
+usually the place where they're needed most, but they work with any method.
 
 If you're seeding with a CSV, and it contains values that need to have code
 executed on them before it's imported into the database, you can define an
@@ -264,7 +264,7 @@ the `Planter::Seeder` parent class automatically provides `attr_reader :data`.
 
 Running `rails planter:seed` should now seed your `users` table.
 
-You can also seed children records for every existing record of a parent model.
+You can also seed child records for every existing record of a parent model.
 For example, to seed an address for every user, you'd need to create an
 `AddressesSeeder` that uses the `parent` option, as seen below. This option
 should be the name of the `belongs_to` association in your model when using the
@@ -292,7 +292,7 @@ Note that specifying `number_of_records` in this instance will create that many
 records *for each record of the parent model*.
 
 ### Custom seeds
-To write your own custom seeds, just overload the `seed` method and do whatever
+To write your own custom seeds, just override the `seed` method and do whatever
 you need to do.
 
 ```ruby

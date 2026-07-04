@@ -4,17 +4,17 @@ module Planter
   ##
   # Class that seeders should inherit from. Seeders should be in +db/seeds+,
   # and named +TABLE_seeder.rb+, where +TABLE+ is the name of the table being
-  # seeded (I.E. +users_seeder.rb+). If your seeder is named differently than
-  # the table, you'll need to specify the table with the +model+ option. The
+  # seeded (for example, +users_seeder.rb+). If your seeder is named differently
+  # than the table, you'll need to specify the table with the +model+ option. The
   # seeder's class name should be the same as the file name, but camelized. So,
   # +UsersSeeder+. The directory where the seeder files are located can be
   # changed via an initializer.
   #
   # The most basic way to seed is to have a CSV file with the same name as the
   # table in +db/seed_files/+. So, +users.csv+. This CSV should have the
-  # table's column names as header. To seed using this method, your class
+  # table's column names as headers. To seed using this method, your class
   # should look like the following. Note that +:csv_name+ and +:model+ are only
-  # required if your seeder or csv are named differently than the table being
+  # required if your seeder or CSV are named differently than the table being
   # seeded. The directory where the seed files are kept can be changed via an
   # initializer.
   #   # db/seeds/users_seeder.rb
@@ -27,7 +27,7 @@ module Planter
   # your class must implement a +data+ attribute or method, which is an array
   # of hashes. Note that this class already provides the +attr_reader+ for this
   # attribute, so the most you have to do is create instance variables in your
-  # constructor. If if you want your data to be different for each new record
+  # constructor. If you want your data to be different for each new record
   # (via Faker, +Array#sample+, etc.), you'll probably want to supply a method
   # called data that returns an array of new data each time.
   #   require 'planter'
@@ -44,7 +44,7 @@ module Planter
   # if we're seeding the users table, and the model is +User+, which belongs to
   # +Person+, then doing the following will create a user record for each
   # record in the Person table. Note that nothing is automatically done to
-  # prevent any validation errors; you must do this on your own, mostly likely
+  # prevent any validation errors; you must do this on your own, most likely
   # using +Faker+ or a similar library.
   #   require 'planter'
   #   class UsersSeeder < Planter::Seeder
@@ -55,7 +55,7 @@ module Planter
   #   end
   #
   # You can also set +number_of_records+ to determine how many times each
-  # record in the +data+ array will get created. The default is 1. Note that if
+  # record in the +data+ array will be created. The default is 1. Note that if
   # this attribute is set alongside +parent+, +number_of_records+ will be how
   # many records will be created for each record in the parent table.
   #   require 'planter'
@@ -68,7 +68,7 @@ module Planter
   #
   # By default, all fields are used to look up the record. If it already
   # exists, it is not re-created. If you have specific fields that a record
-  # should be looked-up by, you can pass the +unique_columns+ option. This will
+  # should be looked up by, you can pass the +unique_columns+ option. This will
   # attempt to look up the record by those fields only, and if one doesn't
   # exist, one will be created with the rest of the attributes. An example of
   # when this would be useful is with Devise; you can't pass +password+ in the
@@ -97,14 +97,14 @@ module Planter
     # attribute when using +data_array+ seeding method, although it's probably
     # more likely that you'll want to define a method that returns a new set of
     # data each time (via +Faker+, +Array#sample+, etc.). When using +csv+,
-    # +data+ will be set to the data within the csv. You can override this.
+    # +data+ will be set to the data within the CSV. You can override this.
     #
     # @return [Array]
     attr_reader :data
 
     ##
     # A hash of user-defined column names and procs to be run on values. This
-    # is most useful for when seeding from csv, and you need to transform, say,
+    # is most useful for when seeding from CSV, and you need to transform, say,
     # 'true' (String) into true (Boolean). The user may define this as an
     # instance variable, or define a method that returns the hash.
     #
@@ -168,7 +168,7 @@ module Planter
     class_attribute :number_of_records
 
     ##
-    # The csv file corresponding to the model.
+    # The CSV file corresponding to the model.
     #
     # @return [String]
     class_attribute :csv_name

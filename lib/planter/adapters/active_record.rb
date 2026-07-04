@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Planter
+  ##
+  # Namespace for persistence adapters used by Planter seeders.
   module Adapters
     ##
     # Default adapter for seeding Active Record models.

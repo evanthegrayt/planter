@@ -59,9 +59,9 @@ module Planter
   end
 
   ##
-  # This is the method to call from your +db/seeds.rb+. It callse the seeders
+  # This is the method to call from your +db/seeds.rb+. It calls the seeders
   # listed in +Planter.config.seeders+. To call specific seeders at runtime,
-  # you can set the +SEEDERS+ environmental variable to a comma-separated list
+  # you can set the +SEEDERS+ environment variable to a comma-separated list
   # of seeders, like +rails db:seed SEEDERS=users,accounts+.
   #
   # @example
