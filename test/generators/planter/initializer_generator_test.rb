@@ -16,6 +16,8 @@ class Planter::Generators::InitializerGeneratorTest < Rails::Generators::TestCas
       assert_includes contents, "Planter.configure do |config|"
       assert_includes contents, "config.adapter = Planter::Adapters::ActiveRecord.new"
       assert_includes contents, "config.seeders = %i["
+      assert_includes contents, "The generator can append to either multiline or inline %i[...]"
+      assert_not_includes contents, "keep the ending bracket on its own line"
       assert_includes contents, "config.seeders_directory = 'db/seeds'"
       assert_includes contents, "config.csv_files_directory = 'db/seed_files'"
       assert_includes contents, "config.quiet = false"
