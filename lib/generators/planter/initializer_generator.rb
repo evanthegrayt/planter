@@ -44,6 +44,11 @@ module Planter
             config.quiet = false
 
             ##
+            # When false, don't print progress bars while seeding.
+            # This is ignored when config.quiet is true.
+            config.progress_bar = true
+
+            ##
             # The default trim mode for ERB. Valid modes are:
             # '%'  enables Ruby code processing for lines beginning with %
             # '<>' omit newline for lines starting with <% and ending in %>

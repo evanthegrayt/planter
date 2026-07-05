@@ -43,6 +43,14 @@ module Planter
     attr_accessor :quiet
 
     ##
+    # When false, don't print progress bars while seeding.
+    #
+    # @param [Boolean] progress_bar
+    #
+    # @return [Boolean]
+    attr_accessor :progress_bar
+
+    ##
     # The default trim mode for ERB. Must be "%", "<>", ">", or "-".
     # For more information, see documentation for +ERB::new+.
     #
@@ -72,6 +80,7 @@ module Planter
     # Create a new instance of the config.
     def initialize
       @quiet = false
+      @progress_bar = true
       @seeders_directory = ::File.join("db", "seeds")
       @csv_files_directory = ::File.join("db", "seed_files")
     end
