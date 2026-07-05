@@ -56,6 +56,10 @@ module Planter
       end
     end
 
+    ##
+    # Adapter methods required for Planter's public adapter API.
+    #
+    # @return [Array<Symbol>]
     REQUIRED_ADAPTER_METHODS = %i[
       create_record
       parent_ids
