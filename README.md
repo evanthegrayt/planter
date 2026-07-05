@@ -23,7 +23,7 @@ currently a pre-release version, it's recommended to lock it to a specific
 version, as breaking changes may occur, even at the minor level.
 
 ```ruby
-gem 'planter', '0.4.2'
+gem 'planter', '0.5.0'
 ```
 
 And then execute:
@@ -99,8 +99,8 @@ Planter.seed
 
 To create a users seeder, run `rails generate planter:seeder users`. Usually,
 seeders seed a specific table, so it's recommended to name your seeders after
-the table. If you don't, you'll need to manually specify a few things. More on
-that later. This will create a file named `db/seeds/users_seeder.rb` (the
+the table. If you don't, specify the table with the `table` option in
+`seeding_method`. This will create a file named `db/seeds/users_seeder.rb` (the
 directory will be created if it doesn't exist) with the following contents.
 
 ```ruby
@@ -122,15 +122,38 @@ correct order, you'll need to adjust the array manually.
 - When adjusting the array, always keep the closing bracket on its own line, or
 the generator won't know where to put the new seeders.
 
+You can also tell the generator which seeding style to use.
+
+```bash
+rails generate planter:seeder users --seeding-method=csv
+rails generate planter:seeder users --seeding-method=data-array
+rails generate planter:seeder users --seeding-method=custom
+```
+
+`--seeding-method=csv` creates a seeder with `seeding_method :csv` and creates
+`db/seed_files/users.csv` with headers pulled from the `users` table.
+`--seeding-method=data-array` creates a seeder with `seeding_method :data_array`
+and an empty `data` method. `--seeding-method=custom` creates a seeder with an
+empty `seed` method, which is useful when the built-in seeding methods don't
+fit.
+
 If you want to generate a seeder for every table currently in your database, run
-`rails generate planter:seeder ALL`.
+`rails generate planter:seeder ALL`. The seeding style options can be used with
+`ALL`, too; for example,
+`rails generate planter:seeder ALL --seeding-method=csv`.
 
 Planter uses `Planter::Adapters::ActiveRecord` by default, so the built-in
 seeding methods work with Active Record models without extra configuration. See
 [Custom Adapters](#custom-adapters) if you want to use a different persistence
 backend.
 
-You then need to choose a seeding method, of which there are currently two.
+Each generated seeder needs a seeding method. In practice:
+
+- Use `csv` when the seed data should live in a file that is easy to review or
+  edit outside Ruby.
+- Use `data_array` when the seed data should be generated dynamically in Ruby.
+- Use a custom `seed` method when the built-in persistence flow is not the right
+  fit for the job.
 
 ### Seeding from CSV
 To seed from CSV, you simply need to add the following to your seeder class.
@@ -142,8 +165,10 @@ end
 ```
 
 Then, create a directory called `db/seed_files`, and create a CSV file called
-`db/seed_files/users.csv`. In this file, the headers should be the field names,
-and the rest of the rows should be the corresponding data.
+`db/seed_files/users.csv`. You can also run
+`rails generate planter:seeder users --seeding-method=csv` to create this file
+automatically. In this file, the headers should be the field names, and the rest
+of the rows should be the corresponding data.
 
 ```
 email,username
@@ -151,12 +176,50 @@ test1@example.com,test1
 test2@example.com,test2
 ```
 
+For idempotent seeds, pass `unique_columns` to control which columns are used to
+find existing records. This example finds users by email and only uses
+`username` when creating a new record.
+
+```ruby
+class UsersSeeder < Planter::Seeder
+  seeding_method :csv, unique_columns: :email
+end
+```
+
+```
+email,username
+test1@example.com,test1
+test2@example.com,test2
+```
+
+CSV seeders can also be useful for simple model-less tables, such as join
+tables. With the default Active Record adapter, Planter will use the model when
+one exists and fall back to direct table inserts when one does not.
+
+```ruby
+class RolesUsersSeeder < Planter::Seeder
+  seeding_method :csv
+end
+```
+
+```
+user_id,role_id
+1,1
+2,1
+```
+
 If the CSV file is named differently than the seeder, you can specify the
 `:csv_name` option. Note that the value should not include the file extension.
+If the seeder name does not match the table being seeded, specify the `:table`
+option.
 
 ```ruby
 class UsersSeeder < Planter::Seeder
   seeding_method :csv, csv_name: :people
+end
+
+class PeopleSeeder < Planter::Seeder
+  seeding_method :csv, table: :users
 end
 ```
 
@@ -264,12 +327,13 @@ the `Planter::Seeder` parent class automatically provides `attr_reader :data`.
 
 Running `rails planter:seed` should now seed your `users` table.
 
-You can also seed child records for every existing record of a parent model.
+You can also seed child records for every existing record of a parent relation.
 For example, to seed an address for every user, you'd need to create an
 `AddressesSeeder` that uses the `parent` option, as seen below. This option
-should be the name of the `belongs_to` association in your model when using the
-default Active Record adapter. The primary key, foreign key, and model name of
-the parent will all be determined by the adapter.
+is interpreted by the configured adapter. With the default Active Record adapter,
+it should be the name of the `belongs_to` association on a model-backed table.
+The primary key, foreign key, and persistence details will all be determined by
+the adapter.
 
 ```ruby
 require 'faker'
@@ -289,11 +353,13 @@ end
 ```
 
 Note that specifying `number_of_records` in this instance will create that many
-records *for each record of the parent model*.
+records *for each record of the parent relation*.
 
 ### Custom seeds
-To write your own custom seeds, just override the `seed` method and do whatever
-you need to do.
+To write your own custom seeds, generate with `--seeding-method=custom` or
+override the `seed` method and do whatever you need to do. This is the right
+choice when the seed depends on application-specific service objects, multiple
+tables, or logic that does not map cleanly to CSV or `data_array`.
 
 ```ruby
 class UsersSeeder < Planter::Seeder
@@ -312,7 +378,13 @@ end
 Active Record is the default adapter, but you can provide your own adapter
 object in the initializer. Replace the generated Active Record adapter require
 and configuration with your custom adapter, while keeping `config.seeders` as
-your ordered seed plan.
+your ordered seed plan. The default adapter creates records through Active
+Record models when they exist, and falls back to direct table inserts for
+model-less tables such as join tables.
+
+For a full tutorial, see the
+[Writing a Custom Adapter](https://github.com/evanthegrayt/planter/wiki/Writing-a-Custom-Adapter)
+wiki page.
 
 You can generate a custom adapter stub with the following command.
 
@@ -320,11 +392,8 @@ You can generate a custom adapter stub with the following command.
 $ rails generate planter:adapter sequel
 ```
 
-This creates `lib/planter/adapters/sequel.rb` with the required adapter methods
-and updates `config/initializers/planter.rb` to use it. The generated methods
-raise `NotImplementedError` until you implement them. Running the generator
-replaces the currently configured adapter line, but does not change
-`config.seeders`.
+This creates `lib/planter/adapters/sequel.rb` with the required adapter methods,
+updates `config/initializers/planter.rb`, and leaves `config.seeders` unchanged.
 
 ```ruby
 require 'planter'
@@ -335,25 +404,26 @@ Planter.configure do |config|
 end
 ```
 
-Custom adapters are duck typed. They should implement the same public API as
+Custom adapters are duck typed. They do not need to expose model objects; at
+minimum, they should implement the same table-oriented public API as
 `Planter::Adapters::ActiveRecord`.
 
 ```ruby
 class MyAdapter
-  def create_record(model_name:, lookup_attributes:, create_attributes:)
-    # Find or create a record for model_name.
+  def create_record(context:, lookup_attributes:, create_attributes:)
+    # Find or create a record for context.table_name.
   end
 
-  def parent_ids(model_name:, parent:)
+  def parent_ids(context:)
     # Return ids for each parent record used by parent seeding.
   end
 
-  def foreign_key(model_name:, parent:)
+  def foreign_key(context:)
     # Return the attribute used to attach a parent id to the seeded record.
   end
 
-  def table_columns(model_name:)
-    # Return native columns or fields for model_name.
+  def table_columns(context:)
+    # Return native columns or fields for context.table_name.
   end
 
   def table_names
