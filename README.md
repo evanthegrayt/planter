@@ -136,8 +136,8 @@ things to note.
 
 - The seeder will always be appended at the end of the array. If this is not the
 correct order, you'll need to adjust the array manually.
-- When adjusting the array, always keep the closing bracket on its own line, or
-the generator won't know where to put the new seeders.
+- The generator can append to either multiline or inline `%i[...]` seeders
+arrays.
 
 You can also tell the generator which seeding style to use.
 

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    planter (1.0.0)
+    planter (1.0.1)
       csv
       rails (>= 8.1.3, < 9.0)
 
