@@ -101,6 +101,45 @@ class Planter::SeederTest < ActiveSupport::TestCase
     assert_equal "before", user.username
   end
 
+  test "transformations are reevaluated for each record" do
+    sequence = 0
+    adapter = FakeColumnAdapter.new("widgets" => %w[slug])
+    Planter.config.adapter = adapter
+    seeder_class = Class.new(Planter::Seeder) do
+      seeding_method :data_array, table: :widgets
+
+      def data
+        [
+          {slug: "first"},
+          {slug: "second"}
+        ]
+      end
+
+      define_method(:transformations) do
+        sequence += 1
+        {slug: ->(value) { "#{sequence}-#{value}" }}
+      end
+    end
+
+    seeder_class.new.seed
+
+    assert_equal(
+      [
+        {
+          table_name: "widgets",
+          lookup_attributes: {slug: "1-first"},
+          create_attributes: {}
+        },
+        {
+          table_name: "widgets",
+          lookup_attributes: {slug: "2-second"},
+          create_attributes: {}
+        }
+      ],
+      adapter.created_records
+    )
+  end
+
   test "has_one data_array with model parent and association" do
     Planter.seed
     assert_equal 2, Profile.count

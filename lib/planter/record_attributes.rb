@@ -11,11 +11,12 @@ module Planter
     #
     # @param [Object] adapter configured persistence adapter
     #
-    # @param [Hash, nil] transformations value transformations by field
-    def initialize(context:, adapter:, transformations:)
+    # @param [#call] transformations_provider returns value transformations by
+    #   field
+    def initialize(context:, adapter:, transformations_provider:)
       @context = context
       @adapter = adapter
-      @transformations = transformations
+      @transformations_provider = transformations_provider
       @warned_non_column_lookup_attributes = []
     end
 
@@ -36,22 +37,23 @@ module Planter
 
     private
 
-    attr_reader :context, :adapter, :transformations
+    attr_reader :context, :adapter, :transformations_provider
 
     def apply_transformations(record)
+      transformations = transformations_provider.call
       return record if transformations.nil?
 
-      record.map { |field, value| map_record(field, value, record) }.to_h
+      record.map { |field, value| map_record(field, value, record, transformations) }.to_h
     end
 
-    def map_record(field, value, record)
+    def map_record(field, value, record, transformations)
       [
         field,
-        transformations.key?(field) ? transform(field, value, record) : value
+        transformations.key?(field) ? transform(field, value, record, transformations) : value
       ]
     end
 
-    def transform(field, value, record)
+    def transform(field, value, record, transformations)
       case transformations[field].arity
       when 0 then transformations[field].call
       when 1 then transformations[field].call(value)
@@ -69,7 +71,6 @@ module Planter
     end
 
     def filter_lookup_attributes(lookup_attributes, create_attributes)
-      table_columns = adapter.table_columns(context: context).map(&:to_s)
       native_lookup_attributes = lookup_attributes.select do |field, _value|
         table_columns.include?(field.to_s)
       end
@@ -100,7 +101,11 @@ module Planter
     end
 
     def foreign_key
-      adapter.foreign_key(context: context)
+      @foreign_key ||= adapter.foreign_key(context: context)
+    end
+
+    def table_columns
+      @table_columns ||= adapter.table_columns(context: context).map(&:to_s)
     end
 
     attr_reader :warned_non_column_lookup_attributes

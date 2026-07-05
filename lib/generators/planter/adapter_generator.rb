@@ -19,7 +19,7 @@ module Planter
           module Planter
             module Adapters
               ##
-              # Custom adapter for Planter.
+              # Custom table-oriented adapter for Planter.
               class #{adapter_class_name}
                 ##
                 # Create a record unless one already exists.

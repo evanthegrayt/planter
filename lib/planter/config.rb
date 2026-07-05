@@ -53,8 +53,8 @@ module Planter
 
     ##
     # The adapter used to create records, discover parent records, and inspect
-    # database table names. Custom adapters should implement the public API
-    # documented by +Planter::Adapters::ActiveRecord+.
+    # database table names. Custom adapters should implement the table-oriented
+    # public API documented by +Planter::Adapters::ActiveRecord+.
     #
     # @return [Object]
     attr_writer :adapter

@@ -5,7 +5,11 @@ module Planter
   # Namespace for persistence adapters used by Planter seeders.
   module Adapters
     ##
-    # Default adapter for seeding Active Record models.
+    # Default adapter for seeding Active Record tables.
+    #
+    # When a table maps to an Active Record model, records are created through
+    # that model. Tables without a matching model, such as join tables, are
+    # seeded directly through the database connection.
     #
     # Custom adapters should implement this public API:
     # - +create_record(context:, lookup_attributes:, create_attributes:)+
@@ -30,13 +34,21 @@ module Planter
       #
       # @return [Object]
       def create_record(context:, lookup_attributes:, create_attributes:)
-        model(context)
-          .where(lookup_attributes)
-          .first_or_create!(create_attributes)
+        if (model = model(context))
+          model
+            .where(lookup_attributes)
+            .first_or_create!(create_attributes)
+        else
+          create_table_record(context, lookup_attributes, create_attributes)
+        end
       end
 
       ##
       # Return the parent ids to use when seeding child records.
+      #
+      # The Active Record adapter resolves parents through model associations.
+      # Tables without matching models should use a custom adapter for parent
+      # seeding.
       #
       # @param [Planter::SeedContext] context seeder configuration
       #
@@ -47,6 +59,10 @@ module Planter
 
       ##
       # Return the foreign key used to assign a parent id on a child record.
+      #
+      # The Active Record adapter resolves foreign keys through model
+      # associations. Tables without matching models should use a custom adapter
+      # for parent seeding.
       #
       # @param [Planter::SeedContext] context seeder configuration
       #
@@ -78,11 +94,13 @@ module Planter
       private
 
       def model(context)
-        context.table_name.classify.constantize
+        context.table_name.classify.safe_constantize&.then do |model|
+          model if model.respond_to?(:table_name) && model.table_name == context.table_name
+        end
       end
 
       def association_options(context)
-        model(context).reflect_on_association(context.parent).options
+        model!(context).reflect_on_association(context.parent).options
       end
 
       def primary_key(context)
@@ -91,6 +109,61 @@ module Planter
 
       def parent_model(context)
         association_options(context).fetch(:class_name, context.parent.to_s.classify)
+      end
+
+      def model!(context)
+        model(context) || raise(
+          "Planter's Active Record adapter requires a model-backed table for " \
+          "parent seeding. Define a model for #{context.table_name} or use a " \
+          "custom adapter."
+        )
+      end
+
+      def create_table_record(context, lookup_attributes, create_attributes)
+        find_table_record(context, lookup_attributes) ||
+          insert_table_record(context, lookup_attributes.merge(create_attributes))
+      end
+
+      def find_table_record(context, lookup_attributes)
+        connection.select_one(
+          [
+            "SELECT * FROM #{quote_table(context.table_name)}",
+            "WHERE #{where_clause(lookup_attributes)}",
+            "LIMIT 1"
+          ].join(" ")
+        )
+      end
+
+      def insert_table_record(context, attributes)
+        connection.execute(
+          [
+            "INSERT INTO #{quote_table(context.table_name)}",
+            "(#{attributes.keys.map { |key| quote_column(key) }.join(", ")})",
+            "VALUES (#{attributes.values.map { |value| connection.quote(value) }.join(", ")})"
+          ].join(" ")
+        )
+      end
+
+      def where_clause(attributes)
+        attributes.map do |key, value|
+          if value.nil?
+            "#{quote_column(key)} IS NULL"
+          else
+            "#{quote_column(key)} = #{connection.quote(value)}"
+          end
+        end.join(" AND ")
+      end
+
+      def quote_table(table_name)
+        connection.quote_table_name(table_name)
+      end
+
+      def quote_column(column_name)
+        connection.quote_column_name(column_name)
+      end
+
+      def connection
+        ::ActiveRecord::Base.connection
       end
     end
   end

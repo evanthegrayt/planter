@@ -293,8 +293,9 @@ You can also seed child records for every existing record of a parent relation.
 For example, to seed an address for every user, you'd need to create an
 `AddressesSeeder` that uses the `parent` option, as seen below. This option
 is interpreted by the configured adapter. With the default Active Record adapter,
-it should be the name of the `belongs_to` association. The primary key, foreign
-key, and persistence details will all be determined by the adapter.
+it should be the name of the `belongs_to` association on a model-backed table.
+The primary key, foreign key, and persistence details will all be determined by
+the adapter.
 
 ```ruby
 require 'faker'
@@ -337,7 +338,9 @@ end
 Active Record is the default adapter, but you can provide your own adapter
 object in the initializer. Replace the generated Active Record adapter require
 and configuration with your custom adapter, while keeping `config.seeders` as
-your ordered seed plan.
+your ordered seed plan. The default adapter creates records through Active
+Record models when they exist, and falls back to direct table inserts for
+model-less tables such as join tables.
 
 For a full tutorial, see the
 [Writing a Custom Adapter](https://github.com/evanthegrayt/planter/wiki/Writing-a-Custom-Adapter)
@@ -361,8 +364,9 @@ Planter.configure do |config|
 end
 ```
 
-Custom adapters are duck typed. At minimum, they should implement the same
-public API as `Planter::Adapters::ActiveRecord`.
+Custom adapters are duck typed. They do not need to expose model objects; at
+minimum, they should implement the same table-oriented public API as
+`Planter::Adapters::ActiveRecord`.
 
 ```ruby
 class MyAdapter

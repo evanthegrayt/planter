@@ -45,10 +45,11 @@ module Planter
   #
   # In both of the above methods, you can specify a +parent+ association, which
   # is interpreted by the configured adapter. With the default Active Record
-  # adapter, +parent+ is the +belongs_to+ association name. When specified,
-  # records will be created for each record in the parent table. Note that
-  # nothing is automatically done to prevent any validation errors; you must do
-  # this on your own, most likely using +Faker+ or a similar library.
+  # adapter, +parent+ is the +belongs_to+ association name on a model-backed
+  # table. When specified, records will be created for each record in the parent
+  # table. Note that nothing is automatically done to prevent any validation
+  # errors; you must do this on your own, most likely using +Faker+ or a similar
+  # library.
   #   require 'planter'
   #   class UsersSeeder < Planter::Seeder
   #     seeding_method :data_array, parent: :person
@@ -319,7 +320,7 @@ module Planter
       @record_attributes ||= Planter::RecordAttributes.new(
         context: context,
         adapter: adapter,
-        transformations: public_send(:transformations)
+        transformations_provider: -> { public_send(:transformations) }
       )
     end
 
