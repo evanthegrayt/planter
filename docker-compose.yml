@@ -1,15 +1,13 @@
-version: '3'
-
 volumes:
-  bundle_cache:
+  bundle:
 
 services:
   app:
     container_name: planter_app
     build:
       context: .
-    command: >
-      bash -c "test/dummy/bin/rails db:create && test/dummy/bin/rails db:migrate"
+      args:
+        RUBY_VERSION: ${RUBY_VERSION:-3.2}
     volumes:
       - .:/srv/app
-      - bundle_cache:/usr/local/lib
+      - bundle:/bundle

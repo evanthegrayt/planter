@@ -105,7 +105,7 @@ class Planter::Adapters::ActiveRecordTest < ActiveSupport::TestCase
   test "returns native table columns by table name" do
     table_columns = @adapter.table_columns(context: context(table_name: :roles_users))
 
-    assert_equal %w[user_id role_id], table_columns
+    assert_equal %w[role_id user_id], table_columns.sort
   end
 
   test "returns table names without rails metadata tables" do
