@@ -147,7 +147,13 @@ seeding methods work with Active Record models without extra configuration. See
 [Custom Adapters](#custom-adapters) if you want to use a different persistence
 backend.
 
-You then need to choose a seeding method, of which there are currently two.
+Each generated seeder needs a seeding method. In practice:
+
+- Use `csv` when the seed data should live in a file that is easy to review or
+  edit outside Ruby.
+- Use `data_array` when the seed data should be generated dynamically in Ruby.
+- Use a custom `seed` method when the built-in persistence flow is not the right
+  fit for the job.
 
 ### Seeding from CSV
 To seed from CSV, you simply need to add the following to your seeder class.
@@ -168,6 +174,38 @@ of the rows should be the corresponding data.
 email,username
 test1@example.com,test1
 test2@example.com,test2
+```
+
+For idempotent seeds, pass `unique_columns` to control which columns are used to
+find existing records. This example finds users by email and only uses
+`username` when creating a new record.
+
+```ruby
+class UsersSeeder < Planter::Seeder
+  seeding_method :csv, unique_columns: :email
+end
+```
+
+```
+email,username
+test1@example.com,test1
+test2@example.com,test2
+```
+
+CSV seeders can also be useful for simple model-less tables, such as join
+tables. With the default Active Record adapter, Planter will use the model when
+one exists and fall back to direct table inserts when one does not.
+
+```ruby
+class RolesUsersSeeder < Planter::Seeder
+  seeding_method :csv
+end
+```
+
+```
+user_id,role_id
+1,1
+2,1
 ```
 
 If the CSV file is named differently than the seeder, you can specify the
@@ -318,8 +356,10 @@ Note that specifying `number_of_records` in this instance will create that many
 records *for each record of the parent relation*.
 
 ### Custom seeds
-To write your own custom seeds, just override the `seed` method and do whatever
-you need to do.
+To write your own custom seeds, generate with `--seeding-method=custom` or
+override the `seed` method and do whatever you need to do. This is the right
+choice when the seed depends on application-specific service objects, multiple
+tables, or logic that does not map cleanly to CSV or `data_array`.
 
 ```ruby
 class UsersSeeder < Planter::Seeder
