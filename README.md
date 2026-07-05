@@ -122,8 +122,25 @@ correct order, you'll need to adjust the array manually.
 - When adjusting the array, always keep the closing bracket on its own line, or
 the generator won't know where to put the new seeders.
 
+You can also tell the generator which seeding style to use.
+
+```bash
+rails generate planter:seeder users --seeding-method=csv
+rails generate planter:seeder users --seeding-method=data-array
+rails generate planter:seeder users --seeding-method=custom
+```
+
+`--seeding-method=csv` creates a seeder with `seeding_method :csv` and creates
+`db/seed_files/users.csv` with headers pulled from the `users` table.
+`--seeding-method=data-array` creates a seeder with `seeding_method :data_array`
+and an empty `data` method. `--seeding-method=custom` creates a seeder with an
+empty `seed` method, which is useful when the built-in seeding methods don't
+fit.
+
 If you want to generate a seeder for every table currently in your database, run
-`rails generate planter:seeder ALL`.
+`rails generate planter:seeder ALL`. The seeding style options can be used with
+`ALL`, too; for example,
+`rails generate planter:seeder ALL --seeding-method=csv`.
 
 Planter uses `Planter::Adapters::ActiveRecord` by default, so the built-in
 seeding methods work with Active Record models without extra configuration. See
@@ -142,8 +159,10 @@ end
 ```
 
 Then, create a directory called `db/seed_files`, and create a CSV file called
-`db/seed_files/users.csv`. In this file, the headers should be the field names,
-and the rest of the rows should be the corresponding data.
+`db/seed_files/users.csv`. You can also run
+`rails generate planter:seeder users --seeding-method=csv` to create this file
+automatically. In this file, the headers should be the field names, and the rest
+of the rows should be the corresponding data.
 
 ```
 email,username
@@ -352,8 +371,8 @@ class MyAdapter
     # Return the attribute used to attach a parent id to the seeded record.
   end
 
-  def table_columns(model_name:)
-    # Return native columns or fields for model_name.
+  def table_columns(model_name: nil, table_name: nil)
+    # Return native columns or fields for model_name or table_name.
   end
 
   def table_names

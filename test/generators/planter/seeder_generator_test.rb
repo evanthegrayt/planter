@@ -24,6 +24,62 @@ class Planter::Generators::SeederGeneratorTest < Rails::Generators::TestCase
     end
   end
 
+  test "csv seeding method creates a csv seeder and seed file with table headers" do
+    write_initializer
+
+    run_generator ["users", "--seeding-method=csv"]
+
+    assert_file "db/seeds/users_seeder.rb" do |contents|
+      assert_includes contents, "class UsersSeeder < Planter::Seeder"
+      assert_includes contents, "  seeding_method :csv"
+      assert_not_includes contents, "def seed"
+    end
+
+    assert_file "db/seed_files/users.csv" do |contents|
+      assert_equal "id,email,username,created_at,updated_at\n", contents
+    end
+  end
+
+  test "data array seeding method creates a data array seeder" do
+    write_initializer
+
+    run_generator ["users", "--seeding-method=data-array"]
+
+    assert_file "db/seeds/users_seeder.rb" do |contents|
+      assert_includes contents, "class UsersSeeder < Planter::Seeder"
+      assert_includes contents, "  seeding_method :data_array"
+      assert_includes contents, "  def data"
+      assert_includes contents, "    ["
+      assert_not_includes contents, "def seed"
+    end
+
+    assert_no_file "db/seed_files/users.csv"
+  end
+
+  test "custom seeding method creates a custom seed method" do
+    write_initializer
+
+    run_generator ["users", "--seeding-method=custom"]
+
+    assert_file "db/seeds/users_seeder.rb" do |contents|
+      assert_includes contents, "class UsersSeeder < Planter::Seeder"
+      assert_includes contents, "  def seed"
+      assert_not_includes contents, "seeding_method"
+    end
+
+    assert_no_file "db/seed_files/users.csv"
+  end
+
+  test "unknown seeding method raises a helpful error" do
+    seeder_generator = generator(["users"], "seeding_method" => "json")
+
+    error = assert_raises(Thor::Error) do
+      seeder_generator.send(:selected_seeding_method)
+    end
+
+    assert_equal "Expected --seeding-method to be one of: csv, data-array, custom", error.message
+  end
+
   test "ALL creates seeders for application tables but not rails metadata tables" do
     write_initializer
 
@@ -33,6 +89,23 @@ class Planter::Generators::SeederGeneratorTest < Rails::Generators::TestCase
     assert_file "db/seeds/roles_users_seeder.rb"
     assert_no_file "db/seeds/ar_internal_metadata_seeder.rb"
     assert_no_file "db/seeds/schema_migrations_seeder.rb"
+  end
+
+  test "ALL with csv seeding method creates seeders and csv files for application tables" do
+    write_initializer
+
+    run_generator ["ALL", "--seeding-method=csv"]
+
+    assert_file "db/seeds/users_seeder.rb" do |contents|
+      assert_includes contents, "  seeding_method :csv"
+    end
+    assert_file "db/seeds/roles_users_seeder.rb" do |contents|
+      assert_includes contents, "  seeding_method :csv"
+    end
+    assert_file "db/seed_files/users.csv"
+    assert_file "db/seed_files/roles_users.csv" do |contents|
+      assert_equal "user_id,role_id\n", contents
+    end
   end
 
   test "ALL uses the configured adapter to find tables" do

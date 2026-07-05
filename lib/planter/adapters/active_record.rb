@@ -11,7 +11,7 @@ module Planter
     # - +create_record(model_name:, lookup_attributes:, create_attributes:)+
     # - +parent_ids(model_name:, parent:)+
     # - +foreign_key(model_name:, parent:)+
-    # - +table_columns(model_name:)+
+    # - +table_columns(model_name: nil, table_name: nil)+
     # - +table_names+
     #
     # +model_name+ is the configured seeder model name. +parent+ is the
@@ -60,13 +60,18 @@ module Planter
       end
 
       ##
-      # Return native table columns for the model being seeded.
+      # Return native table columns for the model being seeded or table being
+      # generated.
       #
-      # @param [String] model_name the model being seeded
+      # @param [String, nil] model_name the model being seeded
+      #
+      # @param [String, nil] table_name the table being seeded
       #
       # @return [Array<String>]
-      def table_columns(model_name:)
-        model_name.constantize.column_names
+      def table_columns(model_name: nil, table_name: nil)
+        return model_name.constantize.column_names if model_name
+
+        ::ActiveRecord::Base.connection.columns(table_name).map(&:name)
       end
 
       ##

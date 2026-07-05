@@ -48,6 +48,12 @@ class Planter::Adapters::ActiveRecordTest < ActiveSupport::TestCase
     assert_not_includes table_columns, "phone"
   end
 
+  test "returns native table columns by table name" do
+    table_columns = @adapter.table_columns(table_name: "roles_users")
+
+    assert_equal %w[user_id role_id], table_columns
+  end
+
   test "returns table names without rails metadata tables" do
     table_names = @adapter.table_names
 

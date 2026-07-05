@@ -10,6 +10,11 @@ module Planter
   # +UsersSeeder+. The directory where the seeder files are located can be
   # changed via an initializer.
   #
+  # To generate a seeder with a specific style, pass +--seeding-method=csv+,
+  # +--seeding-method=data-array+, or +--seeding-method=custom+ to
+  # +rails generate planter:seeder+. When the +csv+ method is used, the generator
+  # also creates a CSV file with headers pulled from the table.
+  #
   # The most basic way to seed is to have a CSV file with the same name as the
   # table in +db/seed_files/+. So, +users.csv+. This CSV should have the
   # table's column names as headers. To seed using this method, your class

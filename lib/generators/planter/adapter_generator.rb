@@ -61,12 +61,15 @@ module Planter
                 end
 
                 ##
-                # Return native columns or fields for the model being seeded.
+                # Return native columns or fields for the model being seeded or
+                # table being generated.
                 #
-                # @param [String] model_name the model being seeded
+                # @param [String, nil] model_name the model being seeded
+                #
+                # @param [String, nil] table_name the table being seeded
                 #
                 # @return [Array<String>]
-                def table_columns(model_name:)
+                def table_columns(model_name: nil, table_name: nil)
                   raise NotImplementedError, "\#{self.class} must implement #table_columns"
                 end
 

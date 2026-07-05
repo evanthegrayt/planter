@@ -410,7 +410,9 @@ class Planter::SeederTest < ActiveSupport::TestCase
       @table_columns = table_columns
     end
 
-    def table_columns(model_name:)
+    def table_columns(model_name: nil, table_name: nil)
+      model_name ||= table_name
+
       @table_columns.fetch(model_name)
     end
   end
