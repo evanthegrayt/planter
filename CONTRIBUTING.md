@@ -56,8 +56,9 @@ tests. It is useful when you need to run Rails commands against a real app, for
 example:
 
 ```bash
-test/dummy/bin/rails db:migrate
-test/dummy/bin/rails planter:seed
+cd test/dummy
+bin/rails db:migrate
+bin/rails planter:seed
 ```
 
 Most contributors should not need to run the dummy app as a web server. It is
@@ -66,9 +67,37 @@ primarily a fixture and command target for development and tests.
 ## Docker
 
 Docker is optional. The `Dockerfile` and `docker-compose.yml` build a local Ruby
-environment, install the gem dependencies, and prepare the dummy app database.
-They are useful if you want an isolated development shell or need to exercise
-the dummy app without relying on your host Ruby setup.
+environment and install the gem dependencies. They are useful if you want an
+isolated development shell or need to exercise the dummy app without relying on
+your host Ruby setup.
+
+Build the image and open a shell from the repository root.
+
+```bash
+docker compose build app
+docker compose run --rm app bash
+```
+
+The container installs gems into `/bundle`, which is mounted as a named Docker
+volume. That volume survives `docker compose down`, so installed gems do not
+need to be reinstalled each time. The volume is removed by `docker compose down
+-v` or `docker system prune --volumes`; if that happens, the entrypoint runs
+`bundle check || bundle install` on the next container start.
+
+The Compose build uses Ruby 3.2 by default because that is the gem's supported
+Ruby floor. To try another supported Ruby version, pass `RUBY_VERSION`.
+
+```bash
+RUBY_VERSION=4.0 docker compose build app
+```
+
+Prepare the dummy database and run Planter inside the container.
+
+```bash
+cd test/dummy
+bin/rails db:prepare
+SEEDERS=users,addresses,bios,roles,comments bin/rails planter:seed
+```
 
 Docker is not part of the current test command or CI workflow. The GitHub
 Actions workflow uses `ruby/setup-ruby`, installs dependencies with Bundler, and

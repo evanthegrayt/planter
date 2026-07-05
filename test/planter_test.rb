@@ -16,12 +16,14 @@ class PlanterTest < ActiveSupport::TestCase
     assert_equal "db/seed_files", Planter.config.csv_files_directory
     assert_nil Planter.config.seeders
     refute Planter.config.quiet
+    assert Planter.config.progress_bar
 
     config = Planter.configure do |c|
       c.seeders_directory = "db/different_seeders_directory"
       c.csv_files_directory = "db/different_csv_files_directory"
       c.seeders = %i[users]
       c.quiet = true
+      c.progress_bar = false
     end
 
     assert_instance_of Planter::Config, config
@@ -30,6 +32,7 @@ class PlanterTest < ActiveSupport::TestCase
     assert_equal "db/different_csv_files_directory", Planter.config.csv_files_directory
     assert_equal %i[users], Planter.config.seeders
     assert Planter.config.quiet
+    refute Planter.config.progress_bar
   end
 
   test "it should seed" do

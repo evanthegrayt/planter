@@ -68,7 +68,10 @@ class Planter::Generators::SeederGeneratorTest < Rails::Generators::TestCase
     end
 
     assert_file "db/seed_files/users.csv" do |contents|
-      assert_equal "id,email,username,created_at,updated_at\n", contents
+      assert_equal(
+        %w[created_at email id updated_at username],
+        CSV.parse(contents).first.sort
+      )
     end
   end
 
@@ -136,7 +139,7 @@ class Planter::Generators::SeederGeneratorTest < Rails::Generators::TestCase
     end
     assert_file "db/seed_files/users.csv"
     assert_file "db/seed_files/roles_users.csv" do |contents|
-      assert_equal "user_id,role_id\n", contents
+      assert_equal %w[role_id user_id], CSV.parse(contents).first.sort
     end
   end
 

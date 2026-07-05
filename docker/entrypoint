@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "${APP_HOME:-/srv/app}"
+
+bundle check || bundle install
+
+exec "$@"

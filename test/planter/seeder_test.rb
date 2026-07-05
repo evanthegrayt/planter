@@ -337,6 +337,61 @@ class Planter::SeederTest < ActiveSupport::TestCase
     assert_equal 1, stderr.scan("WARNING: Planter moved non-column lookup attributes").count
   end
 
+  test "data_array reports progress when enabled" do
+    Planter.config.quiet = false
+    adapter = FakeColumnAdapter.new("widgets" => %w[slug])
+    Planter.config.adapter = adapter
+    seeder_class = Class.new(Planter::Seeder) do
+      seeding_method :data_array, table: :widgets
+
+      def data
+        [
+          {slug: "first"},
+          {slug: "second"}
+        ]
+      end
+    end
+
+    stdout, _stderr = capture_io { seeder_class.new.seed }
+
+    assert_match(/widgets: \|=+\|/, stdout)
+  end
+
+  test "progress bar can be disabled" do
+    Planter.config.quiet = false
+    Planter.config.progress_bar = false
+    adapter = FakeColumnAdapter.new("widgets" => %w[slug])
+    Planter.config.adapter = adapter
+    seeder_class = Class.new(Planter::Seeder) do
+      seeding_method :data_array, table: :widgets
+
+      def data
+        [{slug: "first"}]
+      end
+    end
+
+    stdout, _stderr = capture_io { seeder_class.new.seed }
+
+    assert_empty stdout
+  end
+
+  test "quiet disables progress bar" do
+    Planter.config.quiet = true
+    adapter = FakeColumnAdapter.new("widgets" => %w[slug])
+    Planter.config.adapter = adapter
+    seeder_class = Class.new(Planter::Seeder) do
+      seeding_method :data_array, table: :widgets
+
+      def data
+        [{slug: "first"}]
+      end
+    end
+
+    stdout, _stderr = capture_io { seeder_class.new.seed }
+
+    assert_empty stdout
+  end
+
   test "filtering raises when no native lookup attributes remain" do
     adapter = FakeColumnAdapter.new("widgets" => %w[slug])
     Planter.config.adapter = adapter

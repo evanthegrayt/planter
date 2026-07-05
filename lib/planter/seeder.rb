@@ -261,17 +261,35 @@ module Planter
     ##
     # Creates records from the +data+ attribute.
     def create_records
-      context.number_of_records.times do
-        data.each { |record| create_record(record) }
+      records = data
+      progress_bar = progress_bar(total: context.number_of_records * records.size)
+
+      context.number_of_records.times do |index|
+        records = data if index.positive?
+        records.each do |record|
+          create_record(record)
+          progress_bar.increment
+        end
       end
     end
 
     ##
     # Create records from the +data+ attribute for each record in the +parent+.
     def create_records_from_parent
-      adapter.parent_ids(context: context).each do |parent_id|
-        context.number_of_records.times do
-          data.each { |record| create_record(record, parent_id: parent_id) }
+      parent_ids = adapter.parent_ids(context: context)
+      return if parent_ids.empty?
+
+      records = data
+      total = parent_ids.size * context.number_of_records * records.size
+      progress_bar = progress_bar(total: total)
+
+      parent_ids.each_with_index do |parent_id, parent_index|
+        context.number_of_records.times do |number_index|
+          records = data if parent_index.positive? || number_index.positive?
+          records.each do |record|
+            create_record(record, parent_id: parent_id)
+            progress_bar.increment
+          end
         end
       end
     end
@@ -326,6 +344,10 @@ module Planter
 
     def adapter
       Planter.config.adapter
+    end
+
+    def progress_bar(total:)
+      Planter::ProgressBar.create(title: context.table_name, total: total)
     end
   end
 end

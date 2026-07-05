@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 3.2.0"
   spec.add_dependency "csv"
   spec.add_dependency "rails", ">= 8.1.3", "< 9.0"
+  spec.add_dependency "ruby-progressbar", "~> 1.13"
 
   spec.add_development_dependency "parallel", "< 2.0"
   spec.add_development_dependency "simplecov", "~> 0.22.0"

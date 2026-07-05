@@ -21,6 +21,7 @@ class Planter::Generators::InitializerGeneratorTest < Rails::Generators::TestCas
       assert_includes contents, "config.seeders_directory = 'db/seeds'"
       assert_includes contents, "config.csv_files_directory = 'db/seed_files'"
       assert_includes contents, "config.quiet = false"
+      assert_includes contents, "config.progress_bar = true"
       assert_includes contents, "config.erb_trim_mode = nil"
     end
   end
