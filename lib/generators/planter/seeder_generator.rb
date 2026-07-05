@@ -50,9 +50,7 @@ module Planter
 
         create_csv(seeder) if selected_seeding_method == :csv
 
-        inject_into_file "config/initializers/planter.rb",
-          "    #{seeder}\n",
-          before: /^\s*\]\s*$/
+        register_seeder(seeder)
       end
 
       def seeder_contents
@@ -92,6 +90,110 @@ module Planter
         contents.lines.map do |line|
           line.strip.empty? ? line : "  #{line}"
         end.join
+      end
+
+      def register_seeder(seeder)
+        contents = ::File.read(initializer_full_path)
+        ::File.write(initializer_full_path, add_seeder_to_initializer(contents, seeder))
+      end
+
+      def add_seeder_to_initializer(contents, seeder)
+        assignment = contents.match(seeders_assignment_pattern)
+        unless assignment
+          raise Thor::Error, "Could not find config.seeders = %i[...] in #{initializer_path}"
+        end
+
+        opening_bracket_index = assignment.end(0) - 1
+        closing_bracket_index = closing_bracket_index_for(contents, opening_bracket_index)
+        unless closing_bracket_index
+          raise Thor::Error,
+            "Could not find the closing bracket for config.seeders in #{initializer_path}"
+        end
+
+        insert_seeder(contents, seeder, assignment[1], opening_bracket_index, closing_bracket_index)
+      end
+
+      def insert_seeder(
+        contents,
+        seeder,
+        assignment_indent,
+        opening_bracket_index,
+        closing_bracket_index
+      )
+        body = contents[(opening_bracket_index + 1)...closing_bracket_index]
+        updated = contents.dup
+
+        if body.include?("\n")
+          insert_multiline_seeder(
+            updated,
+            contents,
+            seeder,
+            assignment_indent,
+            body,
+            closing_bracket_index
+          )
+        elsif body.strip.empty?
+          updated.insert(closing_bracket_index, seeder)
+        else
+          updated.insert(closing_bracket_index, " #{seeder}")
+        end
+
+        updated
+      end
+
+      def insert_multiline_seeder(
+        updated,
+        contents,
+        seeder,
+        assignment_indent,
+        body,
+        closing_bracket_index
+      )
+        closing_line_start = contents.rindex("\n", closing_bracket_index) + 1
+        closing_line_prefix = contents[closing_line_start...closing_bracket_index]
+
+        if closing_line_prefix.match?(/\A[ \t]*\z/)
+          updated.insert(closing_line_start, "#{seeder_indent(body, assignment_indent)}#{seeder}\n")
+        else
+          updated.insert(closing_bracket_index, " #{seeder}")
+        end
+      end
+
+      def seeder_indent(body, assignment_indent)
+        item_line = body.lines.find { |line| line.match?(/\S/) }
+        indent = item_line&.match(/\A[ \t]*/).to_s
+        indent.empty? ? "#{assignment_indent}  " : indent
+      end
+
+      def closing_bracket_index_for(contents, opening_bracket_index)
+        depth = 1
+        index = opening_bracket_index + 1
+
+        while index < contents.length
+          if contents[index] == "\\"
+            index += 2
+            next
+          elsif contents[index] == "["
+            depth += 1
+          elsif contents[index] == "]"
+            depth -= 1
+            return index if depth.zero?
+          end
+
+          index += 1
+        end
+      end
+
+      def seeders_assignment_pattern
+        /^([ \t]*)config\.seeders\s*=\s*%i\[/
+      end
+
+      def initializer_path
+        "config/initializers/planter.rb"
+      end
+
+      def initializer_full_path
+        ::File.join(destination_root, initializer_path)
       end
 
       def selected_seeding_method

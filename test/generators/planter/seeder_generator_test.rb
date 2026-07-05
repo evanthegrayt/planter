@@ -24,6 +24,38 @@ class Planter::Generators::SeederGeneratorTest < Rails::Generators::TestCase
     end
   end
 
+  test "registers a named seeder in a populated multiline seeders array" do
+    write_initializer(<<~RUBY)
+      Planter.configure do |config|
+        config.seeders = %i[
+          users
+        ]
+      end
+    RUBY
+
+    run_generator ["addresses"]
+
+    assert_file "config/initializers/planter.rb" do |contents|
+      assert_match(/^    users$/, contents)
+      assert_match(/^    addresses$/, contents)
+      assert_match(/^  \]$/, contents)
+    end
+  end
+
+  test "registers a named seeder in an inline seeders array" do
+    write_initializer(<<~RUBY)
+      Planter.configure do |config|
+        config.seeders = %i[users]
+      end
+    RUBY
+
+    run_generator ["addresses"]
+
+    assert_file "config/initializers/planter.rb" do |contents|
+      assert_includes contents, "config.seeders = %i[users addresses]"
+    end
+  end
+
   test "csv seeding method creates a csv seeder and seed file with table headers" do
     write_initializer
 
@@ -125,11 +157,11 @@ class Planter::Generators::SeederGeneratorTest < Rails::Generators::TestCase
 
   private
 
-  def write_initializer
+  def write_initializer(contents = nil)
     FileUtils.mkdir_p(File.join(destination_root, "config", "initializers"))
     File.write(
       File.join(destination_root, "config", "initializers", "planter.rb"),
-      <<~RUBY
+      contents || <<~RUBY
         Planter.configure do |config|
           config.seeders = %i[
           ]
