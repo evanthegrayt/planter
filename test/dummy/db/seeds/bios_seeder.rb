@@ -1,6 +1,6 @@
 class BiosSeeder < Planter::Seeder
   seeding_method :data_array,
-    model: "Profile",
+    table: :profiles,
     parent: :user
 
   def data

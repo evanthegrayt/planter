@@ -8,20 +8,20 @@ module Planter
     # Default adapter for seeding Active Record models.
     #
     # Custom adapters should implement this public API:
-    # - +create_record(model_name:, lookup_attributes:, create_attributes:)+
-    # - +parent_ids(model_name:, parent:)+
-    # - +foreign_key(model_name:, parent:)+
-    # - +table_columns(model_name: nil, table_name: nil)+
+    # - +create_record(context:, lookup_attributes:, create_attributes:)+
+    # - +parent_ids(context:)+
+    # - +foreign_key(context:)+
+    # - +table_columns(context:)+
     # - +table_names+
     #
-    # +model_name+ is the configured seeder model name. +parent+ is the
-    # configured parent association name. Adapters are responsible for resolving
-    # those values into whatever persistence or reflection objects they need.
+    # +context+ is a +Planter::SeedContext+. Adapters are responsible for
+    # resolving those values into whatever persistence or reflection objects
+    # they need.
     class ActiveRecord
       ##
       # Create a record unless one already exists.
       #
-      # @param [String] model_name the model being seeded
+      # @param [Planter::SeedContext] context seeder configuration
       #
       # @param [Hash] lookup_attributes attributes used to find the record
       #
@@ -29,8 +29,8 @@ module Planter
       #   creating a new record
       #
       # @return [Object]
-      def create_record(model_name:, lookup_attributes:, create_attributes:)
-        model_name.constantize
+      def create_record(context:, lookup_attributes:, create_attributes:)
+        model(context)
           .where(lookup_attributes)
           .first_or_create!(create_attributes)
       end
@@ -38,40 +38,31 @@ module Planter
       ##
       # Return the parent ids to use when seeding child records.
       #
-      # @param [String] model_name the model being seeded
-      #
-      # @param [String, Symbol] parent the parent association name
+      # @param [Planter::SeedContext] context seeder configuration
       #
       # @return [Array]
-      def parent_ids(model_name:, parent:)
-        parent_model(model_name, parent).constantize.pluck(primary_key(model_name, parent))
+      def parent_ids(context:)
+        parent_model(context).constantize.pluck(primary_key(context))
       end
 
       ##
       # Return the foreign key used to assign a parent id on a child record.
       #
-      # @param [String] model_name the model being seeded
-      #
-      # @param [String, Symbol] parent the parent association name
+      # @param [Planter::SeedContext] context seeder configuration
       #
       # @return [String, Symbol]
-      def foreign_key(model_name:, parent:)
-        association_options(model_name, parent).fetch(:foreign_key, "#{parent}_id")
+      def foreign_key(context:)
+        association_options(context).fetch(:foreign_key, "#{context.parent}_id")
       end
 
       ##
-      # Return native table columns for the model being seeded or table being
-      # generated.
+      # Return native table columns for the table being seeded.
       #
-      # @param [String, nil] model_name the model being seeded
-      #
-      # @param [String, nil] table_name the table being seeded
+      # @param [Planter::SeedContext] context seeder configuration
       #
       # @return [Array<String>]
-      def table_columns(model_name: nil, table_name: nil)
-        return model_name.constantize.column_names if model_name
-
-        ::ActiveRecord::Base.connection.columns(table_name).map(&:name)
+      def table_columns(context:)
+        ::ActiveRecord::Base.connection.columns(context.table_name).map(&:name)
       end
 
       ##
@@ -86,16 +77,20 @@ module Planter
 
       private
 
-      def association_options(model_name, parent)
-        model_name.constantize.reflect_on_association(parent).options
+      def model(context)
+        context.table_name.classify.constantize
       end
 
-      def primary_key(model_name, parent)
-        association_options(model_name, parent).fetch(:primary_key, :id)
+      def association_options(context)
+        model(context).reflect_on_association(context.parent).options
       end
 
-      def parent_model(model_name, parent)
-        association_options(model_name, parent).fetch(:class_name, parent.to_s.classify)
+      def primary_key(context)
+        association_options(context).fetch(:primary_key, :id)
+      end
+
+      def parent_model(context)
+        association_options(context).fetch(:class_name, context.parent.to_s.classify)
       end
     end
   end

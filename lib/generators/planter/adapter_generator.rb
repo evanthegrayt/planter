@@ -24,7 +24,7 @@ module Planter
                 ##
                 # Create a record unless one already exists.
                 #
-                # @param [String] model_name the model being seeded
+                # @param [Planter::SeedContext] context seeder configuration
                 #
                 # @param [Hash] lookup_attributes attributes used to find the record
                 #
@@ -32,44 +32,37 @@ module Planter
                 #   creating a new record
                 #
                 # @return [Object]
-                def create_record(model_name:, lookup_attributes:, create_attributes:)
+                def create_record(context:, lookup_attributes:, create_attributes:)
                   raise NotImplementedError, "\#{self.class} must implement #create_record"
                 end
 
                 ##
                 # Return the parent ids to use when seeding child records.
                 #
-                # @param [String] model_name the model being seeded
-                #
-                # @param [String, Symbol] parent the parent association name
+                # @param [Planter::SeedContext] context seeder configuration
                 #
                 # @return [Array]
-                def parent_ids(model_name:, parent:)
+                def parent_ids(context:)
                   raise NotImplementedError, "\#{self.class} must implement #parent_ids"
                 end
 
                 ##
                 # Return the foreign key used to assign a parent id on a child record.
                 #
-                # @param [String] model_name the model being seeded
-                #
-                # @param [String, Symbol] parent the parent association name
+                # @param [Planter::SeedContext] context seeder configuration
                 #
                 # @return [String, Symbol]
-                def foreign_key(model_name:, parent:)
+                def foreign_key(context:)
                   raise NotImplementedError, "\#{self.class} must implement #foreign_key"
                 end
 
                 ##
-                # Return native columns or fields for the model being seeded or
-                # table being generated.
+                # Return native columns or fields for the table being seeded.
                 #
-                # @param [String, nil] model_name the model being seeded
-                #
-                # @param [String, nil] table_name the table being seeded
+                # @param [Planter::SeedContext] context seeder configuration
                 #
                 # @return [Array<String>]
-                def table_columns(model_name: nil, table_name: nil)
+                def table_columns(context:)
                   raise NotImplementedError, "\#{self.class} must implement #table_columns"
                 end
 

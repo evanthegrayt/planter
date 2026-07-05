@@ -12,6 +12,10 @@ module Planter
     # +csv+ method also creates a CSV seed file with headers pulled from the
     # table being seeded.
     class SeederGenerator < Rails::Generators::Base
+      ##
+      # Generator-supported seeding method templates.
+      #
+      # @return [Array<Symbol>]
       SEEDING_METHODS = %i[csv data_array custom].freeze
 
       argument :seeder, required: true
@@ -111,7 +115,19 @@ module Planter
       end
 
       def csv_headers(seeder)
-        ::Planter.config.adapter.table_columns(table_name: seeder)
+        ::Planter.config.adapter.table_columns(context: csv_context(seeder))
+      end
+
+      def csv_context(seeder)
+        ::Planter::SeedContext.new(
+          table_name: seeder,
+          seed_method: :csv,
+          csv_name: seeder,
+          parent: nil,
+          number_of_records: 1,
+          unique_columns: nil,
+          erb_trim_mode: ::Planter.config.erb_trim_mode
+        )
       end
 
       def tables

@@ -8,12 +8,12 @@ class Planter::Adapters::ActiveRecordTest < ActiveSupport::TestCase
 
   test "creates records from lookup and create attributes" do
     @adapter.create_record(
-      model_name: "User",
+      context: context(table_name: :users),
       lookup_attributes: {email: "adapter@example.com"},
       create_attributes: {username: "adapter"}
     )
     @adapter.create_record(
-      model_name: "User",
+      context: context(table_name: :users),
       lookup_attributes: {email: "adapter@example.com"},
       create_attributes: {username: "changed"}
     )
@@ -29,19 +29,19 @@ class Planter::Adapters::ActiveRecordTest < ActiveSupport::TestCase
       username: "parent_ids"
     )
 
-    assert_includes @adapter.parent_ids(model_name: "Address", parent: :person), user.id
+    assert_includes @adapter.parent_ids(context: context(table_name: :addresses, parent: :person)), user.id
   end
 
   test "returns custom foreign key from reflected association" do
-    assert_equal :user_id, @adapter.foreign_key(model_name: "Address", parent: :person)
+    assert_equal :user_id, @adapter.foreign_key(context: context(table_name: :addresses, parent: :person))
   end
 
   test "returns default foreign key from reflected association" do
-    assert_equal "user_id", @adapter.foreign_key(model_name: "Profile", parent: :user)
+    assert_equal "user_id", @adapter.foreign_key(context: context(table_name: :profiles, parent: :user))
   end
 
-  test "returns native table columns for model" do
-    table_columns = @adapter.table_columns(model_name: "User")
+  test "returns native table columns" do
+    table_columns = @adapter.table_columns(context: context(table_name: :users))
 
     assert_includes table_columns, "email"
     assert_includes table_columns, "username"
@@ -49,7 +49,7 @@ class Planter::Adapters::ActiveRecordTest < ActiveSupport::TestCase
   end
 
   test "returns native table columns by table name" do
-    table_columns = @adapter.table_columns(table_name: "roles_users")
+    table_columns = @adapter.table_columns(context: context(table_name: :roles_users))
 
     assert_equal %w[user_id role_id], table_columns
   end
@@ -61,5 +61,19 @@ class Planter::Adapters::ActiveRecordTest < ActiveSupport::TestCase
     assert_includes table_names, "roles_users"
     assert_not_includes table_names, "ar_internal_metadata"
     assert_not_includes table_names, "schema_migrations"
+  end
+
+  private
+
+  def context(table_name:, parent: nil)
+    Planter::SeedContext.new(
+      table_name: table_name,
+      seed_method: :data_array,
+      csv_name: table_name,
+      parent: parent,
+      number_of_records: 1,
+      unique_columns: nil,
+      erb_trim_mode: nil
+    )
   end
 end

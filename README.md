@@ -23,7 +23,7 @@ currently a pre-release version, it's recommended to lock it to a specific
 version, as breaking changes may occur, even at the minor level.
 
 ```ruby
-gem 'planter', '0.4.2'
+gem 'planter', '0.5.0'
 ```
 
 And then execute:
@@ -99,8 +99,8 @@ Planter.seed
 
 To create a users seeder, run `rails generate planter:seeder users`. Usually,
 seeders seed a specific table, so it's recommended to name your seeders after
-the table. If you don't, you'll need to manually specify a few things. More on
-that later. This will create a file named `db/seeds/users_seeder.rb` (the
+the table. If you don't, specify the table with the `table` option in
+`seeding_method`. This will create a file named `db/seeds/users_seeder.rb` (the
 directory will be created if it doesn't exist) with the following contents.
 
 ```ruby
@@ -172,10 +172,16 @@ test2@example.com,test2
 
 If the CSV file is named differently than the seeder, you can specify the
 `:csv_name` option. Note that the value should not include the file extension.
+If the seeder name does not match the table being seeded, specify the `:table`
+option.
 
 ```ruby
 class UsersSeeder < Planter::Seeder
   seeding_method :csv, csv_name: :people
+end
+
+class PeopleSeeder < Planter::Seeder
+  seeding_method :csv, table: :users
 end
 ```
 
@@ -283,12 +289,12 @@ the `Planter::Seeder` parent class automatically provides `attr_reader :data`.
 
 Running `rails planter:seed` should now seed your `users` table.
 
-You can also seed child records for every existing record of a parent model.
+You can also seed child records for every existing record of a parent relation.
 For example, to seed an address for every user, you'd need to create an
 `AddressesSeeder` that uses the `parent` option, as seen below. This option
-should be the name of the `belongs_to` association in your model when using the
-default Active Record adapter. The primary key, foreign key, and model name of
-the parent will all be determined by the adapter.
+is interpreted by the configured adapter. With the default Active Record adapter,
+it should be the name of the `belongs_to` association. The primary key, foreign
+key, and persistence details will all be determined by the adapter.
 
 ```ruby
 require 'faker'
@@ -308,7 +314,7 @@ end
 ```
 
 Note that specifying `number_of_records` in this instance will create that many
-records *for each record of the parent model*.
+records *for each record of the parent relation*.
 
 ### Custom seeds
 To write your own custom seeds, just override the `seed` method and do whatever
@@ -333,17 +339,18 @@ object in the initializer. Replace the generated Active Record adapter require
 and configuration with your custom adapter, while keeping `config.seeders` as
 your ordered seed plan.
 
+For a full tutorial, see the
+[Writing a Custom Adapter](https://github.com/evanthegrayt/planter/wiki/Writing-a-Custom-Adapter)
+wiki page.
+
 You can generate a custom adapter stub with the following command.
 
 ```bash
 $ rails generate planter:adapter sequel
 ```
 
-This creates `lib/planter/adapters/sequel.rb` with the required adapter methods
-and updates `config/initializers/planter.rb` to use it. The generated methods
-raise `NotImplementedError` until you implement them. Running the generator
-replaces the currently configured adapter line, but does not change
-`config.seeders`.
+This creates `lib/planter/adapters/sequel.rb` with the required adapter methods,
+updates `config/initializers/planter.rb`, and leaves `config.seeders` unchanged.
 
 ```ruby
 require 'planter'
@@ -354,25 +361,25 @@ Planter.configure do |config|
 end
 ```
 
-Custom adapters are duck typed. They should implement the same public API as
-`Planter::Adapters::ActiveRecord`.
+Custom adapters are duck typed. At minimum, they should implement the same
+public API as `Planter::Adapters::ActiveRecord`.
 
 ```ruby
 class MyAdapter
-  def create_record(model_name:, lookup_attributes:, create_attributes:)
-    # Find or create a record for model_name.
+  def create_record(context:, lookup_attributes:, create_attributes:)
+    # Find or create a record for context.table_name.
   end
 
-  def parent_ids(model_name:, parent:)
+  def parent_ids(context:)
     # Return ids for each parent record used by parent seeding.
   end
 
-  def foreign_key(model_name:, parent:)
+  def foreign_key(context:)
     # Return the attribute used to attach a parent id to the seeded record.
   end
 
-  def table_columns(model_name: nil, table_name: nil)
-    # Return native columns or fields for model_name or table_name.
+  def table_columns(context:)
+    # Return native columns or fields for context.table_name.
   end
 
   def table_names

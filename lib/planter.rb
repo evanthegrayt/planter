@@ -5,6 +5,9 @@ require "erb"
 require "planter/version"
 require "planter/railtie"
 require "planter/config"
+require "planter/seed_context"
+require "planter/csv_data_source"
+require "planter/record_attributes"
 require "planter/seeder"
 
 ##

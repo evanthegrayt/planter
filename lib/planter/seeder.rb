@@ -5,7 +5,7 @@ module Planter
   # Class that seeders should inherit from. Seeders should be in +db/seeds+,
   # and named +TABLE_seeder.rb+, where +TABLE+ is the name of the table being
   # seeded (for example, +users_seeder.rb+). If your seeder is named differently
-  # than the table, you'll need to specify the table with the +model+ option. The
+  # than the table, you'll need to specify the table with the +table+ option. The
   # seeder's class name should be the same as the file name, but camelized. So,
   # +UsersSeeder+. The directory where the seeder files are located can be
   # changed via an initializer.
@@ -18,14 +18,14 @@ module Planter
   # The most basic way to seed is to have a CSV file with the same name as the
   # table in +db/seed_files/+. So, +users.csv+. This CSV should have the
   # table's column names as headers. To seed using this method, your class
-  # should look like the following. Note that +:csv_name+ and +:model+ are only
+  # should look like the following. Note that +:csv_name+ and +:table+ are only
   # required if your seeder or CSV are named differently than the table being
   # seeded. The directory where the seed files are kept can be changed via an
   # initializer.
   #   # db/seeds/users_seeder.rb
   #   require 'planter'
   #   class UsersSeeder < Planter::Seeder
-  #     seeding_method :csv, csv_name: :users, model: 'User'
+  #     seeding_method :csv, csv_name: :users, table: :users
   #   end
   #
   # Another way to seed is to create records from a data array. To do this,
@@ -44,13 +44,11 @@ module Planter
   #   end
   #
   # In both of the above methods, you can specify a +parent+ association, which
-  # is the +belongs_to+ association name in your model, which, when specified,
-  # records will be created for each record in the parent table. For example,
-  # if we're seeding the users table, and the model is +User+, which belongs to
-  # +Person+, then doing the following will create a user record for each
-  # record in the Person table. Note that nothing is automatically done to
-  # prevent any validation errors; you must do this on your own, most likely
-  # using +Faker+ or a similar library.
+  # is interpreted by the configured adapter. With the default Active Record
+  # adapter, +parent+ is the +belongs_to+ association name. When specified,
+  # records will be created for each record in the parent table. Note that
+  # nothing is automatically done to prevent any validation errors; you must do
+  # this on your own, most likely using +Faker+ or a similar library.
   #   require 'planter'
   #   class UsersSeeder < Planter::Seeder
   #     seeding_method :data_array, parent: :person
@@ -150,16 +148,15 @@ module Planter
     class_attribute :unique_columns
 
     ##
-    # The model for the table being seeded. If the model name you need is
-    # different, change via +seeding_method+.
+    # The table being seeded. If the table name you need is different, change
+    # via +seeding_method+.
     #
     # @return [String]
-    class_attribute :model
+    class_attribute :table_name
 
     ##
-    # The model of the parent. When provided with +association+, records in the
-    # +data+ array, will be created for each record in the parent table. Your
-    # class must set this attribute via +seeding_method+.
+    # Adapter-defined parent relation. Records in the +data+ array will be
+    # created for each record in the parent relation.
     #
     # @return [String]
     class_attribute :parent
@@ -173,7 +170,7 @@ module Planter
     class_attribute :number_of_records
 
     ##
-    # The CSV file corresponding to the model.
+    # The CSV file corresponding to the table.
     #
     # @return [String]
     class_attribute :csv_name
@@ -193,7 +190,7 @@ module Planter
     #
     # @kwarg [Integer] number_of_records
     #
-    # @kwarg [String] model
+    # @kwarg [String, Symbol] table
     #
     # @kwarg [Symbol, String] parent
     #
@@ -208,7 +205,7 @@ module Planter
     #   class UsersSeeder < Planter::Seeder
     #     seeding_method :csv,
     #       number_of_records: 2,
-    #       model: 'User'
+    #       table: :users
     #       parent: :person,
     #       csv_name: :awesome_users,
     #       unique_columns %i[username email],
@@ -217,7 +214,7 @@ module Planter
     def self.seeding_method(
       seed_method,
       number_of_records: 1,
-      model: nil,
+      table: nil,
       parent: nil,
       csv_name: nil,
       unique_columns: nil,
@@ -229,9 +226,9 @@ module Planter
 
       self.seed_method = seed_method
       self.number_of_records = number_of_records
-      self.model = model || to_s.delete_suffix("Seeder").singularize
+      self.table_name = (table || default_table_name).to_s
       self.parent = parent
-      self.csv_name = csv_name || to_s.delete_suffix("Seeder").underscore
+      self.csv_name = (csv_name || table_name).to_s
       self.erb_trim_mode = erb_trim_mode || Planter.config.erb_trim_mode
       self.unique_columns =
         case unique_columns
@@ -241,13 +238,21 @@ module Planter
     end
 
     ##
+    # Return the table name inferred from the seeder class name.
+    #
+    # @return [String]
+    def self.default_table_name
+      to_s.delete_suffix("Seeder").underscore
+    end
+
+    ##
     # The default seed method. To use this method, your class must provide a
     # valid +seeding_method+, and not implement its own +seed+ method.
     def seed
       validate_attributes
-      extract_data_from_csv if seed_method == :csv
+      extract_data_from_csv if context.seed_method == :csv
 
-      parent ? create_records_from_parent : create_records
+      context.parent ? create_records_from_parent : create_records
     end
 
     private
@@ -255,7 +260,7 @@ module Planter
     ##
     # Creates records from the +data+ attribute.
     def create_records
-      number_of_records.times do
+      context.number_of_records.times do
         data.each { |record| create_record(record) }
       end
     end
@@ -263,48 +268,30 @@ module Planter
     ##
     # Create records from the +data+ attribute for each record in the +parent+.
     def create_records_from_parent
-      adapter.parent_ids(model_name: model, parent: parent).each do |parent_id|
-        number_of_records.times do
+      adapter.parent_ids(context: context).each do |parent_id|
+        context.number_of_records.times do
           data.each { |record| create_record(record, parent_id: parent_id) }
         end
       end
     end
 
     def create_record(record, parent_id: nil)
-      unique, attrs = split_record(apply_transformations(record))
-      unique = unique.merge(foreign_key => parent_id) if parent_id
-      unique, attrs = filter_lookup_attributes(unique, attrs)
+      lookup_attributes, create_attributes = record_attributes.prepare(record, parent_id: parent_id)
       adapter.create_record(
-        model_name: model,
-        lookup_attributes: unique,
-        create_attributes: attrs
+        context: context,
+        lookup_attributes: lookup_attributes,
+        create_attributes: create_attributes
       )
     end
 
-    def full_csv_name
-      @full_csv_name ||=
-        %W[#{csv_name}.csv #{csv_name}.csv.erb #{csv_name}.erb.csv]
-          .map { |f| Rails.root.join(Planter.config.csv_files_directory, f).to_s }
-          .find { |f| ::File.file?(f) }
-    end
-
     def extract_data_from_csv
-      contents = ::File.read(full_csv_name)
-      if full_csv_name.include?(".erb")
-        contents = ERB.new(contents, trim_mode: erb_trim_mode).result(binding)
-      end
-
-      @data ||= ::CSV.parse(
-        contents,
-        headers: true,
-        header_converters: :symbol
-      ).map(&:to_hash)
+      @data ||= csv_data_source.data
     end
 
     def validate_attributes # :nodoc:
-      case seed_method&.intern
+      case context.seed_method
       when :csv
-        raise "Couldn't find csv for #{model}" unless full_csv_name
+        raise "Couldn't find csv for #{context.table_name}" unless csv_data_source.path
       when :data_array
         raise "data is not defined in the seeder" if public_send(:data).nil?
       else
@@ -312,72 +299,28 @@ module Planter
       end
     end
 
-    def apply_transformations(record)
-      return record if public_send(:transformations).nil?
-
-      record.map { |field, value| map_record(field, value, record) }.to_h
-    end
-
-    def map_record(field, value, record)
-      [
-        field,
-        transformations.key?(field) ? transform(field, value, record) : value
-      ]
-    end
-
-    def transform(field, value, record)
-      case transformations[field].arity
-      when 0 then transformations[field].call
-      when 1 then transformations[field].call(value)
-      when 2 then transformations[field].call(value, record)
-      end
-    end
-
-    def split_record(rec) # :nodoc:
-      return [rec, {}] unless unique_columns
-
-      u = unique_columns.each_with_object({}) { |c, h| h[c] = rec[c] }
-      [u, rec.except(*unique_columns)]
-    end
-
-    def filter_lookup_attributes(lookup_attributes, create_attributes)
-      return [lookup_attributes, create_attributes] unless adapter.respond_to?(:table_columns)
-
-      table_columns = adapter.table_columns(model_name: model).map(&:to_s)
-      native_lookup_attributes = lookup_attributes.select do |field, _value|
-        table_columns.include?(field.to_s)
-      end
-      non_column_lookup_attributes = lookup_attributes.except(*native_lookup_attributes.keys)
-
-      if non_column_lookup_attributes.any?
-        warn_non_column_lookup_attributes(non_column_lookup_attributes.keys)
-      end
-
-      if native_lookup_attributes.empty?
-        raise "No native lookup columns found for #{model}. " \
-          "Add a native table column to the seed data or unique_columns."
-      end
-
-      [
-        native_lookup_attributes,
-        non_column_lookup_attributes.merge(create_attributes)
-      ]
-    end
-
-    def warn_non_column_lookup_attributes(fields)
-      warning_key = [model, fields.map(&:to_s).sort]
-      @warned_non_column_lookup_attributes ||= []
-      return if @warned_non_column_lookup_attributes.include?(warning_key)
-
-      @warned_non_column_lookup_attributes << warning_key
-      warn(
-        "WARNING: Planter moved non-column lookup attributes for #{model} " \
-        "into create attributes: #{warning_key.last.join(", ")}"
+    def context
+      @context ||= Planter::SeedContext.new(
+        table_name: table_name,
+        seed_method: seed_method,
+        csv_name: csv_name,
+        parent: parent,
+        number_of_records: number_of_records,
+        unique_columns: unique_columns,
+        erb_trim_mode: erb_trim_mode
       )
     end
 
-    def foreign_key
-      adapter.foreign_key(model_name: model, parent: parent)
+    def csv_data_source
+      @csv_data_source ||= Planter::CsvDataSource.new(context: context, seeder: self)
+    end
+
+    def record_attributes
+      @record_attributes ||= Planter::RecordAttributes.new(
+        context: context,
+        adapter: adapter,
+        transformations: public_send(:transformations)
+      )
     end
 
     def adapter
