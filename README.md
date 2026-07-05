@@ -18,12 +18,10 @@ Features include:
 You can view the documentation [here](https://evanthegrayt.github.io/planter/).
 
 ## Installation
-Add the following line to your application's Gemfile. Because this plugin is
-currently a pre-release version, it's recommended to lock it to a specific
-version, as breaking changes may occur, even at the minor level.
+Add the following line to your application's Gemfile.
 
 ```ruby
-gem 'planter', '0.5.0'
+gem 'planter'
 ```
 
 And then execute:
@@ -95,6 +93,25 @@ into the existing `db:seed` task, simply add the following to `db/seeds.rb`.
 ```ruby
 # db/seeds.rb
 Planter.seed
+```
+
+Before seeding, you can validate your Planter configuration without creating
+records.
+
+```bash
+rails planter:validate
+```
+
+This command loads the Rails environment, checks the configured seeders, and
+verifies that the configured adapter exposes Planter's adapter API. It prints a
+success message when no issues are found, warnings for non-fatal issues, and
+errors before exiting non-zero when the seed plan is not valid.
+
+Like `planter:seed`, validation supports the `SEEDERS` environment variable if
+you want to check only part of the configured plan.
+
+```bash
+rails planter:validate SEEDERS=users,addresses
 ```
 
 To create a users seeder, run `rails generate planter:seeder users`. Usually,

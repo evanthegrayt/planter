@@ -9,6 +9,7 @@ require "planter/seed_context"
 require "planter/csv_data_source"
 require "planter/record_attributes"
 require "planter/seeder"
+require "planter/validator"
 
 ##
 # The main module for the plugin. It nicely wraps the +Planter::Config+ class
@@ -82,5 +83,15 @@ module Planter
       puts "Seeding #{s}" unless config.quiet
       "#{s.camelize}Seeder".constantize.new.seed
     end
+  end
+
+  ##
+  # Validate the configured seed plan without creating records. This checks
+  # seeder files, seeder classes, built-in seeding method configuration, CSV
+  # headers where possible, and the configured adapter API.
+  #
+  # @return [Planter::Validator::Result]
+  def validate
+    Planter::Validator.new.validate
   end
 end
