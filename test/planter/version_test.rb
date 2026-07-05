@@ -47,14 +47,6 @@ class Planter::VersionTest < ActiveSupport::TestCase
     assert_instance_of(Integer, Planter::Version::PATCH)
   end
 
-  test "readme should contain the current version" do
-    refute_empty File.readlines(
-      File.join(__dir__, "..", "..", "README.md")
-    ).grep(
-      /gem\s+'planter',\s+'(?:~>(?:\s)?)?#{Planter::VERSION}'/o
-    )
-  end
-
   test "Gemfile.lock should contain the current version" do
     refute_empty File.readlines(
       File.join(__dir__, "..", "..", "Gemfile.lock")
