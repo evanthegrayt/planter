@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "ruby-progressbar", "~> 1.13"
 
   spec.add_development_dependency "parallel", "< 2.0"
+  spec.add_development_dependency "semverve"
   spec.add_development_dependency "simplecov", "~> 0.22.0"
   spec.add_development_dependency "standard", "~> 1.54.0"
 end
