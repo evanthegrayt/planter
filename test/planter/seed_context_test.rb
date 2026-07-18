@@ -9,7 +9,8 @@ class Planter::SeedContextTest < ActiveSupport::TestCase
       parent: :account,
       number_of_records: 2,
       unique_columns: %i[email username],
-      erb_trim_mode: "<>"
+      erb_trim_mode: "<>",
+      validation_failure: "warn"
     )
 
     assert_equal "users", context.table_name
@@ -19,5 +20,6 @@ class Planter::SeedContextTest < ActiveSupport::TestCase
     assert_equal 2, context.number_of_records
     assert_equal %i[email username], context.unique_columns
     assert_equal "<>", context.erb_trim_mode
+    assert_equal :warn, context.validation_failure
   end
 end

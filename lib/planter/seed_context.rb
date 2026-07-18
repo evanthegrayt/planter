@@ -47,6 +47,12 @@ module Planter
     attr_reader :erb_trim_mode
 
     ##
+    # Adapter-specific validation failure behavior.
+    #
+    # @return [Symbol, nil]
+    attr_reader :validation_failure
+
+    ##
     # Create a new seed context.
     #
     # @param [String, Symbol] table_name
@@ -62,6 +68,8 @@ module Planter
     # @param [Array<Symbol>, nil] unique_columns
     #
     # @param [String, nil] erb_trim_mode
+    #
+    # @param [String, Symbol, nil] validation_failure
     def initialize(
       table_name:,
       seed_method:,
@@ -69,7 +77,8 @@ module Planter
       parent:,
       number_of_records:,
       unique_columns:,
-      erb_trim_mode:
+      erb_trim_mode:,
+      validation_failure: nil
     )
       @table_name = table_name.to_s
       @seed_method = seed_method&.intern
@@ -78,6 +87,7 @@ module Planter
       @number_of_records = number_of_records
       @unique_columns = unique_columns
       @erb_trim_mode = erb_trim_mode
+      @validation_failure = validation_failure&.intern
     end
   end
 end

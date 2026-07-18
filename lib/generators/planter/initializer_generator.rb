@@ -19,6 +19,7 @@ module Planter
             # The adapter used to create records, discover parent records, and
             # inspect database table names. Active Record is used by default.
             # To use a custom adapter, replace this line with your own adapter.
+            # The Active Record adapter can be configured with a block.
             config.adapter = Planter::Adapters::ActiveRecord.new
 
             ##

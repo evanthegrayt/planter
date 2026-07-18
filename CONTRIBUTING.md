@@ -49,6 +49,15 @@ This project uses Standard Ruby. Check formatting and style with:
 bundle exec rake standard
 ```
 
+## Documentation
+
+When code or public API documentation changes, regenerate the docs before
+opening a pull request.
+
+```bash
+bundle exec rake rerdoc
+```
+
 ## Dummy App
 
 The Rails app in `test/dummy` is the local host application used by the engine
@@ -110,6 +119,7 @@ Before opening a pull request, please run:
 ```bash
 bundle exec rake
 bundle exec rake standard
+bundle exec rake rerdoc
 ```
 
 For behavior changes, add or update tests under `test/`. For documentation

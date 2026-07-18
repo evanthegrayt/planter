@@ -23,6 +23,57 @@ module Planter
     # they need.
     class ActiveRecord
       ##
+      # Validation failure actions supported by the Active Record adapter.
+      #
+      # @return [Array<Symbol>]
+      VALIDATION_FAILURE_ACTIONS = %i[raise warn].freeze
+
+      ##
+      # Configuration for the Active Record adapter.
+      class Configuration
+        ##
+        # How model validation failures should be handled when creating records.
+        #
+        # @return [Symbol]
+        attr_reader :validation_failure
+
+        ##
+        # Create a new Active Record adapter configuration.
+        def initialize
+          @validation_failure = :raise
+        end
+
+        ##
+        # Set how model validation failures should be handled.
+        #
+        # @param [String, Symbol] action either +:raise+ or +:warn+
+        def validation_failure=(action)
+          action = action.to_sym
+          unless VALIDATION_FAILURE_ACTIONS.include?(action)
+            raise ArgumentError, "validation_failure must be: #{VALIDATION_FAILURE_ACTIONS.join(", ")}"
+          end
+
+          @validation_failure = action
+        end
+      end
+
+      ##
+      # The adapter configuration.
+      #
+      # @return [Planter::Adapters::ActiveRecord::Configuration]
+      attr_reader :configuration
+
+      ##
+      # Create a new Active Record adapter.
+      #
+      # @yield [configuration] optional configuration block
+      # @yieldparam configuration [Planter::Adapters::ActiveRecord::Configuration]
+      def initialize
+        @configuration = Configuration.new
+        yield configuration if block_given?
+      end
+
+      ##
       # Create a record unless one already exists.
       #
       # @param [Planter::SeedContext] context seeder configuration
@@ -35,9 +86,7 @@ module Planter
       # @return [Object]
       def create_record(context:, lookup_attributes:, create_attributes:)
         if (model = model(context))
-          model
-            .where(lookup_attributes)
-            .first_or_create!(create_attributes)
+          create_model_record(model, context, lookup_attributes, create_attributes)
         else
           create_table_record(context, lookup_attributes, create_attributes)
         end
@@ -97,6 +146,47 @@ module Planter
         context.table_name.classify.safe_constantize&.then do |model|
           model if model.respond_to?(:table_name) && model.table_name == context.table_name
         end
+      end
+
+      def create_model_record(model, context, lookup_attributes, create_attributes)
+        relation = model.where(lookup_attributes)
+        case validation_failure(context)
+        when :raise
+          relation.first_or_create!(create_attributes)
+        when :warn
+          record = relation.first_or_create(create_attributes)
+          warn_validation_failure(context, lookup_attributes, record) if failed_create?(record)
+          record
+        end
+      end
+
+      def validation_failure(context)
+        context_action = context.validation_failure if context.respond_to?(:validation_failure)
+        action = context_action || configuration.validation_failure
+        action = action.to_sym
+        return action if VALIDATION_FAILURE_ACTIONS.include?(action)
+
+        raise ArgumentError, "validation_failure must be: #{VALIDATION_FAILURE_ACTIONS.join(", ")}"
+      end
+
+      def failed_create?(record)
+        record == false || (record.respond_to?(:persisted?) && !record.persisted?)
+      end
+
+      def warn_validation_failure(context, lookup_attributes, record)
+        warn(
+          [
+            "WARNING: Planter could not create #{context.table_name} with lookup attributes",
+            lookup_attributes.inspect,
+            validation_errors(record)
+          ].compact.join(" ")
+        )
+      end
+
+      def validation_errors(record)
+        return unless record.respond_to?(:errors) && record.errors.any?
+
+        "Errors: #{record.errors.full_messages.join(", ")}"
       end
 
       def association_options(context)
