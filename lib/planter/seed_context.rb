@@ -47,10 +47,12 @@ module Planter
     attr_reader :erb_trim_mode
 
     ##
-    # Adapter-specific validation failure behavior.
+    # Adapter-specific options collected from the seeder.
     #
-    # @return [Symbol, nil]
-    attr_reader :validation_failure
+    # Adapters may ignore any options they do not support.
+    #
+    # @return [Hash]
+    attr_reader :adapter_options
 
     ##
     # Create a new seed context.
@@ -69,7 +71,7 @@ module Planter
     #
     # @param [String, nil] erb_trim_mode
     #
-    # @param [String, Symbol, nil] validation_failure
+    # @param [Hash] adapter_options adapter-specific per-seeder options
     def initialize(
       table_name:,
       seed_method:,
@@ -78,7 +80,7 @@ module Planter
       number_of_records:,
       unique_columns:,
       erb_trim_mode:,
-      validation_failure: nil
+      adapter_options: {}
     )
       @table_name = table_name.to_s
       @seed_method = seed_method&.intern
@@ -87,7 +89,7 @@ module Planter
       @number_of_records = number_of_records
       @unique_columns = unique_columns
       @erb_trim_mode = erb_trim_mode
-      @validation_failure = validation_failure&.intern
+      @adapter_options = adapter_options.to_h.transform_keys(&:to_sym)
     end
   end
 end

@@ -161,7 +161,8 @@ module Planter
       end
 
       def validation_failure(context)
-        context_action = context.validation_failure if context.respond_to?(:validation_failure)
+        adapter_options = context.adapter_options if context.respond_to?(:adapter_options)
+        context_action = adapter_options&.[](:validation_failure)
         action = context_action || configuration.validation_failure
         action = action.to_sym
         return action if VALIDATION_FAILURE_ACTIONS.include?(action)

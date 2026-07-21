@@ -49,7 +49,7 @@ class Planter::Adapters::ActiveRecordTest < ActiveSupport::TestCase
     with_validated_model do
       assert_raises(ActiveRecord::RecordInvalid) do
         adapter.create_record(
-          context: context(table_name: :validated_users, validation_failure: :raise),
+          context: context(table_name: :validated_users, adapter_options: {validation_failure: :raise}),
           lookup_attributes: {email: "invalid-override@example.com"},
           create_attributes: {}
         )
@@ -65,6 +65,20 @@ class Planter::Adapters::ActiveRecordTest < ActiveSupport::TestCase
     end
 
     assert_equal "validation_failure must be: raise, warn", error.message
+  end
+
+  test "rejects invalid validation failure adapter option" do
+    with_validated_model do
+      error = assert_raises(ArgumentError) do
+        @adapter.create_record(
+          context: context(table_name: :validated_users, adapter_options: {validation_failure: :ignore}),
+          lookup_attributes: {email: "invalid-option@example.com"},
+          create_attributes: {}
+        )
+      end
+
+      assert_equal "validation_failure must be: raise, warn", error.message
+    end
   end
 
   test "creates records from lookup and create attributes" do
@@ -180,7 +194,7 @@ class Planter::Adapters::ActiveRecordTest < ActiveSupport::TestCase
 
   private
 
-  def context(table_name:, parent: nil, validation_failure: nil)
+  def context(table_name:, parent: nil, adapter_options: {})
     Planter::SeedContext.new(
       table_name: table_name,
       seed_method: :data_array,
@@ -189,7 +203,7 @@ class Planter::Adapters::ActiveRecordTest < ActiveSupport::TestCase
       number_of_records: 1,
       unique_columns: nil,
       erb_trim_mode: nil,
-      validation_failure: validation_failure
+      adapter_options: adapter_options
     )
   end
 
