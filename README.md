@@ -51,6 +51,7 @@ Planter.configure do |config|
   # The adapter used to create records, discover parent records, and
   # inspect database table names. Active Record is used by default.
   # To use a custom adapter, replace this line with your own adapter.
+  # The Active Record adapter can be configured with a block.
   config.adapter = Planter::Adapters::ActiveRecord.new
 
   ##
@@ -212,6 +213,34 @@ end
 email,username
 test1@example.com,test1
 test2@example.com,test2
+```
+
+By default, the Active Record adapter raises when model validations prevent a
+record from being created. To keep seeding after validation failures, configure
+the adapter to warn instead.
+
+```ruby
+Planter.configure do |config|
+  config.adapter = Planter::Adapters::ActiveRecord.new do |adapter_config|
+    adapter_config.validation_failure = :warn
+  end
+end
+```
+
+In `:warn` mode, Planter prints a warning with the failed lookup attributes and
+validation errors. This only applies to model-backed tables; model-less tables
+are inserted directly and can still raise database errors. A seeder can override
+the adapter default by defining `validation_failure`; Planter passes that value
+to adapters through `context.adapter_options`.
+
+```ruby
+class UsersSeeder < Planter::Seeder
+  seeding_method :csv, unique_columns: :email
+
+  def validation_failure
+    :raise
+  end
+end
 ```
 
 CSV seeders can also be useful for simple model-less tables, such as join
@@ -453,6 +482,10 @@ class MyAdapter
   end
 end
 ```
+
+Planter passes adapter-specific per-seeder settings through
+`context.adapter_options`. Custom adapters can read options they support and
+ignore the rest.
 
 ## License
 The gem is available as open source under the terms of the [MIT

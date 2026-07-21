@@ -6,6 +6,81 @@ class Planter::Adapters::ActiveRecordTest < ActiveSupport::TestCase
     @adapter = Planter::Adapters::ActiveRecord.new
   end
 
+  test "defaults to raising model validation failures" do
+    with_validated_model do
+      error = assert_raises(ActiveRecord::RecordInvalid) do
+        @adapter.create_record(
+          context: context(table_name: :validated_users),
+          lookup_attributes: {email: "invalid-default@example.com"},
+          create_attributes: {}
+        )
+      end
+
+      assert_match "Name can't be blank", error.message
+    end
+  end
+
+  test "can warn on model validation failures" do
+    adapter = Planter::Adapters::ActiveRecord.new do |config|
+      config.validation_failure = :warn
+    end
+
+    with_validated_model do
+      _stdout, stderr = capture_io do
+        record = adapter.create_record(
+          context: context(table_name: :validated_users),
+          lookup_attributes: {email: "invalid-warning@example.com"},
+          create_attributes: {}
+        )
+
+        assert_not record.persisted?
+      end
+
+      assert_match(/WARNING: Planter could not create validated_users/, stderr)
+      assert_match(/Name can't be blank/, stderr)
+    end
+  end
+
+  test "seeder context validation failure overrides adapter configuration" do
+    adapter = Planter::Adapters::ActiveRecord.new do |config|
+      config.validation_failure = :warn
+    end
+
+    with_validated_model do
+      assert_raises(ActiveRecord::RecordInvalid) do
+        adapter.create_record(
+          context: context(table_name: :validated_users, adapter_options: {validation_failure: :raise}),
+          lookup_attributes: {email: "invalid-override@example.com"},
+          create_attributes: {}
+        )
+      end
+    end
+  end
+
+  test "rejects invalid validation failure configuration" do
+    error = assert_raises(ArgumentError) do
+      Planter::Adapters::ActiveRecord.new do |config|
+        config.validation_failure = :ignore
+      end
+    end
+
+    assert_equal "validation_failure must be: raise, warn", error.message
+  end
+
+  test "rejects invalid validation failure adapter option" do
+    with_validated_model do
+      error = assert_raises(ArgumentError) do
+        @adapter.create_record(
+          context: context(table_name: :validated_users, adapter_options: {validation_failure: :ignore}),
+          lookup_attributes: {email: "invalid-option@example.com"},
+          create_attributes: {}
+        )
+      end
+
+      assert_equal "validation_failure must be: raise, warn", error.message
+    end
+  end
+
   test "creates records from lookup and create attributes" do
     record = @adapter.create_record(
       context: context(table_name: :users),
@@ -119,7 +194,7 @@ class Planter::Adapters::ActiveRecordTest < ActiveSupport::TestCase
 
   private
 
-  def context(table_name:, parent: nil)
+  def context(table_name:, parent: nil, adapter_options: {})
     Planter::SeedContext.new(
       table_name: table_name,
       seed_method: :data_array,
@@ -127,7 +202,29 @@ class Planter::Adapters::ActiveRecordTest < ActiveSupport::TestCase
       parent: parent,
       number_of_records: 1,
       unique_columns: nil,
-      erb_trim_mode: nil
+      erb_trim_mode: nil,
+      adapter_options: adapter_options
     )
+  end
+
+  def with_validated_model
+    ActiveRecord::Base.connection.create_table(:validated_users, force: true) do |table|
+      table.string :email
+      table.string :name
+    end
+
+    Object.const_set(
+      :ValidatedUser,
+      Class.new(ApplicationRecord) do
+        self.table_name = "validated_users"
+
+        validates :name, presence: true
+      end
+    )
+
+    yield
+  ensure
+    Object.send(:remove_const, :ValidatedUser) if Object.const_defined?(:ValidatedUser)
+    ActiveRecord::Base.connection.drop_table(:validated_users, if_exists: true)
   end
 end

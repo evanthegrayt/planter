@@ -89,6 +89,11 @@ module Planter
   #
   # If you need to seed a different way, put your own custom +seed+ method in
   # your seeder class and do whatever needs to be done.
+  #
+  # Adapter-specific settings can be provided by defining methods on your
+  # seeder. For example, the Active Record adapter reads +validation_failure+
+  # into +SeedContext#adapter_options+ when deciding whether failed model
+  # validations should raise or warn.
   class Seeder
     ##
     # The allowed seeding methods.
@@ -326,8 +331,19 @@ module Planter
         parent: parent,
         number_of_records: number_of_records,
         unique_columns: unique_columns,
-        erb_trim_mode: erb_trim_mode
+        erb_trim_mode: erb_trim_mode,
+        adapter_options: seeder_adapter_options
       )
+    end
+
+    def seeder_adapter_options
+      {
+        validation_failure: seeder_validation_failure
+      }.compact
+    end
+
+    def seeder_validation_failure
+      public_send(:validation_failure) if respond_to?(:validation_failure)
     end
 
     def csv_data_source

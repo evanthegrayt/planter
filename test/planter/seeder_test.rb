@@ -456,6 +456,20 @@ class Planter::SeederTest < ActiveSupport::TestCase
     assert_equal :user, seeder.parent
   end
 
+  test "context includes seeder validation failure hook in adapter options when defined" do
+    seeder_class = Class.new(Planter::Seeder) do
+      seeding_method :data_array, table: :widgets
+
+      def validation_failure
+        :warn
+      end
+    end
+
+    context = seeder_class.new.send(:context)
+
+    assert_equal({validation_failure: :warn}, context.adapter_options)
+  end
+
   private
 
   def reset_seeder_class_attributes

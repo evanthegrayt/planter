@@ -47,6 +47,14 @@ module Planter
     attr_reader :erb_trim_mode
 
     ##
+    # Adapter-specific options collected from the seeder.
+    #
+    # Adapters may ignore any options they do not support.
+    #
+    # @return [Hash]
+    attr_reader :adapter_options
+
+    ##
     # Create a new seed context.
     #
     # @param [String, Symbol] table_name
@@ -62,6 +70,8 @@ module Planter
     # @param [Array<Symbol>, nil] unique_columns
     #
     # @param [String, nil] erb_trim_mode
+    #
+    # @param [Hash] adapter_options adapter-specific per-seeder options
     def initialize(
       table_name:,
       seed_method:,
@@ -69,7 +79,8 @@ module Planter
       parent:,
       number_of_records:,
       unique_columns:,
-      erb_trim_mode:
+      erb_trim_mode:,
+      adapter_options: {}
     )
       @table_name = table_name.to_s
       @seed_method = seed_method&.intern
@@ -78,6 +89,7 @@ module Planter
       @number_of_records = number_of_records
       @unique_columns = unique_columns
       @erb_trim_mode = erb_trim_mode
+      @adapter_options = adapter_options.to_h.transform_keys(&:to_sym)
     end
   end
 end
